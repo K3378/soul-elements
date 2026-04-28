@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Soul Elements — BaZi fortune telling platform",
   "scripts": {
-    "build": "cd frontend && npm install && npm run build",
+    "build": "cd frontend && npm install && npm run build && cd ../backend && npm install",
     "start": "cd backend && node server.js",
     "dev": "cd backend && nodemon server.js"
   },
