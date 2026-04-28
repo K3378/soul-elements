@@ -21,8 +21,11 @@
   --success: #58B86B;
   --radius: 10px;
   --radius-lg: 16px;
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* TYPOGRAPHIC HIERARCHY — 庚金精神 */
+  --font-hero: 'Cinzel', 'Playfair Display', Georgia, serif;     /* 威嚴石刻感 — 用於 H1 */
+  --font-display: 'Cormorant Garamond', 'Playfair Display', Georgia, serif; /* 修道手札感 — 用於 H2/H3 */
+  --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;       /* 極度易讀 — 用於正文 */
+  --font-data: 'JetBrains Mono', 'Courier New', monospace;                   /* 精確審計 — 用於八字數據 */
 }
 
 * { box-sizing: border-box; }
@@ -35,11 +38,64 @@ body {
     radial-gradient(ellipse at 50% 80%, rgba(40,50,80,0.05) 0%, transparent 50%);
   color: var(--text-primary);
   font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 400;
   min-height: 100vh;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4 { font-family: var(--font-display); }
+/* ======== TYPOGRAPHIC HIERARCHY ======== */
+
+/* H1 — Hero level: Cinzel, uppercase, wide tracking (寶劍出鞘) */
+h1 {
+  font-family: var(--font-hero);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1.15;
+}
+
+/* H2 — Section level: Cormorant Garamond, bold italic (修道手札) */
+h2 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  line-height: 1.2;
+}
+
+/* H3 — Subsection level: Cormorant Garamond, semi-bold */
+h3 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  line-height: 1.3;
+}
+
+/* H4 — Card title level: Inter, bold, tight */
+h4 {
+  font-family: var(--font-body);
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.4;
+}
+
+/* Data / Monospace — 精確審計感 */
+.font-data, .bazi-data {
+  font-family: var(--font-data);
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+/* Subtle data (smaller / less emphasis) */
+.font-data-sm {
+  font-family: var(--font-data);
+  font-weight: 400;
+  font-size: 0.85em;
+  letter-spacing: 0.02em;
+  color: var(--text-secondary);
+}
 
 /* Form elements */
 input, select, textarea {
