@@ -9,6 +9,7 @@ function PreviewContent() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [purchaseLoading, setPurchaseLoading] = useState(null);
+  const [purchaseError, setPurchaseError] = useState('');
 
   useEffect(() => {
     if (key) {
@@ -17,7 +18,6 @@ function PreviewContent() {
         setData(JSON.parse(stored));
         setLoading(false);
       } else {
-        // If no sessionStorage (e.g. direct link), try legacy URL param
         const dataStr = searchParams.get('data');
         if (dataStr) {
           try {
@@ -34,6 +34,7 @@ function PreviewContent() {
 
   const handlePurchase = async (tier) => {
     setPurchaseLoading(tier);
+    setPurchaseError('');
     try {
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
@@ -41,10 +42,13 @@ function PreviewContent() {
         body: JSON.stringify({ tier, reportData: data?.bazi }),
       });
       const result = await res.json();
-      if (result.url) window.location.href = result.url;
-      else throw new Error(result.error || 'Checkout failed');
+      if (result.url) {
+        window.location.href = result.url;
+      } else {
+        throw new Error(result.error || 'Checkout failed');
+      }
     } catch (err) {
-      alert('Payment failed. Please try again.');
+      setPurchaseError(err.message || 'Payment failed. Please try again.');
       setPurchaseLoading(null);
     }
   };
@@ -53,21 +57,17 @@ function PreviewContent() {
     if (loading) {
       return (
         <div className="min-h-screen flex flex-col items-center justify-center">
-          <div className="tai-chi-spin mb-4">
-            <svg width="60" height="60" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="48" fill="none" stroke="#C9A84C" strokeWidth="2" />
-              <path d="M50 2 A48 48 0 0 1 50 50 A24 24 0 0 0 50 98 A48 48 0 0 1 50 2" fill="#C9A84C" opacity="0.9" />
-              <circle cx="50" cy="74" r="8" fill="#0B0E1A" />
-              <circle cx="50" cy="26" r="8" fill="#C9A84C" />
-            </svg>
-          </div>
-          <p style={{ color: '#8B8FA3' }}>Loading your reading...</p>
+          <div className="spinner mb-4"></div>
+          <p style={{ color: '#6B6F80' }}>Loading your reading...</p>
         </div>
       );
     }
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p style={{ color: '#8B8FA3' }}>No data available. Please start again.</p>
+        <div className="text-center">
+          <p style={{ color: '#6B6F80' }}>No data available. Please start again.</p>
+          <a href="/input" className="btn-gold inline-block mt-4">Start Again</a>
+        </div>
       </div>
     );
   }
@@ -75,28 +75,20 @@ function PreviewContent() {
   const { bazi, preview } = data;
 
   return (
-    <div className="min-h-screen flex flex-col items-center px-4 py-16">
+    <div className="min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '8vh', paddingBottom: '8vh' }}>
       <div className="w-full max-w-2xl">
         {/* Header */}
-        <div className="text-center mb-10 fade-in-up">
-          <div className="tai-chi-spin mb-4">
-            <svg width="40" height="40" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="48" fill="none" stroke="#C9A84C" strokeWidth="2" />
-              <path d="M50 2 A48 48 0 0 1 50 50 A24 24 0 0 0 50 98 A48 48 0 0 1 50 2" fill="#C9A84C" opacity="0.9" />
-              <circle cx="50" cy="74" r="8" fill="#0B0E1A" />
-              <circle cx="50" cy="26" r="8" fill="#C9A84C" />
-            </svg>
-          </div>
+        <div className="text-center mb-10">
           <h1 className="text-3xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>
             Your Cosmic Blueprint
           </h1>
-          <p className="text-sm mt-2" style={{ color: '#8B8FA3' }}>
+          <p className="text-sm mt-2" style={{ color: '#6B6F80' }}>
             Here is a preview of what the universe has revealed about you.
           </p>
         </div>
 
         {/* BaZi Chart */}
-        <div className="card-glass mb-8 fade-in-up" style={{ animationDelay: '0.2s' }}>
+        <div className="card-glass mb-8">
           <h2 className="text-xl mb-4" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>
             Your Four Pillars
           </h2>
@@ -106,8 +98,8 @@ function PreviewContent() {
               if (!p) return null;
               return (
                 <div key={pillar} className="text-center p-3 rounded-lg"
-                     style={{ background: 'rgba(255,255,255,0.03)' }}>
-                  <div className="text-xs uppercase mb-2" style={{ color: '#8B8FA3' }}>{pillar}</div>
+                     style={{ background: 'rgba(255,255,255,0.02)' }}>
+                  <div className="text-xs uppercase mb-2" style={{ color: '#6B6F80' }}>{pillar}</div>
                   <div className="font-bold text-lg" style={{ fontFamily: "'Playfair Display', serif" }}>{p.stemElement}</div>
                   <div className="text-xs" style={{ color: '#C9A84C' }}>{p.animal} ({p.branchEn})</div>
                 </div>
@@ -117,21 +109,21 @@ function PreviewContent() {
         </div>
 
         {/* Soul Element Preview */}
-        <div className="card-glass mb-8 fade-in-up" style={{ animationDelay: '0.4s' }}>
+        <div className="card-glass mb-8">
           <h2 className="text-xl mb-4" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>
             Your Soul Element
           </h2>
           <div className="text-2xl font-bold mb-2" style={{ fontFamily: "'Playfair Display', serif" }}>
             {bazi.dayMaster.archetype}
           </div>
-          <div className="text-sm mb-3" style={{ color: '#C9A84C' }}>{bazi.dayMaster.element} — {bazi.dayMaster.keywords}</div>
-          <p className="text-sm leading-relaxed" style={{ color: '#8B8FA3' }}>
+          <div className="text-sm mb-3" style={{ color: '#C9A84C' }}>{bazi.dayMaster.element} &mdash; {bazi.dayMaster.keywords}</div>
+          <p className="text-sm leading-relaxed" style={{ color: '#6B6F80', lineHeight: '1.7' }}>
             {preview.soulElement}
           </p>
         </div>
 
         {/* Five Elements Preview */}
-        <div className="card-glass mb-8 fade-in-up" style={{ animationDelay: '0.6s' }}>
+        <div className="card-glass mb-8">
           <h2 className="text-xl mb-4" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>
             Cosmic Energy Distribution
           </h2>
@@ -141,47 +133,50 @@ function PreviewContent() {
                 <span>{elem}</span>
                 <span style={{ color: '#C9A84C' }}>{pct}%</span>
               </div>
-              <div className="w-full h-2 rounded-full" style={{ background: 'rgba(255,255,255,0.05)' }}>
-                <div className="h-full rounded-full transition-all duration-1000"
+              <div className="w-full h-1.5 rounded-full" style={{ background: 'rgba(255,255,255,0.04)' }}>
+                <div className="h-full rounded-full transition-all"
                      style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #C9A84C, #E8D48B)' }} />
               </div>
             </div>
           ))}
-          <p className="text-xs mt-3" style={{ color: '#8B8FA3' }}>{preview.energyHint}</p>
+          <p className="text-xs mt-3" style={{ color: '#6B6F80' }}>{preview.energyHint}</p>
         </div>
 
         {/* Personality Preview */}
-        <div className="card-glass mb-8 fade-in-up" style={{ animationDelay: '0.8s' }}>
+        <div className="card-glass mb-8">
           <h2 className="text-xl mb-3" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>
             Personality Insight
           </h2>
-          <p className="text-sm leading-relaxed" style={{ color: '#8B8FA3' }}>
+          <p className="text-sm leading-relaxed" style={{ color: '#6B6F80', lineHeight: '1.7' }}>
             {preview.personality.substring(0, 150)}...
           </p>
-          <div className="text-xs mt-3 italic" style={{ color: '#C9A84C' }}>
+          <p className="text-xs mt-3" style={{ color: '#C9A84C', opacity: 0.7 }}>
             This is just a glimpse. The full 15-page report awaits you.
-          </div>
+          </p>
         </div>
 
         {/* Accuracy Note */}
         {bazi.accuracyNote && (
-          <div className="text-xs mb-8 text-center" style={{ color: '#8B8FA3' }}>
+          <p className="text-xs mb-8 text-center" style={{ color: '#6B6F80' }}>
             {bazi.accuracyNote}
-          </div>
+          </p>
         )}
 
         {/* CTA */}
-        <div className="text-center fade-in-up mb-20" style={{ animationDelay: '1s' }}>
-          <div className="card-glass mb-4">
+        <div className="text-center mb-20">
+          <div className="card-glass mb-4 p-8">
             <h3 className="text-xl mb-2" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>
               Unlock Your Complete Destiny Report
-          </h3>
-            <p className="text-sm mb-4" style={{ color: '#8B8FA3' }}>
+            </h3>
+            <p className="text-sm mb-6" style={{ color: '#6B6F80' }}>
               15 pages of personalized wisdom. Your true cosmic blueprint awaits.
             </p>
-          <button onClick={() => handlePurchase('standard')} disabled={purchaseLoading !== null} className="btn-gold text-lg px-12 py-4 glow-gold">
-              {purchaseLoading === 'standard' ? 'Redirecting...' : 'Unlock Full Report — $49'}
+            <button onClick={() => handlePurchase('standard')} disabled={purchaseLoading !== null} className="btn-gold text-lg px-12 py-4">
+              {purchaseLoading === 'standard' ? 'Redirecting...' : 'Unlock Full Report  $49'}
             </button>
+            {purchaseError && (
+              <p className="text-xs mt-3" style={{ color: 'rgba(255,80,80,0.8)' }}>{purchaseError}</p>
+            )}
           </div>
         </div>
       </div>
@@ -193,14 +188,7 @@ export default function PreviewPage() {
   return (
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center">
-        <div className="tai-chi-spin">
-          <svg width="60" height="60" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="48" fill="none" stroke="#C9A84C" strokeWidth="2" />
-            <path d="M50 2 A48 48 0 0 1 50 50 A24 24 0 0 0 50 98 A48 48 0 0 1 50 2" fill="#C9A84C" opacity="0.9" />
-            <circle cx="50" cy="74" r="8" fill="#0B0E1A" />
-            <circle cx="50" cy="26" r="8" fill="#C9A84C" />
-          </svg>
-        </div>
+        <div className="spinner"></div>
       </div>
     }>
       <PreviewContent />

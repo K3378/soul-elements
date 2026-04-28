@@ -7,6 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
+const { reportStore } = require('./report');
 
 function getStripe() {
   return Stripe(process.env.STRIPE_SECRET_KEY);
@@ -41,7 +42,6 @@ router.post('/create-checkout-session', async (req, res) => {
       }],
       metadata: {
         report_tier: tier === 'grandmaster' ? 'grandmaster' : 'essential',
-        report_data: reportData ? JSON.stringify(reportData).substring(0, 1000) : '',
       },
       success_url: `${frontendUrl}/report?session_id={CHECKOUT_SESSION_ID}&tier=${tier}`,
       cancel_url: `${frontendUrl}/preview?canceled=true`,
@@ -49,6 +49,15 @@ router.post('/create-checkout-session', async (req, res) => {
       billing_address_collection: 'required',
       allow_promotion_codes: true,
     });
+
+    // Store report data server-side keyed by session ID
+    if (reportData) {
+      reportStore.set(session.id, {
+        data: reportData,
+        timestamp: Date.now(),
+      });
+      console.log(`📦 Report data stored for session: ${session.id}`);
+    }
 
     console.log(`✅ Checkout session created: ${session.id} (tier: ${tier})`);
     res.json({ url: session.url, sessionId: session.id });

@@ -32,9 +32,11 @@ app.use(express.json());
 // ========== API Routes ==========
 const analyzeRouter = require('./routes/analyze');
 const stripeRouter = require('./routes/stripe');
+const reportRouter = require('./routes/report');
 
 app.use('/api', analyzeRouter);
 app.use('/api', stripeRouter);
+app.use('/api/report', reportRouter);
 
 // Health check
 app.get('/health', (req, res) => {
