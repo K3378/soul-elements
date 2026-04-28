@@ -1,0 +1,24 @@
+{
+  "name": "soul-elements",
+  "version": "1.0.0",
+  "description": "Soul Elements — AI-powered BaZi fortune telling platform for Western market",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/K3378/soul-elements.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/K3378/soul-elements/issues"
+  },
+  "homepage": "https://github.com/K3378/soul-elements#readme",
+  "devDependencies": {
+    "@railway/cli": "^4.43.0"
+  }
+}
