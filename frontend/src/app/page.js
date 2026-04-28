@@ -86,7 +86,7 @@ function FiveElementsCycle() {
     { name: 'Wood', color: '#27AE60', angle: -90 },
     { name: 'Fire', color: '#E74C3C', angle: -18 },
     { name: 'Earth', color: '#F39C12', angle: 54 },
-    { name: 'Metal', color: '#3498DB', angle: 126 },
+    { name: 'Metal', color: '#3B82F6', angle: 126 },
     { name: 'Water', color: '#2C3E50', angle: 198 },
   ];
   const cx = 120, cy = 120, r = 80, dotR = 22;
@@ -98,7 +98,7 @@ function FiveElementsCycle() {
     <div className="flex flex-col items-center">
       <svg width="240" height="240" viewBox="0 0 240 240" style={{ overflow: 'visible' }}>
         {/* Outer guiding ring */}
-        <circle cx={cx} cy={cy} r={r + 28} fill="none" stroke="rgba(212,165,74,0.08)" strokeWidth="0.5" strokeDasharray="4 4" />
+        <circle cx={cx} cy={cy} r={r + 28} fill="none" stroke="rgba(201,168,76,0.08)" strokeWidth="0.5" strokeDasharray="4 4" />
 
         {/* Generating arrows (outer ring) */}
         {generatingPairs.map(([from, to]) => {
@@ -172,10 +172,10 @@ function FiveElementsCycle() {
         })}
 
         {/* Center Tai Chi symbol */}
-        <circle cx={cx} cy={cy} r="12" fill="rgba(212,165,74,0.03)" stroke="rgba(212,165,74,0.1)" strokeWidth="0.5" />
-        <path d={`M${cx} ${cy - 6} A6 6 0 0 1 ${cx} ${cy} A3 3 0 0 0 ${cx} ${cy + 6} A6 6 0 0 1 ${cx} ${cy - 6}`} fill="rgba(212,165,74,0.2)" />
-        <circle cx={cx} cy={cy - 3} r="1.5" fill="#0A0E1A" />
-        <circle cx={cx} cy={cy + 3} r="1.5" fill="rgba(212,165,74,0.3)" />
+        <circle cx={cx} cy={cy} r="12" fill="rgba(201,168,76,0.03)" stroke="rgba(201,168,76,0.1)" strokeWidth="0.5" />
+        <path d={`M${cx} ${cy - 6} A6 6 0 0 1 ${cx} ${cy} A3 3 0 0 0 ${cx} ${cy + 6} A6 6 0 0 1 ${cx} ${cy - 6}`} fill="rgba(201,168,76,0.2)" />
+        <circle cx={cx} cy={cy - 3} r="1.5" fill="#0F1111" />
+        <circle cx={cx} cy={cy + 3} r="1.5" fill="rgba(201,168,76,0.3)" />
       </svg>
       <p className="text-[10px] mt-2" style={{ color: '#6B6F80' }}>
         Solid: Generating Cycle (Sheng) · Dashed: Controlling Cycle (Ke)
@@ -189,7 +189,7 @@ function BaziPreview() {
   const pillars = [
     { stem: 'Year', glyph: '甲', element: 'Wood', color: '#27AE60' },
     { stem: 'Month', glyph: '丙', element: 'Fire', color: '#E74C3C' },
-    { stem: 'Day', glyph: '庚', element: 'Metal', color: '#3498DB' },
+    { stem: 'Day', glyph: '庚', element: 'Metal', color: '#3B82F6' },
     { stem: 'Hour', glyph: '戊', element: 'Earth', color: '#F39C12' },
   ];
 
@@ -248,13 +248,13 @@ function StatsBar() {
     <div className="w-full max-w-4xl mb-10">
       <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2"
         style={{
-          borderTop: '1px solid rgba(212,165,74,0.08)',
-          borderBottom: '1px solid rgba(212,165,74,0.08)',
+          borderTop: '1px solid rgba(201,168,76,0.08)',
+          borderBottom: '1px solid rgba(201,168,76,0.08)',
           padding: '10px 0',
         }}>
         {stats.map((s, i) => (
           <div key={s.label} className="flex items-center gap-1.5">
-            <span className="text-sm font-bold" style={{ color: '#D4A54A', fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
+            <span className="text-sm font-bold" style={{ color: '#C9A84C', fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
             <span className="text-[10px]" style={{ color: '#6B6F80' }}>{s.label}</span>
             {i < stats.length - 1 && <span className="text-[8px] ml-1" style={{ color: '#3D3947' }}>|</span>}
           </div>
@@ -282,24 +282,24 @@ function FaqSection() {
   return (
     <div className="w-full max-w-4xl mb-16">
       <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Common <span style={{ color: '#3498DB' }}>Questions</span>
+        Common <span style={{ color: '#3B82F6' }}>Questions</span>
       </h2>
       <div style={{
         background: 'rgba(13,17,23,0.6)',
-        border: '1px solid #1A2235',
+        border: '1px solid #202225',
         borderRadius: '15px',
         padding: '8px',
       }}>
         {faqs.map((faq, i) => (
           <div key={i} style={{
-            borderBottom: i < faqs.length - 1 ? '1px solid #1A2235' : 'none',
+            borderBottom: i < faqs.length - 1 ? '1px solid #202225' : 'none',
           }}>
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
               className="w-full flex items-center justify-between text-left px-4 py-3.5"
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#E6EDF3' }}>
               <span className="text-sm font-medium">{faq.q}</span>
               <span style={{
-                color: '#D4A54A', fontSize: '14px', transition: 'transform 0.2s',
+                color: '#C9A84C', fontSize: '14px', transition: 'transform 0.2s',
                 transform: openIdx === i ? 'rotate(45deg)' : 'rotate(0deg)',
                 display: 'inline-block',
               }}>+</span>
@@ -326,7 +326,7 @@ function RealtimeBaziChart() {
   const STEMS = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
   const BRANCHES = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
   const ELEMENTS = ['Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth', 'Metal', 'Metal', 'Water', 'Water'];
-  const ELEM_COLORS = { Wood: '#27AE60', Fire: '#E74C3C', Earth: '#F39C12', Metal: '#3498DB', Water: '#2C3E50' };
+  const ELEM_COLORS = { Wood: '#27AE60', Fire: '#E74C3C', Earth: '#F39C12', Metal: '#3B82F6', Water: '#2C3E50' };
 
   const calcBazi = (dateStr, timeStr) => {
     if (!dateStr) return null;
@@ -368,24 +368,24 @@ function RealtimeBaziChart() {
   return (
     <div className="w-full max-w-4xl mb-16">
       <h2 className="text-2xl font-bold text-center mb-6" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Your Four Pillars <span style={{ color: '#3498DB' }}>Instantly</span>
+        Your Four Pillars <span style={{ color: '#3B82F6' }}>Instantly</span>
       </h2>
       <p className="text-xs text-center mb-6" style={{ color: '#8B949E' }}>
         Type any date and see your Ba Zi chart generated in real time
       </p>
       <div style={{
         background: 'rgba(10,14,26,0.9)',
-        border: '1px solid #1A2235',
+        border: '1px solid #202225',
         borderRadius: '15px',
         padding: '28px',
       }}>
         <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
           <input type="date" value={testDate} onChange={e => handleDateChange(e.target.value)}
             className="text-sm text-center"
-            style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '180px' }} />
+            style={{ background: '#0F1111', border: '1px solid #202225', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '180px' }} />
           <input type="time" value={testTime} onChange={e => handleTimeChange(e.target.value)}
             className="text-sm text-center"
-            style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '140px' }} />
+            style={{ background: '#0F1111', border: '1px solid #202225', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '140px' }} />
         </div>
 
         {chart ? (
@@ -432,7 +432,7 @@ function RealtimeBaziChart() {
               {[0,1,2,3].map(i => (
                 <div key={i} style={{
                   width: '56px', height: '72px',
-                  border: '1px dashed #1A2235',
+                  border: '1px dashed #202225',
                   borderRadius: '8px',
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   fontSize: '9px', color: '#3D3947',
@@ -453,13 +453,13 @@ function PricingPreview() {
   return (
     <div className="w-full max-w-4xl mb-16">
       <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Choose Your <span style={{ color: '#3498DB' }}>Depth</span>
+        Choose Your <span style={{ color: '#3B82F6' }}>Depth</span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto">
         {/* Free Teaser */}
         <div style={{
           background: 'rgba(13,17,23,0.6)',
-          border: '1px solid #1A2235',
+          border: '1px solid #202225',
           borderRadius: '15px',
           padding: '28px',
           textAlign: 'center',
@@ -477,8 +477,8 @@ function PricingPreview() {
 
         {/* Premium Highlight */}
         <div style={{
-          background: 'rgba(52,152,219,0.05)',
-          border: '1px solid rgba(52,152,219,0.2)',
+          background: 'rgba(59,130,246,0.05)',
+          border: '1px solid rgba(59,130,246,0.2)',
           borderRadius: '15px',
           padding: '28px',
           textAlign: 'center',
@@ -486,12 +486,12 @@ function PricingPreview() {
         }}>
           <div style={{
             position: 'absolute', top: '-10px', left: '50%', transform: 'translateX(-50%)',
-            background: '#3498DB', color: '#fff', fontSize: '9px', fontWeight: 700,
+            background: '#3B82F6', color: '#fff', fontSize: '9px', fontWeight: 700,
             padding: '3px 12px', borderRadius: '10px', letterSpacing: '0.05em',
           }}>
             MOST POPULAR
           </div>
-          <div className="text-xs font-bold mb-3" style={{ color: '#3498DB', letterSpacing: '0.05em' }}>FULL REPORT</div>
+          <div className="text-xs font-bold mb-3" style={{ color: '#3B82F6', letterSpacing: '0.05em' }}>FULL REPORT</div>
           <div className="text-2xl font-bold mb-3" style={{ color: '#E6EDF3' }}>
             $49
           </div>
@@ -507,8 +507,8 @@ function PricingPreview() {
 
         {/* Premium Plus */}
         <div style={{
-          background: 'rgba(212,165,74,0.03)',
-          border: '1px solid rgba(212,165,74,0.15)',
+          background: 'rgba(201,168,76,0.03)',
+          border: '1px solid rgba(201,168,76,0.15)',
           borderRadius: '15px',
           padding: '28px',
           textAlign: 'center',
@@ -516,7 +516,7 @@ function PricingPreview() {
           maxWidth: '320px',
           margin: '0 auto',
         }}>
-          <div className="text-xs font-bold mb-3" style={{ color: '#D4A54A', letterSpacing: '0.05em' }}>PREMIUM</div>
+          <div className="text-xs font-bold mb-3" style={{ color: '#C9A84C', letterSpacing: '0.05em' }}>PREMIUM</div>
           <div className="text-2xl font-bold mb-3" style={{ color: '#E6EDF3' }}>
             $99
           </div>
@@ -549,16 +549,16 @@ function SectionDivider({ variant }) {
     return (
       <div className="w-full max-w-4xl flex items-center justify-center mb-8" style={{ opacity: 0.3 }}>
         <svg width="24" height="24" viewBox="0 0 100 100">
-          <path d="M50 5 A45 45 0 0 1 50 95 A22.5 22.5 0 0 1 50 50 A22.5 22.5 0 0 0 50 5 Z" fill="rgba(212,165,74,0.4)" />
-          <circle cx="50" cy="27.5" r="10" fill="#0A0E1A" />
-          <circle cx="50" cy="72.5" r="10" fill="rgba(212,165,74,0.4)" />
+          <path d="M50 5 A45 45 0 0 1 50 95 A22.5 22.5 0 0 1 50 50 A22.5 22.5 0 0 0 50 5 Z" fill="rgba(201,168,76,0.4)" />
+          <circle cx="50" cy="27.5" r="10" fill="#0F1111" />
+          <circle cx="50" cy="72.5" r="10" fill="rgba(201,168,76,0.4)" />
         </svg>
       </div>
     );
   }
   if (variant === 'line') {
     return (
-      <div className="w-full max-w-4xl mb-8" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(212,165,74,0.1), transparent)' }} />
+      <div className="w-full max-w-4xl mb-8" style={{ height: '1px', background: 'linear-gradient(90deg, transparent, rgba(201,168,76,0.1), transparent)' }} />
     );
   }
   return null;
@@ -568,7 +568,7 @@ function SectionDivider({ variant }) {
 function SiteFooter() {
   return (
     <div className="w-full" style={{
-      borderTop: '1px solid #1A2235',
+      borderTop: '1px solid #202225',
       padding: '40px 20px 24px',
       marginTop: '16px',
     }}>
@@ -577,7 +577,7 @@ function SiteFooter() {
           {/* Brand */}
           <div>
             <div className="text-sm font-bold mb-2" style={{ color: '#E6EDF3' }}>
-              <span style={{ color: '#3498DB' }}>Soul</span> Elements
+              <span style={{ color: '#3B82F6' }}>Soul</span> Elements
             </div>
             <p className="text-[10px] leading-relaxed" style={{ color: '#6B6F80', lineHeight: '1.8' }}>
               Ancient Chinese metaphysics meets modern self-discovery. Understanding yourself through the Four Pillars of Destiny.
@@ -882,9 +882,9 @@ export default function HomePage() {
                 <path d="M100 10 A90 90 0 0 1 100 190 A45 45 0 0 1 100 100 A45 45 0 0 0 100 10 Z" />
               </clipPath>
             </defs>
-            <circle cx="100" cy="100" r="90" fill="#D4A54A" />
+            <circle cx="100" cy="100" r="90" fill="#C9A84C" />
             <circle cx="100" cy="55" r="20" fill="#07070D" />
-            <circle cx="100" cy="145" r="20" fill="#D4A54A" />
+            <circle cx="100" cy="145" r="20" fill="#C9A84C" />
           </svg>
         </div>
         <div className="absolute" style={{
@@ -892,14 +892,14 @@ export default function HomePage() {
           opacity: 0.03, transform: 'rotate(-20deg)',
         }}>
           <svg viewBox="0 0 200 200" style={{ animation: 'spin 40s linear infinite reverse' }}>
-            <circle cx="100" cy="100" r="90" fill="#D4A54A" />
+            <circle cx="100" cy="100" r="90" fill="#C9A84C" />
             <path d="M100 10 A45 45 0 0 0 100 100 A90 90 0 0 0 100 190 A45 45 0 0 1 100 100 A45 45 0 0 1 100 10 Z" fill="#07070D" />
-            <circle cx="100" cy="55" r="18" fill="#D4A54A" />
+            <circle cx="100" cy="55" r="18" fill="#C9A84C" />
             <circle cx="100" cy="145" r="18" fill="#07070D" />
           </svg>
         </div>
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(1px 1px at 20% 30%, rgba(212,165,74,0.3), transparent), radial-gradient(1px 1px at 40% 70%, rgba(212,165,74,0.2), transparent), radial-gradient(1.5px 1.5px at 60% 20%, rgba(212,165,74,0.3), transparent), radial-gradient(1px 1px at 80% 60%, rgba(212,165,74,0.2), transparent), radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.15), transparent), radial-gradient(1.5px 1.5px at 70% 90%, rgba(255,255,255,0.1), transparent), radial-gradient(1px 1px at 90% 10%, rgba(212,165,74,0.2), transparent), radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.1), transparent)',
+          backgroundImage: 'radial-gradient(1px 1px at 20% 30%, rgba(201,168,76,0.3), transparent), radial-gradient(1px 1px at 40% 70%, rgba(201,168,76,0.2), transparent), radial-gradient(1.5px 1.5px at 60% 20%, rgba(201,168,76,0.3), transparent), radial-gradient(1px 1px at 80% 60%, rgba(201,168,76,0.2), transparent), radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.15), transparent), radial-gradient(1.5px 1.5px at 70% 90%, rgba(255,255,255,0.1), transparent), radial-gradient(1px 1px at 90% 10%, rgba(201,168,76,0.2), transparent), radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.1), transparent)',
         }} />
       </div>
 
@@ -909,17 +909,17 @@ export default function HomePage() {
 
         {/* ========== HERO SECTION ========== */}
         <div className="w-full max-w-4xl text-center mb-8" style={{ paddingTop: '6vh' }}>
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6" style={{ background: 'rgba(52,152,219,0.08)', border: '1px solid rgba(52,152,219,0.2)' }}>
+          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
             <svg width="32" height="32" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="#3498DB" strokeWidth="1.5" opacity="0.5" />
-              <path d="M50 4 A46 46 0 0 1 50 50 A23 23 0 0 0 50 96 A46 46 0 0 1 50 4" fill="#3498DB" opacity="0.75" />
-              <circle cx="50" cy="73" r="7" fill="#0A0E1A" />
-              <circle cx="50" cy="27" r="7" fill="#3498DB" />
+              <circle cx="50" cy="50" r="46" fill="none" stroke="#3B82F6" strokeWidth="1.5" opacity="0.5" />
+              <path d="M50 4 A46 46 0 0 1 50 50 A23 23 0 0 0 50 96 A46 46 0 0 1 50 4" fill="#3B82F6" opacity="0.75" />
+              <circle cx="50" cy="73" r="7" fill="#0F1111" />
+              <circle cx="50" cy="27" r="7" fill="#3B82F6" />
             </svg>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ letterSpacing: '-0.02em', color: '#E6EDF3' }}>
             Discover Your<br />
-            <span style={{ color: '#3498DB' }}>Soul Element</span>
+            <span style={{ color: '#3B82F6' }}>Soul Element</span>
           </h1>
           <p className="text-xl max-w-2xl mx-auto mb-8" style={{ color: '#8B949E', lineHeight: '1.7' }}>
             Ancient Chinese metaphysics meets modern self-discovery.
@@ -929,13 +929,13 @@ export default function HomePage() {
           <div className="flex items-center justify-center gap-3 flex-wrap">
             <button onClick={() => document.getElementById('input-form')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
-                background: 'linear-gradient(135deg, #3498DB, #2980B9)',
-                border: '2px solid #3498DB',
+                background: 'linear-gradient(135deg, #3B82F6, #2980B9)',
+                border: '2px solid #3B82F6',
                 borderRadius: '25px',
                 padding: '14px 32px',
                 color: '#fff', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: '0 4px 20px rgba(52,152,219,0.3)',
+                boxShadow: '0 4px 20px rgba(59,130,246,0.3)',
               }}>
               Start Now
             </button>
@@ -952,10 +952,10 @@ export default function HomePage() {
             <button onClick={() => document.getElementById('oracle-section')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
                 background: 'transparent',
-                border: '1px solid rgba(212,165,74,0.2)',
+                border: '1px solid rgba(201,168,76,0.2)',
                 borderRadius: '25px',
                 padding: '14px 24px',
-                color: '#D4A54A', fontSize: '13px', fontWeight: 400, cursor: 'pointer',
+                color: '#C9A84C', fontSize: '13px', fontWeight: 400, cursor: 'pointer',
               }}>
               Draw a Fortune Stick
             </button>
@@ -971,7 +971,7 @@ export default function HomePage() {
         <div id="input-form" className="w-full max-w-lg mb-12">
           <div style={{
             background: 'rgba(13,17,23,0.9)',
-            border: '1px solid #1A2235',
+            border: '1px solid #202225',
             borderRadius: '15px',
             padding: '36px',
             boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
@@ -985,17 +985,17 @@ export default function HomePage() {
             <form onSubmit={handleSubmit} className="space-y-4">
               {/* Date */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3498DB' }}>Date of Birth *</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Date of Birth *</label>
                 <input type="date" value={form.birthDate}
                   onChange={(e) => handleChange('birthDate', e.target.value)} required
                   className="w-full max-w-[220px] mx-auto text-center"
-                  style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }} />
+                  style={{ background: '#0F1111', border: '2px solid #202225', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }} />
               </div>
 
               {/* Time */}
               <div className="text-center">
                 <div className="flex items-center justify-center gap-3 mb-1.5">
-                  <label className="text-xs" style={{ color: '#3498DB' }}>Time of Birth</label>
+                  <label className="text-xs" style={{ color: '#3B82F6' }}>Time of Birth</label>
                   <label className="flex items-center gap-1 text-xs" style={{ color: '#6B6F80', cursor: 'pointer' }}>
                     <input type="checkbox" checked={form.unknownTime} onChange={e => handleChange('unknownTime', e.target.checked)} />
                     Unknown
@@ -1003,33 +1003,33 @@ export default function HomePage() {
                 </div>
                 {!form.unknownTime ? (
                   <input type="time" value={form.birthTime} onChange={e => handleChange('birthTime', e.target.value)}
-                    style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }}
+                    style={{ background: '#0F1111', border: '2px solid #202225', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }}
                     className="w-full max-w-[220px] mx-auto text-center" />
                 ) : (
-                  <div className="text-xs p-2.5 rounded max-w-[280px] mx-auto" style={{ background: 'rgba(52,152,219,0.08)', border: '1px solid rgba(52,152,219,0.2)', color: '#8B949E' }}>
+                  <div className="text-xs p-2.5 rounded max-w-[280px] mx-auto" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: '#8B949E' }}>
                     Noon (12:00 PM) assumed. Accuracy may be reduced.
                   </div>
                 )}
               </div>
 
-              <hr style={{ border: 'none', borderTop: '1px solid #1A2235', maxWidth: '160px', margin: '16px auto' }} />
+              <hr style={{ border: 'none', borderTop: '1px solid #202225', maxWidth: '160px', margin: '16px auto' }} />
 
               {/* Location */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3498DB' }}>Birth Location</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Birth Location</label>
                 <div className="relative max-w-[320px] mx-auto">
                   <input type="text" placeholder="Search city, e.g. Hong Kong, London..."
                     value={form.location}
                     onChange={(e) => handleLocationInput(e.target.value)}
-                    style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9' }}
+                    style={{ background: '#0F1111', border: '2px solid #202225', borderRadius: '5px', padding: '10px', color: '#C9D1D9' }}
                     className="w-full text-center text-sm" />
                   {locationSuggestions.length > 0 && (
                     <div className="absolute left-0 right-0 mt-0.5 z-10 text-left rounded-lg overflow-hidden"
-                      style={{ background: '#0F1728', border: '1px solid #1A2235', maxHeight: '200px', overflowY: 'auto' }}>
+                      style={{ background: '#0F1728', border: '1px solid #202225', maxHeight: '200px', overflowY: 'auto' }}>
                       {locationSuggestions.map((loc, i) => (
                         <button key={i} type="button" onClick={() => selectLocationAndTz(loc)}
                           className="w-full text-xs text-left px-3 py-2.5 transition-colors"
-                          style={{ color: '#8B949E', borderBottom: i < locationSuggestions.length - 1 ? '1px solid #1A2235' : 'none' }}>
+                          style={{ color: '#8B949E', borderBottom: i < locationSuggestions.length - 1 ? '1px solid #202225' : 'none' }}>
                           {loc.display.split(',')[0]}, {loc.display.split(',').slice(1, 3).join(',')}
                         </button>
                       ))}
@@ -1039,7 +1039,7 @@ export default function HomePage() {
                 <p className="text-[10px] mt-1" style={{ color: '#6B6F80' }}>Used for True Solar Time accuracy</p>
                 {tstBadge && (
                   <div className="inline-flex items-center gap-1.5 text-[10px] mt-1.5 px-2.5 py-1 rounded-full"
-                    style={{ background: tstBadge.type === 'adjusted' ? 'rgba(52,152,219,0.08)' : 'rgba(88,184,107,0.08)', border: `1px solid ${tstBadge.type === 'adjusted' ? 'rgba(52,152,219,0.2)' : 'rgba(88,184,107,0.2)'}`, color: tstBadge.type === 'adjusted' ? '#3498DB' : '#58B86B' }}>
+                    style={{ background: tstBadge.type === 'adjusted' ? 'rgba(59,130,246,0.08)' : 'rgba(16,185,129,0.08)', border: `1px solid ${tstBadge.type === 'adjusted' ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)'}`, color: tstBadge.type === 'adjusted' ? '#3B82F6' : '#10B981' }}>
                     <span>{tstBadge.type === 'adjusted' ? '' : ''}</span>
                     <span>{tstBadge.text}</span>
                   </div>
@@ -1048,28 +1048,28 @@ export default function HomePage() {
 
               {/* Timezone */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3498DB' }}>Timezone</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Timezone</label>
                 <button type="button" onClick={() => setShowTzPicker(true)}
                   className="flex items-center justify-center gap-2 mx-auto py-2.5 px-4 rounded transition-all text-sm"
-                  style={{ background: 'rgba(52,152,219,0.08)', border: '1px solid rgba(52,152,219,0.2)', color: form.timezone ? '#3498DB' : '#6B6F80', maxWidth: '300px', width: '100%' }}>
+                  style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: form.timezone ? '#3B82F6' : '#6B6F80', maxWidth: '300px', width: '100%' }}>
                   <span>{form.timezone ? currentTzLabel : 'Select your timezone'}</span>
-                  {tzAutoDetected && <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(88,184,107,0.15)', color: '#58B86B' }}>Auto</span>}
+                  {tzAutoDetected && <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}>Auto</span>}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
               </div>
 
-              <hr style={{ border: 'none', borderTop: '1px solid #1A2235', maxWidth: '160px', margin: '16px auto' }} />
+              <hr style={{ border: 'none', borderTop: '1px solid #202225', maxWidth: '160px', margin: '16px auto' }} />
 
               {/* Gender */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3498DB' }}>Gender</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Gender</label>
                 <div className="flex items-center justify-center gap-2">
                   {['male', 'female', ''].map(g => (
                     <button key={g} type="button" onClick={() => handleChange('gender', g)}
                       style={{
-                        background: form.gender === g ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.03)',
-                        border: form.gender === g ? '1px solid rgba(52,152,219,0.3)' : '1px solid transparent',
-                        color: form.gender === g ? '#3498DB' : '#6B6F80',
+                        background: form.gender === g ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)',
+                        border: form.gender === g ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+                        color: form.gender === g ? '#3B82F6' : '#6B6F80',
                         borderRadius: '5px', padding: '8px 16px', fontSize: '12px', cursor: 'pointer',
                       }}>
                       {g === '' ? 'Skip' : g.charAt(0).toUpperCase() + g.slice(1)}
@@ -1080,7 +1080,7 @@ export default function HomePage() {
 
               {/* Life Focus */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3498DB' }}>Life Focus</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Life Focus</label>
                 <div className="flex items-center justify-center gap-2">
                   {[
                     { value: 'career', label: 'Career' },
@@ -1090,9 +1090,9 @@ export default function HomePage() {
                   ].map(opt => (
                     <button key={opt.value} type="button" onClick={() => handleChange('goal', opt.value)}
                       style={{
-                        background: form.goal === opt.value ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.03)',
-                        border: form.goal === opt.value ? '1px solid rgba(52,152,219,0.3)' : '1px solid transparent',
-                        color: form.goal === opt.value ? '#3498DB' : '#6B6F80',
+                        background: form.goal === opt.value ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)',
+                        border: form.goal === opt.value ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+                        color: form.goal === opt.value ? '#3B82F6' : '#6B6F80',
                         borderRadius: '5px', padding: '8px 14px', fontSize: '12px', cursor: 'pointer',
                       }}>
                       {opt.label}
@@ -1110,13 +1110,13 @@ export default function HomePage() {
               <div className="text-center pt-2">
                 <button type="submit" disabled={loading}
                   style={{
-                    background: loading ? 'rgba(52,152,219,0.3)' : 'linear-gradient(135deg, #3498DB, #2980B9)',
-                    border: '2px solid #3498DB',
+                    background: loading ? 'rgba(59,130,246,0.3)' : 'linear-gradient(135deg, #3B82F6, #2980B9)',
+                    border: '2px solid #3B82F6',
                     borderRadius: '25px',
                     padding: '14px 36px',
                     color: '#fff', fontSize: '15px', fontWeight: 600,
                     cursor: loading ? 'not-allowed' : 'pointer',
-                    boxShadow: '0 4px 20px rgba(52,152,219,0.3)',
+                    boxShadow: '0 4px 20px rgba(59,130,246,0.3)',
                   }}>
                   {loading ? 'Reading the stars...' : 'Reveal My Destiny'}
                 </button>
@@ -1129,7 +1129,7 @@ export default function HomePage() {
         <SectionWrapper>
           <RevealSection id="how-it-works">
             <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
-              How It <span style={{ color: '#3498DB' }}>Works</span>
+              How It <span style={{ color: '#3B82F6' }}>Works</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
               {[
@@ -1139,12 +1139,12 @@ export default function HomePage() {
               ].map((item, i) => (
                 <div key={i} style={{
                   background: 'rgba(13,17,23,0.6)',
-                  border: '1px solid #1A2235',
+                  border: '1px solid #202225',
                   borderRadius: '15px',
                   padding: '28px',
                   textAlign: 'center',
                 }}>
-                  <div className="text-lg font-bold mb-1" style={{ color: '#3498DB', opacity: 0.4 }}>{item.step}</div>
+                  <div className="text-lg font-bold mb-1" style={{ color: '#3B82F6', opacity: 0.4 }}>{item.step}</div>
                   <h3 className="text-base font-bold mb-2" style={{ color: '#E6EDF3' }}>{item.title}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: '#8B949E', lineHeight: '1.7' }}>{item.desc}</p>
                 </div>
@@ -1159,7 +1159,7 @@ export default function HomePage() {
         <SectionWrapper alt>
           <RevealSection id="features">
             <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
-              What You'll <span style={{ color: '#3498DB' }}>Discover</span>
+              What You'll <span style={{ color: '#3B82F6' }}>Discover</span>
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
               {[
@@ -1167,8 +1167,8 @@ export default function HomePage() {
                 { icon: '', title: 'Five Elements', text: 'Understand the cosmic balance of Wood, Fire, Earth, Metal, and Water within you.' },
                 { icon: '', title: 'Life Guidance', text: 'Personalized insights into your career, relationships, and life path.' },
               ].map(f => (
-                <div key={f.title} className="text-center p-5 rounded-lg" style={{ background: 'rgba(13,17,23,0.6)', border: '1px solid #1A2235' }}>
-                  <div className="text-xl mb-2" style={{ color: '#3498DB', opacity: 0.6 }}>{f.icon}</div>
+                <div key={f.title} className="text-center p-5 rounded-lg" style={{ background: 'rgba(13,17,23,0.6)', border: '1px solid #202225' }}>
+                  <div className="text-xl mb-2" style={{ color: '#3B82F6', opacity: 0.6 }}>{f.icon}</div>
                   <h3 className="text-sm font-semibold mb-1.5" style={{ color: '#E6EDF3' }}>{f.title}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: '#8B949E' }}>{f.text}</p>
                 </div>
@@ -1185,11 +1185,11 @@ export default function HomePage() {
         <SectionWrapper>
           <RevealSection id="about-bazi">
             <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-              What is <span style={{ color: '#3498DB' }}>Ba Zi</span>?
+              What is <span style={{ color: '#3B82F6' }}>Ba Zi</span>?
             </h2>
             <div style={{
               background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #1A2235',
+              border: '1px solid #202225',
               borderRadius: '15px',
               padding: '40px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
@@ -1220,8 +1220,8 @@ export default function HomePage() {
                     for the scientific-minded seeker.
                   </p>
                 </div>
-                <div style={{ borderLeft: '1px solid #1A2235', paddingLeft: '32px' }}>
-                  <h3 className="text-lg font-bold mb-3" style={{ color: '#3498DB' }}>A 5,000-Year Conversation</h3>
+                <div style={{ borderLeft: '1px solid #202225', paddingLeft: '32px' }}>
+                  <h3 className="text-lg font-bold mb-3" style={{ color: '#3B82F6' }}>A 5,000-Year Conversation</h3>
                   <p className="text-base leading-relaxed mb-4" style={{ color: '#8B949E', lineHeight: '1.8' }}>
                     The story does not begin with a fortune-teller in a market stall. It begins with
                     Emperor Fu Xi, the mythical sage-king of ancient China, who around 2800 BCE is said
@@ -1251,7 +1251,7 @@ export default function HomePage() {
               </div>
 
               {/* Key Concepts Cards */}
-              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #1A2235' }}>
+              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #202225' }}>
                 <h3 className="text-base font-bold text-center mb-5" style={{ color: '#E6EDF3' }}>The Three Pillars of Ba Zi</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
@@ -1260,14 +1260,14 @@ export default function HomePage() {
                     { title: 'Ten Stems & Twelve Branches', icon: '', text: 'The Heavenly Stems and Earthly Branches form a 60-year cycle that encodes time itself. Each combination has a unique personality, strengths, and challenges.' },
                   ].map((item, i) => (
                     <div key={i} style={{
-                      background: 'rgba(52,152,219,0.03)',
-                      border: '1px solid rgba(52,152,219,0.1)',
+                      background: 'rgba(59,130,246,0.03)',
+                      border: '1px solid rgba(59,130,246,0.1)',
                       borderRadius: '12px',
                       padding: '20px',
                       textAlign: 'center',
                     }}>
-                      <div className="text-xl mb-2" style={{ color: '#3498DB', opacity: 0.6 }}>{item.icon}</div>
-                      <h4 className="text-sm font-bold mb-2" style={{ color: '#3498DB' }}>{item.title}</h4>
+                      <div className="text-xl mb-2" style={{ color: '#3B82F6', opacity: 0.6 }}>{item.icon}</div>
+                      <h4 className="text-sm font-bold mb-2" style={{ color: '#3B82F6' }}>{item.title}</h4>
                       <p className="text-sm leading-relaxed" style={{ color: '#8B949E', lineHeight: '1.7' }}>{item.text}</p>
                     </div>
                   ))}
@@ -1283,11 +1283,11 @@ export default function HomePage() {
         <SectionWrapper alt>
           <RevealSection id="five-elements">
             <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-              The Five Elements: A <span style={{ color: '#3498DB' }}>Living</span> Cycle
+              The Five Elements: A <span style={{ color: '#3B82F6' }}>Living</span> Cycle
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{
               background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #1A2235',
+              border: '1px solid #202225',
               borderRadius: '15px',
               padding: '36px',
             }}>
@@ -1301,13 +1301,13 @@ export default function HomePage() {
                   { el: 'Wood', color: '#27AE60', emoji: '', phase: 'Birth & Growth', desc: 'Expansion, creativity, spring morning. Wood energy pushes upward and breaks through obstacles.' },
                   { el: 'Fire', color: '#E74C3C', emoji: '', phase: 'Peak & Expression', desc: 'Maximum expansion, heat, midday summer. Fire energy radiates outward and transforms.' },
                   { el: 'Earth', color: '#F39C12', emoji: '', phase: 'Stabilization', desc: 'Harvest, grounding, late afternoon. Earth energy collects, nourishes, and holds.' },
-                  { el: 'Metal', color: '#3498DB', emoji: '', phase: 'Contraction & Structure', desc: 'Precision, discipline, autumn evening. Metal energy cuts, refines, and defines boundaries.' },
+                  { el: 'Metal', color: '#3B82F6', emoji: '', phase: 'Contraction & Structure', desc: 'Precision, discipline, autumn evening. Metal energy cuts, refines, and defines boundaries.' },
                   { el: 'Water', color: '#2C3E50', emoji: '', phase: 'Stillness & Storage', desc: 'Rest, wisdom, deep winter night. Water energy stores, reflects, and adapts.' },
                 ].map((item, i) => (
                   <div key={i} style={{
                     display: 'flex', alignItems: 'center', gap: '12px',
-                    background: 'rgba(52,152,219,0.03)',
-                    border: '1px solid rgba(52,152,219,0.08)',
+                    background: 'rgba(59,130,246,0.03)',
+                    border: '1px solid rgba(59,130,246,0.08)',
                     borderRadius: '8px',
                     padding: '10px 14px',
                   }}>
@@ -1377,15 +1377,15 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)' }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowTzPicker(false); }}>
           <div className="w-full max-w-sm max-h-[70vh] rounded-lg overflow-hidden flex flex-col"
-            style={{ background: '#0F1728', border: '1px solid #1A2235' }}>
-            <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: '#1A2235' }}>
+            style={{ background: '#0F1728', border: '1px solid #202225' }}>
+            <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: '#202225' }}>
               <span className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>Select Timezone</span>
               <button type="button" onClick={() => setShowTzPicker(false)} className="text-sm px-2 py-1 rounded" style={{ color: '#6B6F80' }}>&#10005;</button>
             </div>
             <div className="p-3">
               <input type="text" placeholder="Search city or offset..."
                 value={tzSearch} onChange={e => setTzSearch(e.target.value)}
-                style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px', color: '#C9D1D9' }}
+                style={{ background: '#0F1111', border: '1px solid #202225', borderRadius: '5px', padding: '8px', color: '#C9D1D9' }}
                 className="w-full text-xs text-center" />
             </div>
             <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-1">
@@ -1399,7 +1399,7 @@ export default function HomePage() {
                 } catch (e) {}
               }}
                 className="w-full text-xs text-center py-2.5 rounded transition-colors mb-3"
-                style={{ background: 'rgba(52,152,219,0.08)', border: '1px solid rgba(52,152,219,0.2)', color: '#3498DB' }}>
+                style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: '#3B82F6' }}>
                 Use device timezone
               </button>
               {filteredTzGroups.map((group, gi) => (
@@ -1413,9 +1413,9 @@ export default function HomePage() {
                       return (
                         <button key={ei} type="button" onClick={() => handleSelectTz(ex.name, group.offset)}
                           style={{
-                            background: isSelected ? 'rgba(52,152,219,0.15)' : 'rgba(255,255,255,0.03)',
-                            border: isSelected ? '1px solid rgba(52,152,219,0.3)' : '1px solid transparent',
-                            color: isSelected ? '#3498DB' : '#8B949E',
+                            background: isSelected ? 'rgba(59,130,246,0.15)' : 'rgba(255,255,255,0.03)',
+                            border: isSelected ? '1px solid rgba(59,130,246,0.3)' : '1px solid transparent',
+                            color: isSelected ? '#3B82F6' : '#8B949E',
                             borderRadius: '5px', padding: '6px 12px', fontSize: '11px', cursor: 'pointer',
                           }}>
                           {ex.label}
