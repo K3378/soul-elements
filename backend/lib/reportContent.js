@@ -375,7 +375,7 @@ function generateHiddenStemsGuidance(hiddenStemsData) {
   }
 
   return {
-    intro: 'Beyond the visible stems in your pillars, each earthly branch contains hidden stems (地支藏干) that add layers of complexity to your chart. These hidden energies represent your subconscious influences, latent talents, and unexpressed potentials.',
+    intro: 'Beyond the visible stems in your pillars, each earthly branch contains hidden stems that add layers of complexity to your chart. These hidden energies represent your subconscious influences, latent talents, and unexpressed potentials.',
     positions: parts,
     totalCount: Object.keys(hiddenStemsData).length,
   };
@@ -412,7 +412,7 @@ function generateTenDeitiesAnalysis(tenDeities, dm) {
   }
 
   return {
-    intro: `The Ten Deities (十神) reveal how your energies interact with each other and with the world. Each pillar's stem takes on a specific role relative to your Day Master (${dm.en} — ${dm.archetype}).`,
+    intro: `The Ten Deities reveal how your energies interact with each other and with the world. Each pillar's stem takes on a specific role relative to your Day Master (${dm.en} — ${dm.archetype}).`,
     deities,
   };
 }
@@ -441,7 +441,7 @@ function generateDaYunAnalysis(daYun, dm) {
   if (!daYun || !daYun.pillars || daYun.pillars.length === 0) return null;
 
   return {
-    intro: `Your Luck Cycles (大運) are 10-year chapters of your life, each with a distinct energetic theme. These cycles are calculated based on your gender and the position of your Month Pillar at birth — they reveal the major seasons of your life's journey.`,
+    intro: `Your Luck Cycles are 10-year chapters of your life, each with a distinct energetic theme. These cycles are calculated based on your gender and the position of your Month Pillar at birth — they reveal the major seasons of your life's journey.`,
     direction: daYun.direction,
     startingAge: daYun.startingAge,
     pillars: daYun.pillars.map(p => ({
