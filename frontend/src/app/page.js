@@ -264,52 +264,7 @@ function StatsBar() {
   );
 }
 
-// ===================== TESTIMONIALS =====================
-function Testimonials() {
-  const testimonials = [
-    { quote: "Ba Zi gave me a language for understanding why I react the way I do. The reading was unsettlingly accurate.", name: 'Dr. Sarah Chen', title: 'Clinical Psychologist, San Francisco', initials: 'SC' },
-    { quote: "I thought it was fortune-telling. It's not. It's a framework for understanding energy and timing that I use alongside my MBA training.", name: 'James Mitchell', title: 'Strategy Consultant, London', initials: 'JM' },
-    { quote: "The Five Elements framework changed how I think about team dynamics. I now see why some people energize me and others drain me.", name: 'Aiko Tanaka', title: 'Engineering Lead, Tokyo', initials: 'AT' },
-    { quote: "I was skeptical. Then the reading described my relationship patterns with a precision that made me uncomfortable. In a good way.", name: 'Marcus Williams', title: 'Entrepreneur, New York', initials: 'MW' },
-  ];
 
-  return (
-    <div className="w-full max-w-4xl mb-16">
-      <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        What Others Are <span style={{ color: '#3498DB' }}>Discovering</span>
-      </h2>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {testimonials.map((t, i) => (
-          <div key={i} style={{
-            background: 'rgba(13,17,23,0.6)',
-            border: '1px solid #1A2235',
-            borderRadius: '12px',
-            padding: '20px',
-            transition: 'border-color 0.2s',
-          }}>
-            <p className="text-xs italic leading-relaxed mb-3" style={{ color: '#8B949E', lineHeight: '1.8' }}>
-              &ldquo;{t.quote}&rdquo;
-            </p>
-            <div className="flex items-center gap-2">
-              <div style={{
-                width: '28px', height: '28px', borderRadius: '50%',
-                background: 'rgba(212,165,74,0.15)', border: '1px solid rgba(212,165,74,0.2)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: '10px', fontWeight: 700, color: '#D4A54A',
-              }}>
-                {t.initials}
-              </div>
-              <div>
-                <div className="text-[10px] font-semibold" style={{ color: '#C9D1D9' }}>{t.name}</div>
-                <div className="text-[9px]" style={{ color: '#6B6F80' }}>{t.title}</div>
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ===================== FAQ =====================
 function FaqSection() {
@@ -356,6 +311,138 @@ function FaqSection() {
             )}
           </div>
         ))}
+      </div>
+    </div>
+  );
+}
+
+// ===================== REALTIME BAZI CHART =====================
+function RealtimeBaziChart() {
+  const [chart, setChart] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [testDate, setTestDate] = useState('');
+  const [testTime, setTestTime] = useState('');
+
+  const STEMS = ['Jia', 'Yi', 'Bing', 'Ding', 'Wu', 'Ji', 'Geng', 'Xin', 'Ren', 'Gui'];
+  const BRANCHES = ['Zi', 'Chou', 'Yin', 'Mao', 'Chen', 'Si', 'Wu', 'Wei', 'Shen', 'You', 'Xu', 'Hai'];
+  const ELEMENTS = ['Wood', 'Wood', 'Fire', 'Fire', 'Earth', 'Earth', 'Metal', 'Metal', 'Water', 'Water'];
+  const ELEM_COLORS = { Wood: '#27AE60', Fire: '#E74C3C', Earth: '#F39C12', Metal: '#3498DB', Water: '#2C3E50' };
+
+  const calcBazi = (dateStr, timeStr) => {
+    if (!dateStr) return null;
+    const d = new Date(dateStr);
+    if (isNaN(d.getTime())) return null;
+    const year = d.getFullYear();
+    const month = d.getMonth() + 1;
+    const day = d.getDate();
+    const hour = timeStr ? parseInt(timeStr.split(':')[0]) : 12;
+    const hourIdx = Math.floor((hour + 1) / 2) % 12;
+    // Simplified calculation for demo
+    const yearStem = (year - 4) % 10;
+    const yearBranch = (year - 4) % 12;
+    const monthStem = ((yearStem * 2 + month + 2) % 10 + 10) % 10;
+    const monthBranch = ((month + 1) % 12 + 12) % 12;
+    const dayStem = ((year * 5 + Math.floor(year / 4) + day + 5) % 10 + 10) % 10;
+    const dayBranch = ((year * 5 + Math.floor(year / 4) + day + 5) % 12 + 12) % 12;
+    const hourStem = ((dayStem % 5 * 2 + hourIdx) % 10 + 10) % 10;
+    const hourBranch = hourIdx;
+
+    const pillars = [
+      { label: 'Year', stem: yearStem, branch: yearBranch },
+      { label: 'Month', stem: monthStem, branch: monthBranch },
+      { label: 'Day', stem: dayStem, branch: dayBranch },
+      { label: 'Hour', stem: hourStem, branch: hourBranch },
+    ];
+    return pillars;
+  };
+
+  const handleDateChange = (val) => {
+    setTestDate(val);
+    setChart(calcBazi(val, testTime));
+  };
+  const handleTimeChange = (val) => {
+    setTestTime(val);
+    setChart(calcBazi(testDate, val));
+  };
+
+  return (
+    <div className="w-full max-w-4xl mb-16">
+      <h2 className="text-2xl font-bold text-center mb-6" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
+        Your Four Pillars <span style={{ color: '#3498DB' }}>Instantly</span>
+      </h2>
+      <p className="text-xs text-center mb-6" style={{ color: '#8B949E' }}>
+        Type any date and see your Ba Zi chart generated in real time
+      </p>
+      <div style={{
+        background: 'rgba(10,14,26,0.9)',
+        border: '1px solid #1A2235',
+        borderRadius: '15px',
+        padding: '28px',
+      }}>
+        <div className="flex items-center justify-center gap-3 mb-6 flex-wrap">
+          <input type="date" value={testDate} onChange={e => handleDateChange(e.target.value)}
+            className="text-sm text-center"
+            style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '180px' }} />
+          <input type="time" value={testTime} onChange={e => handleTimeChange(e.target.value)}
+            className="text-sm text-center"
+            style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px 12px', color: '#C9D1D9', colorScheme: 'dark', maxWidth: '140px' }} />
+        </div>
+
+        {chart ? (
+          <div>
+            <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
+              {chart.map((p, i) => (
+                <div key={p.label} style={{ textAlign: 'center', minWidth: '70px' }}>
+                  <div className="text-[9px] font-semibold mb-2" style={{ color: '#6B6F80', letterSpacing: '0.05em' }}>{p.label}</div>
+                  <div style={{
+                    background: 'rgba(10,14,26,0.8)',
+                    border: `1px solid ${ELEM_COLORS[ELEMENTS[p.stem]]}25`,
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    transition: 'all 0.3s',
+                  }}>
+                    <div style={{ fontSize: '24px', fontWeight: 700, color: ELEM_COLORS[ELEMENTS[p.stem]], fontFamily: "'Noto Serif SC', serif", lineHeight: 1.3 }}>
+                      {STEMS[p.stem]}
+                    </div>
+                    <div style={{ fontSize: '9px', color: '#8B949E', fontFamily: "'JetBrains Mono', monospace" }}>
+                      {BRANCHES[p.branch]}
+                    </div>
+                  </div>
+                  <div className="text-[9px] mt-1" style={{ color: `${ELEM_COLORS[ELEMENTS[p.stem]]}80` }}>
+                    {ELEMENTS[p.stem]}
+                  </div>
+                  <div className="text-[7px] mt-0.5" style={{ color: '#3D3947', fontFamily: "'JetBrains Mono', monospace" }}>
+                    {STEMS[p.stem]}-{BRANCHES[p.branch]}
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-4 text-center">
+              <p className="text-[10px]" style={{ color: '#6B6F80' }}>
+                Instant preview based on Solar Calendar. Full report includes Hidden Stems, Ten Deities, and Luck Cycles.
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="text-center py-6">
+            <p className="text-sm" style={{ color: '#6B6F80' }}>
+              Enter your birth date above to see your Four Pillars in real time
+            </p>
+            <div className="flex items-center justify-center gap-2 mt-4">
+              {[0,1,2,3].map(i => (
+                <div key={i} style={{
+                  width: '56px', height: '72px',
+                  border: '1px dashed #1A2235',
+                  borderRadius: '8px',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '9px', color: '#3D3947',
+                }}>
+                  ??
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -564,6 +651,71 @@ export default function HomePage() {
     } catch (e) {}
   }, []);
 
+  // === PARTICLE SYSTEM FOR HERO BACKGROUND ===
+  useEffect(() => {
+    const canvas = document.getElementById('hero-particles');
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animId;
+    const particles = [];
+    const W = () => window.innerWidth;
+    const H = () => window.innerHeight;
+    canvas.width = W();
+    canvas.height = H();
+    
+    for (let i = 0; i < 80; i++) {
+      particles.push({
+        x: Math.random() * W(),
+        y: Math.random() * H(),
+        vx: (Math.random() - 0.5) * 0.6,
+        vy: (Math.random() - 0.5) * 0.6,
+        r: Math.random() * 2 + 0.5,
+        alpha: Math.random() * 0.5 + 0.1,
+      });
+    }
+    
+    function draw() {
+      ctx.clearRect(0, 0, W(), H());
+      for (const p of particles) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(212, 165, 74, ${p.alpha})`;
+        ctx.fill();
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < 0) p.x = W();
+        if (p.x > W()) p.x = 0;
+        if (p.y < 0) p.y = H();
+        if (p.y > H()) p.y = 0;
+      }
+      // Draw connections between nearby particles
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < particles.length; j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 120) {
+            ctx.beginPath();
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.strokeStyle = `rgba(52, 152, 219, ${0.08 * (1 - dist / 120)})`;
+            ctx.stroke();
+          }
+        }
+      }
+      animId = requestAnimationFrame(draw);
+    }
+    draw();
+    
+    const resize = () => { canvas.width = W(); canvas.height = H(); };
+    window.addEventListener('resize', resize);
+    
+    return () => {
+      cancelAnimationFrame(animId);
+      window.removeEventListener('resize', resize);
+    };
+  }, []);
+
   const searchLocation = useCallback(async (query) => {
     if (query.length < 3) { setLocationSuggestions([]); return; }
     setLocationSearching(true);
@@ -751,7 +903,9 @@ export default function HomePage() {
         }} />
       </div>
 
-      <div ref={revealRef} className="relative z-10 min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '4vh' }}>
+      <canvas id="hero-particles" className="fixed inset-0 z-[1] pointer-events-none" style={{ opacity: 0.3 }} />
+
+      <div ref={revealRef} className="relative z-[2] min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '4vh' }}>
 
         {/* ========== HERO SECTION ========== */}
         <div className="w-full max-w-4xl text-center mb-8" style={{ paddingTop: '6vh' }}>
@@ -1177,67 +1331,7 @@ export default function HomePage() {
 
         <SectionDivider variant="stars" />
 
-        {/* ========== EAST MEETS WEST ========== */}
-        <SectionWrapper>
-          <RevealSection id="east-meets-west">
-            <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-              East Meets <span style={{ color: '#3498DB' }}>West</span>
-            </h2>
-            <div style={{
-              background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #1A2235',
-              borderRadius: '15px',
-              padding: '40px',
-              boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
-            }}>
-              <p className="text-base leading-relaxed mb-6" style={{ color: '#8B949E', lineHeight: '1.8' }}>
-                The journey of Chinese metaphysics to the Western world is one of the most underappreciated
-                stories in intellectual history. It is not a story of &quot;mysterious Eastern wisdom&quot;
-                arriving in the &quot;rational Western mind.&quot; It is a story of genuine cross-cultural
-                discovery — of scholars, scientists, and seekers on both sides who recognized,
-                often with astonishment, that they were looking at the same truths through different lenses.
-              </p>
-              <div className="space-y-4">
-                {[
-                  { era: '1298 — Marco Polo Opens the Door', title: 'The Venetian Who Brought a Civilization to Europe', desc: 'When Marco Polo dictated his Travels while imprisoned in Genoa, his descriptions of Chinese astronomy, their sophisticated calendar system, and the divination practices of Kublai Khan\'s court seemed like fantasy to European readers. Polo described a civilization where scholars could predict eclipses with uncanny accuracy using methods entirely different from Ptolemaic astronomy.' },
-                  { era: '1582-1610 — Matteo Ricci: The Jesuit Who Became Chinese', title: 'The Extraordinary Journey of the First Western Scholar of Chinese Thought', desc: 'Matteo Ricci arrived in Macau in 1582 and spent the next 28 years doing something unprecedented: he learned classical Chinese so fluently that he could read the Confucian classics in the original, debated with Buddhist scholars in their own language, and even wrote books in Chinese. He translated the "Four Books" of Confucianism into Latin — the first time any Chinese philosophical text reached European readers.' },
-                  { era: '1701-1703 — Leibniz and the Binary Revelation', title: 'When the I Ching Predicted the Computer Age', desc: 'In 1701, the German mathematician Gottfried Wilhelm Leibniz, coinventor of calculus, received a letter from Father Joachim Bouvet, a Jesuit stationed in Beijing. Enclosed was a diagram of the I Ching\'s 64 hexagrams arranged in the "Fuxi sequence." Leibniz was electrified. He had recently developed binary arithmetic — a system using only 0 and 1 — and now saw that the ancient Chinese had independently arrived at the same mathematical structure.' },
-                  { era: '1882 — James Legge: The Translator Who Made China Speak English', title: 'The Scottish Missionary Who Gave the West the I Ching', desc: 'James Legge arrived in Hong Kong in 1843 and spent the next 30 years producing the definitive English translations of the Chinese classics. His 1882 translation of the I Ching, published by Oxford University Press, was the first scholarly edition in English, complete with extensive footnotes and commentary.' },
-                  { era: '1923-1949 — Richard Wilhelm & Carl Jung: The Dream Team', title: 'A German Missionary and a Swiss Psychiatrist Change the Western Mind', desc: 'Richard Wilhelm produced what many consider the definitive translation of the I Ching in 1923. When Carl Jung read Wilhelm\'s translation, he experienced what he called "a profound shock of recognition." Jung wrote the foreword introducing his concept of "synchronicity" — meaningful coincidences that are not causally connected.' },
-                  { era: '1961-1970s — The Counterculture Embraces the Oracle', title: 'From Berkeley to Woodstock: The I Ching Becomes a Generation\'s Companion', desc: 'John Cage used the I Ching to compose groundbreaking music. Bob Dylan carried a copy on his 1965 tour. John Lennon consulted it during the Beatles\' retreat in Rishikesh. By 1970, you could find the I Ching in any bookstore in America, and "consulting the oracle" had entered the common vocabulary.' },
-                  { era: 'Today — A Global Language for Self-Understanding', title: 'Ancient Wisdom Meets Modern Technology', desc: 'Ba Zi has found a natural home in the global wellness and self-discovery landscape. Modern computing — itself intellectually indebted to the I Ching through Leibniz\'s binary revelation — has made it possible to calculate the Four Pillars with precision that Li Xu Zhong could only have dreamed of. The wisdom itself remains unchanged, as it has for 5,000 years.' },
-                ].map((item, i) => (
-                  <div key={i} style={{
-                    background: i % 2 === 0 ? 'rgba(52,152,219,0.03)' : 'transparent',
-                    borderLeft: '2px solid rgba(52,152,219,0.2)',
-                    padding: '18px 22px',
-                    borderRadius: '0 8px 8px 0',
-                  }}>
-                    <div className="text-[10px] font-bold mb-1" style={{ color: '#3498DB', letterSpacing: '0.03em' }}>{item.era}</div>
-                    <div className="text-xs font-semibold mb-1.5" style={{ color: '#C9D1D9' }}>{item.title}</div>
-                    <p className="text-sm leading-relaxed" style={{ color: '#8B949E', lineHeight: '1.7' }}>{item.desc}</p>
-                  </div>
-                ))}
-              </div>
-              <div className="mt-6 p-4 rounded-lg text-center" style={{ background: 'rgba(52,152,219,0.05)', border: '1px solid rgba(52,152,219,0.1)' }}>
-                <p className="text-xs italic" style={{ color: '#8B949E', lineHeight: '1.7' }}>
-                  &ldquo;The meeting of Eastern and Western wisdom is not about one tradition replacing the other —
-                  it is about two ancient rivers of human understanding flowing into the same ocean, each carrying
-                  the sediment of its own civilization, each enriching the waters of the other.&rdquo;
-                </p>
-              </div>
-            </div>
-          </RevealSection>
-        </SectionWrapper>
 
-        <SectionDivider variant="taiChi" />
-
-        {/* ========== TESTIMONIALS ========== */}
-        <SectionWrapper alt>
-          <RevealSection id="testimonials">
-            <Testimonials />
-          </RevealSection>
-        </SectionWrapper>
 
         <SectionDivider variant="line" />
 
@@ -1258,6 +1352,14 @@ export default function HomePage() {
         </SectionWrapper>
 
         <SectionDivider variant="line" />
+
+        {/* ========== REALTIME BAZI CHART ========== */}
+        <SectionWrapper>
+          <RevealSection id="realtime-bazi">
+            <RealtimeBaziChart />
+          </RevealSection>
+        </SectionWrapper>
+        <SectionDivider variant="stars" />
 
         {/* ========== PRICING PREVIEW ========== */}
         <SectionWrapper>
