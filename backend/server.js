@@ -88,7 +88,7 @@ function proxyToNext(req, res) {
 }
 
 // Catch-all: proxy everything except API routes to Next.js
-app.get('*', (req, res, next) => {
+app.use((req, res, next) => {
   if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/webhook')) {
     return next();
   }
