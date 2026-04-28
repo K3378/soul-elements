@@ -12,11 +12,11 @@ RUN apt-get update && apt-get install -y \
 WORKDIR /app/backend
 
 # Copy package files
-COPY backend/package*.json ./
+COPY package*.json ./
 RUN npm ci --only=production
 
 # Copy backend source
-COPY backend/ .
+COPY . .
 
 # Environment
 ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
