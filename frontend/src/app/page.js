@@ -36,21 +36,44 @@ const TZ_GROUPS = [
 function useScrollReveal() {
   const ref = useRef(null);
   const [visible, setVisible] = useState({});
+  const [ready, setReady] = useState(false);
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
     const targets = el.querySelectorAll('[data-reveal]');
     if (!targets.length) return;
+    // Immediately reveal everything so no sections are invisible
+    const allVisible = {};
+    targets.forEach(t => {
+      allVisible[t.dataset.reveal] = true;
+      t.style.opacity = '1';
+      t.style.transform = 'translateY(0)';
+    });
+    setVisible(allVisible);
+    setReady(true);
+    // Subtle entrance animation — unobtrusive opacity + translate for off-screen elements
     const obs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          setVisible(prev => ({ ...prev, [entry.target.dataset.reveal]: true }));
+          entry.target.style.transition = 'all 0.6s cubic-bezier(0.22, 1, 0.36, 1)';
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
           obs.unobserve(entry.target);
         }
       });
-    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
-    targets.forEach(t => obs.observe(t));
+    }, { threshold: 0.05 });
+    targets.forEach(t => {
+      const rect = t.getBoundingClientRect();
+      if (rect.top < window.innerHeight + 100) {
+        t.style.opacity = '1';
+        t.style.transform = 'translateY(0)';
+      } else {
+        t.style.opacity = '0.01';
+        t.style.transform = 'translateY(15px)';
+        obs.observe(t);
+      }
+    });
     return () => obs.disconnect();
   }, []);
 
