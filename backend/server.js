@@ -22,22 +22,23 @@ app.use(cors({
   allowedHeaders: ['Content-Type'],
 }));
 
+// ========== Stripe Webhook (raw body needed — must be before express.json()) ==========
+const webhookRouter = require('./routes/webhook');
+app.use('/webhook/stripe', webhookRouter);
+
+// ========== JSON parser for all other routes ==========
 app.use(express.json());
 
 // ========== API Routes ==========
 const analyzeRouter = require('./routes/analyze');
+const stripeRouter = require('./routes/stripe');
+
 app.use('/api', analyzeRouter);
+app.use('/api', stripeRouter);
 
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Stripe webhook (raw body needed for signature verification)
-app.post('/webhook/stripe', express.raw({ type: 'application/json' }), (req, res) => {
-  const sig = req.headers['stripe-signature'];
-  // TODO: Verify webhook signature when Kevin provides the secret
-  res.json({ received: true });
 });
 
 // Report status endpoint

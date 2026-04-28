@@ -1,9 +1,31 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function HomePage() {
   const router = useRouter();
+  const [loading, setLoading] = useState(null); // 'standard' | 'grandmaster' | null
+
+  const handlePurchase = async (tier) => {
+    setLoading(tier);
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier }),
+      });
+      const data = await res.json();
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        throw new Error(data.error || 'Checkout failed');
+      }
+    } catch (err) {
+      alert('Payment initiation failed. Please try again.');
+      setLoading(null);
+    }
+  };
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center px-4">
@@ -77,8 +99,8 @@ export default function HomePage() {
             <li>3-year energy forecast</li>
             <li>Personal affirmations</li>
           </ul>
-          <button onClick={() => router.push('/input')} className="btn-gold w-full">
-            Get Your Report
+          <button onClick={() => handlePurchase('standard')} disabled={loading !== null} className="btn-gold w-full">
+            {loading === 'standard' ? 'Redirecting to payment...' : 'Get Your Report'}
           </button>
         </div>
         <div className="card-glass text-center border-gold" style={{ borderColor: '#C9A84C' }}>
@@ -92,8 +114,8 @@ export default function HomePage() {
             <li>Fortune & feng shui guidance</li>
             <li>Premium PDF with custom design</li>
           </ul>
-          <button onClick={() => router.push('/input?tier=grandmaster')} className="btn-gold w-full">
-            Get Your Report
+          <button onClick={() => handlePurchase('grandmaster')} disabled={loading !== null} className="btn-gold w-full">
+            {loading === 'grandmaster' ? 'Redirecting to payment...' : 'Get Your Report'}
           </button>
         </div>
       </div>
