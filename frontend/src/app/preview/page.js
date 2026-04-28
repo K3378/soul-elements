@@ -188,11 +188,14 @@ function PreviewContent() {
             <h3 className="text-base font-bold mb-1" style={{ fontFamily: "'Playfair Display', serif", color: '#C9A84C' }}>Standard</h3>
             <div className="text-3xl font-bold mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>$49</div>
             <ul className="text-xs space-y-1.5 mb-5 flex-1" style={{ color: '#6B6F80' }}>
-              <li>15-page personalized report</li>
+              <li>10-page personalized report</li>
               <li>Day Master deep analysis</li>
+              <li>Full Hidden Stems (地支藏干)</li>
+              <li>Ten Deities (十神) breakdown</li>
               <li>Five Elements energy chart</li>
-              <li>3-year energy forecast</li>
-              <li>Personal affirmations</li>
+              <li>Branch Interactions analysis</li>
+              <li>5-year energy forecast</li>
+              <li>Personal affirmation</li>
             </ul>
             <button onClick={() => handlePurchase('standard')} disabled={purchaseLoading !== null} className="btn-gold w-full text-sm py-3">
               {purchaseLoading === 'standard' ? 'Redirecting...' : 'Unlock Standard'}
@@ -206,10 +209,13 @@ function PreviewContent() {
             <div className="text-3xl font-bold mb-3" style={{ fontFamily: "'Playfair Display', serif" }}>$99</div>
             <ul className="text-xs space-y-1.5 mb-5 flex-1" style={{ color: '#6B6F80' }}>
               <li>Everything in Standard, plus:</li>
-              <li>10-year strategic roadmap</li>
-              <li>Annual breakdown (2026-2036)</li>
-              <li>Fortune &amp; feng shui guidance</li>
-              <li>Premium PDF with custom design</li>
+              <li>20+ page comprehensive report</li>
+              <li>10-Year Luck Cycle (大運) timeline</li>
+              <li>Annual breakdown (2025-2030)</li>
+              <li>Full Hidden Stems with 中氣/餘氣</li>
+              <li>Advanced Element Analysis</li>
+              <li>Career, Love & Inner path guides</li>
+              <li>Professional-grade PDF download</li>
             </ul>
             <button onClick={() => handlePurchase('grandmaster')} disabled={purchaseLoading !== null} className="btn-gold w-full text-sm py-3">
               {purchaseLoading === 'grandmaster' ? 'Redirecting...' : 'Unlock Grand Master'}

@@ -1,69 +1,97 @@
 /**
- * Soul Elements — Report Data Store
+ * Soul Elements — Report Route
  * 
- * In-memory store keyed by Stripe session ID.
- * GET /api/report/:sessionId — returns stored report data after payment
- * POST /api/report/store — stores report data before payment (called by preview page checkout)
+ * GET /api/report/:sessionId
+ * - Returns BaZi data + generated report content
  */
 
 const express = require('express');
 const router = express.Router();
+const { generateFullReport } = require('../lib/reportContent');
 
-// Simple in-memory store
+// In-memory report store
 const reportStore = new Map();
 
-// Cleanup old entries after 1 hour
+// Clean up expired reports (older than 24 hours)
 setInterval(() => {
   const now = Date.now();
-  for (const [key, entry] of reportStore.entries()) {
-    if (now - entry.timestamp > 3600000) {
+  for (const [key, value] of reportStore.entries()) {
+    if (now - value.timestamp > 24 * 60 * 60 * 1000) {
       reportStore.delete(key);
     }
   }
-}, 600000);
+}, 60 * 60 * 1000);
 
-/**
- * POST /api/report/store — store report data before redirecting to Stripe
- * Body: { sessionId, reportData }
- */
-router.post('/store', (req, res) => {
-  try {
-    const { sessionId, reportData } = req.body;
-    if (!sessionId || !reportData) {
-      return res.status(400).json({ error: 'Missing sessionId or reportData' });
-    }
-    reportStore.set(sessionId, {
-      data: reportData,
-      timestamp: Date.now(),
-    });
-    console.log(`📦 Report data stored for session: ${sessionId}`);
-    res.json({ success: true });
-  } catch (error) {
-    console.error('Report store error:', error);
-    res.status(500).json({ error: 'Failed to store report data' });
-  }
-});
-
-/**
- * GET /api/report/:sessionId — retrieve report data after payment
- * Returns the full bazi analysis data
- */
+// GET /api/report/:sessionId
 router.get('/:sessionId', (req, res) => {
   try {
     const { sessionId } = req.params;
-    const entry = reportStore.get(sessionId);
+    const tier = req.query.tier || 'standard';
 
-    if (!entry) {
-      return res.status(404).json({ error: 'Report data not found. It may have expired.' });
+    const stored = reportStore.get(sessionId);
+    if (!stored) {
+      return res.status(404).json({ success: false, error: 'Report data not found or expired. Please complete payment again.' });
     }
 
-    console.log(`📖 Report data retrieved for session: ${sessionId}`);
-    res.json({ success: true, data: entry.data });
+    const { data } = stored;
+
+    if (!data || !data.bazi) {
+      return res.status(400).json({ success: false, error: 'Invalid report data.' });
+    }
+
+    // Generate the full report content for the specified tier
+    const bazi = data.bazi;
+    const goal = data.goal || 'all';
+    const fullReport = generateFullReport(bazi, goal, tier);
+
+    res.json({
+      success: true,
+      tier,
+      data: {
+        bazi,
+        report: fullReport,
+      },
+    });
   } catch (error) {
     console.error('Report fetch error:', error);
-    res.status(500).json({ error: 'Failed to retrieve report data' });
+    res.status(500).json({ success: false, error: 'Failed to load report.' });
   }
 });
 
-module.exports = router;
-module.exports.reportStore = reportStore;
+// POST /api/report/pre-generate (called after analysis to store result)
+router.post('/pre-generate', (req, res) => {
+  try {
+    const { sessionId, data } = req.body;
+    if (sessionId && data) {
+      reportStore.set(sessionId, {
+        data,
+        timestamp: Date.now(),
+      });
+      res.json({ success: true });
+    } else {
+      res.status(400).json({ success: false, error: 'Missing sessionId or data.' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to store report data.' });
+  }
+});
+
+// POST /api/report/generate (direct content generation, no session needed)
+router.post('/generate', (req, res) => {
+  try {
+    const { bazi, goal, tier } = req.body;
+    if (!bazi || !bazi.pillars) {
+      return res.status(400).json({ success: false, error: 'Invalid BaZi data.' });
+    }
+    const fullReport = generateFullReport(bazi, goal || 'all', tier || 'standard');
+    res.json({
+      success: true,
+      data: { bazi, report: fullReport },
+    });
+  } catch (error) {
+    console.error('Report generation error:', error);
+    res.status(500).json({ success: false, error: 'Failed to generate report.' });
+  }
+});
+
+module.exports = { router, reportStore };

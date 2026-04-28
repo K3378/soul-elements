@@ -58,22 +58,88 @@ const FIVE_ELEMENTS = {
   '水': { en: 'Water', energy: 'Wisdom & Intuition', color: '#2196F3' },
 };
 
-// =========== 地支藏干 (Hidden Stems in Branches — Basic) ===========
-// Using main energy only (本氣) for Phase 1
+// =========== 地支藏干 (Hidden Stems in Branches — FULL) ===========
+// Format: [本氣 (main), 中氣 (secondary), 餘氣 (residual)]
 const BRANCH_HIDDEN_STEMS = {
   '子': ['癸'],
-  '丑': ['己'],
-  '寅': ['甲'],
+  '丑': ['己', '癸', '辛'],
+  '寅': ['甲', '丙', '戊'],
   '卯': ['乙'],
-  '辰': ['戊'],
-  '巳': ['丙'],
-  '午': ['丁'],
-  '未': ['己'],
-  '申': ['庚'],
+  '辰': ['戊', '乙', '癸'],
+  '巳': ['丙', '庚', '戊'],
+  '午': ['丁', '己'],
+  '未': ['己', '丁', '乙'],
+  '申': ['庚', '壬', '戊'],
   '酉': ['辛'],
-  '戌': ['戊'],
-  '亥': ['壬'],
+  '戌': ['戊', '辛', '丁'],
+  '亥': ['壬', '甲'],
 };
+
+// Stem element lookup
+const STEM_TO_ELEMENT = {
+  '甲': 'Wood', '乙': 'Wood', '丙': 'Fire', '丁': 'Fire',
+  '戊': 'Earth', '己': 'Earth', '庚': 'Metal', '辛': 'Metal',
+  '壬': 'Water', '癸': 'Water',
+};
+
+// Branch main element (for quick reference)
+const BRANCH_MAIN_ELEMENT = {
+  '子': 'Water', '丑': 'Earth', '寅': 'Wood', '卯': 'Wood',
+  '辰': 'Earth', '巳': 'Fire', '午': 'Fire', '未': 'Earth',
+  '申': 'Metal', '酉': 'Metal', '戌': 'Earth', '亥': 'Water',
+};
+
+// =========== 十神 Calculation Rules ===========
+// For each heavenly stem relative to Day Master
+// Divided by Yin/Yang of the stem and the relationship
+const TEN_GOD_RULES = {
+  // Same element
+  'sameYin': '比肩',   // Same element, same Yin/Yang -> Peer
+  'sameYang': '劫财',   // Same element, opposite Yin/Yang -> Competitor
+  // Generating (Day Master element -> stem element)
+  'generatesSame': '食神',  // DM generates stem, same polarity -> Creator
+  'generatesOpp': '傷官',  // DM generates stem, opposite polarity -> Rebel Genius
+  // Controlled by (stem element -> DM element)
+  'controlledSame': '正財',  // Stem controls DM, same polarity -> Steward
+  'controlledOpp': '偏財',  // Stem controls DM, opposite polarity -> Entrepreneur
+  // Controlling (DM element -> stem element)
+  'controlsSame': '七殺',  // DM controls stem, same polarity -> Warrior
+  'controlsOpp': '正官',   // DM controls stem, opposite polarity -> Authority
+  // Nourishing (stem element -> DM element)
+  'nourishesSame': '偏印',  // Stem nourishes DM, same polarity -> Mystic
+  'nourishesOpp': '正印',   // Stem nourishes DM, opposite polarity -> Guardian
+};
+
+// =========== 地支 Relations ===========
+const BRANCH_SIX_COMBINATIONS = {
+  '子丑': '合土', '寅亥': '合木', '卯戌': '合火',
+  '辰酉': '合金', '巳申': '合水', '午未': '合土',
+};
+
+const BRANCH_TRIPLE_COMBINATIONS = {
+  '申子辰': { element: 'Water', animals: ['Monkey', 'Rat', 'Dragon'] },
+  '亥卯未': { element: 'Wood', animals: ['Pig', 'Rabbit', 'Goat'] },
+  '寅午戌': { element: 'Fire', animals: ['Tiger', 'Horse', 'Dog'] },
+  '巳酉丑': { element: 'Metal', animals: ['Snake', 'Rooster', 'Ox'] },
+};
+
+const BRANCH_SIX_CLASHES = [
+  ['子', '午'], ['丑', '未'], ['寅', '申'],
+  ['卯', '酉'], ['辰', '戌'], ['巳', '亥'],
+];
+
+const BRANCH_THREE_PUNISHMENTS = [
+  ['寅', '巳'],
+  ['巳', '申'],
+  ['丑', '未', '戌'],
+];
+
+const BRANCH_SELF_PUNISHMENTS = ['辰', '午', '酉', '亥'];
+
+// Element generating cycle (生): Wood -> Fire -> Earth -> Metal -> Water -> Wood
+const GENERATING_CYCLE = { 'Wood': 'Fire', 'Fire': 'Earth', 'Earth': 'Metal', 'Metal': 'Water', 'Water': 'Wood' };
+// Element controlling cycle (克): Wood -> Earth -> Water -> Fire -> Metal -> Wood
+const CONTROLLING_CYCLE = { 'Wood': 'Earth', 'Earth': 'Water', 'Water': 'Fire', 'Fire': 'Metal', 'Metal': 'Wood' };
 
 module.exports = {
   HEAVENLY_STEMS,
@@ -81,4 +147,14 @@ module.exports = {
   TEN_GODS,
   FIVE_ELEMENTS,
   BRANCH_HIDDEN_STEMS,
+  STEM_TO_ELEMENT,
+  BRANCH_MAIN_ELEMENT,
+  TEN_GOD_RULES,
+  BRANCH_SIX_COMBINATIONS,
+  BRANCH_TRIPLE_COMBINATIONS,
+  BRANCH_SIX_CLASHES,
+  BRANCH_THREE_PUNISHMENTS,
+  BRANCH_SELF_PUNISHMENTS,
+  GENERATING_CYCLE,
+  CONTROLLING_CYCLE,
 };

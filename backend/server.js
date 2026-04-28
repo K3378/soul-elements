@@ -32,7 +32,7 @@ app.use(express.json());
 // ========== API Routes ==========
 const analyzeRouter = require('./routes/analyze');
 const stripeRouter = require('./routes/stripe');
-const reportRouter = require('./routes/report');
+const { router: reportRouter } = require('./routes/report');
 
 app.use('/api', analyzeRouter);
 app.use('/api', stripeRouter);
@@ -41,11 +41,6 @@ app.use('/api/report', reportRouter);
 // Health check
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Report status endpoint
-app.get('/api/report/status', (req, res) => {
-  res.json({ status: 'ready', message: 'Report generation endpoint ready.' });
 });
 
 // ========== Frontend Static Files ==========

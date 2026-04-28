@@ -5,8 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { getEnglishBazi, getReportContentTemplate } = require('../lib/baziEngine');
-const { generateFullReport } = require('../lib/reportContent');
+const { getEnglishBazi, getEnglishBaziWithTier } = require('../lib/baziEngine');
 
 router.post('/analyze', (req, res) => {
   try {
@@ -40,29 +39,28 @@ router.post('/analyze', (req, res) => {
       effectiveOffset = 0;
     }
 
-    const baziResult = getEnglishBazi(
+    // Get full BaZi analysis with all advanced calculations
+    const baziResult = getEnglishBaziWithTier(
       birthDate,
       effectiveTime,
       effectiveLongitude,
-      effectiveOffset
+      effectiveOffset,
+      gender || ''
     );
 
-    // Generate full report content
-    const fullReport = generateFullReport(baziResult, goal || 'all');
-    const contentTemplate = getReportContentTemplate(baziResult, goal || 'all', 'standard');
+    // Preview text (locked content indicator)
+    const preview = {
+      soulElement: `Your core identity is ${baziResult.dayMaster.element} — ${baziResult.dayMaster.archetype}. ${baziResult.dayMaster.keywords}.`,
+      personality: `As a ${baziResult.dayMaster.element} individual, you embody the essence of ${baziResult.dayMaster.archetype.toLowerCase()}...`,
+      energyHint: `Your cosmic energy is dominated by the elements that shape your destiny.`,
+    };
 
     res.json({
       success: true,
       isPremium: false,
       reportId: generateId(),
       bazi: baziResult,
-      report: fullReport,  // Full generated content
-      preview: {
-        soulElement: `Your core identity is ${baziResult.dayMaster.element} — ${baziResult.dayMaster.archetype}. ${baziResult.dayMaster.keywords}.`,
-        personality: `As a ${baziResult.dayMaster.element} individual, you embody the essence of ${baziResult.dayMaster.archetype.toLowerCase()}...`,
-        energyHint: `Your cosmic energy is dominated by the elements that shape your destiny.`,
-      },
-      contentTemplate,
+      preview,
       accuracyNote: baziResult.accuracyNote,
     });
   } catch (error) {

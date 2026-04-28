@@ -14,6 +14,7 @@ const {
   FIVE_ELEMENTS,
   BRANCH_HIDDEN_STEMS,
 } = require('./translationMap');
+const { calculateAdvancedBaziData } = require('./advancedCalculations');
 
 /**
  * Calculate True Solar Time correction
@@ -43,12 +44,6 @@ function getTrueSolarTimeCorrection(longitude, timezoneOffset) {
 
 /**
  * Calculate BaZi pillars from birth date/time
- * 
- * @param {string} dateStr - Date string 'YYYY-MM-DD'
- * @param {string} timeStr - Time string 'HH:mm'
- * @param {number} longitude - Birth longitude
- * @param {number} timezoneOffset - Timezone offset in hours
- * @returns {Object} English BaZi result
  */
 function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
   // Step 1: Apply True Solar Time correction
@@ -70,9 +65,7 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
   const lunar = solar.getLunar();
   const eightChar = lunar.getEightChar();
   
-  // Step 3: Extract pillars using correct API
-  // Year pillar comes from the original EightChar (based on solar date)
-  // But month/day/time need the corrected time's lunar calculation
+  // Step 3: Extract pillars
   const yearPillar = {
     stem: eightChar.getYearGan(),
     branch: eightChar.getYearZhi(),
@@ -108,12 +101,12 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
     const stemEn = HEAVENLY_STEMS[pillar.stem] || { en: pillar.stem, element: pillar.stem, archetype: pillar.stem };
     const branchEn = EARTHLY_BRANCHES[pillar.branch] || { en: pillar.branch, animal: pillar.branch };
     return {
-      stem: pillar.stem,         // Chinese original (for chart)
-      stemEn: stemEn.en,          // e.g. 'Jia'
-      stemElement: stemEn.element, // e.g. 'Yang Wood'
+      stem: pillar.stem,
+      stemEn: stemEn.en,
+      stemElement: stemEn.element,
       branch: pillar.branch,
       branchEn: branchEn.en,
-      animal: branchEn.animal,    // e.g. 'Rat'
+      animal: branchEn.animal,
     };
   };
   
@@ -126,11 +119,8 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
   
   // Step 5: Five Element analysis (basic — stems + branch main energy)
   const elementCount = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
-
-  // Chinese to English element mapping
   const ELEMENT_EN = { '木': 'Wood', '火': 'Fire', '土': 'Earth', '金': 'Metal', '水': 'Water' };
   
-  // Count from stems
   const allStems = [yearPillar.stem, monthPillar.stem, dayPillar.stem, hourPillar.stem];
   const stemToElement = { '甲': '木', '乙': '木', '丙': '火', '丁': '火', '戊': '土', '己': '土', '庚': '金', '辛': '金', '壬': '水', '癸': '水' };
   
@@ -139,16 +129,14 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
     if (elem) elementCount[elem]++;
   });
   
-  // Count from branches (main hidden stem energy)
-  const allBranches = [yearPillar.branch, monthPillar.branch, dayPillar.branch, hourPillar.branch];
   const branchMainElement = { '子': '水', '丑': '土', '寅': '木', '卯': '木', '辰': '土', '巳': '火', '午': '火', '未': '土', '申': '金', '酉': '金', '戌': '土', '亥': '水' };
+  const allBranches = [yearPillar.branch, monthPillar.branch, dayPillar.branch, hourPillar.branch];
   
   allBranches.forEach(branch => {
     const elem = branchMainElement[branch];
     if (elem) elementCount[elem]++;
   });
   
-  // Calculate percentages (English keys)
   const total = Object.values(elementCount).reduce((a, b) => a + b, 0);
   const elementPercentages = {};
   Object.entries(elementCount).forEach(([elem, count]) => {
@@ -157,8 +145,10 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
   
   // Step 6: Day Master info
   const dayMaster = HEAVENLY_STEMS[dayPillar.stem] || { en: dayPillar.stem, element: dayPillar.stem, archetype: dayPillar.stem, keywords: '' };
-  
-  // Step 7: Return result
+
+  // Determine Yin/Yang
+  const STEM_YIN_YANG = { '甲': 'Yang', '乙': 'Yin', '丙': 'Yang', '丁': 'Yin', '戊': 'Yang', '己': 'Yin', '庚': 'Yang', '辛': 'Yin', '壬': 'Yang', '癸': 'Yin' };
+
   return {
     trueSolarTime: {
       originalTime: timeStr,
@@ -175,13 +165,13 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
       element: dayMaster.element,
       archetype: dayMaster.archetype,
       keywords: dayMaster.keywords,
+      polarity: STEM_YIN_YANG[dayPillar.stem] || 'Unknown',
     },
     fiveElements: {
       raw: elementCount,
       percentages: elementPercentages,
-      chart: elementPercentages, // Frontend will render the chart
+      chart: elementPercentages,
     },
-    // Simplified: in Phase 2 we'll add detailed ten god analysis
     accuracyNote: longitude && timezoneOffset !== undefined
       ? 'Precise — True Solar Time applied with Equation of Time correction.'
       : 'Approximate — no birth location provided. Accuracy may vary.',
@@ -189,47 +179,38 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
 }
 
 /**
- * Generate AI content prompt for full report
- * This provides structured data for the content generation step
- * 
- * @param {Object} baziResult - Result from getEnglishBazi()
- * @param {string} goal - User's selected goal (career/love/peace)
- * @param {string} tier - 'standard' or 'grandMaster'
- * @returns {Object} Content template with sections
+ * Get English BaZi with advanced calculations based on tier
  */
-function getReportContentTemplate(baziResult, goal, tier) {
-  const dm = baziResult.dayMaster;
+function getEnglishBaziWithTier(dateStr, timeStr, longitude, timezoneOffset, gender) {
+  const base = getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset);
   
-  return {
-    intro: {
-      title: `Your Soul Element: ${dm.archetype}`,
-      subtitle: `${dm.element} — ${dm.keywords}`,
-    },
-    sections: [
-      {
-        id: 'personality',
-        title: 'Your Core Identity',
-        element: dm.element,
-        archetype: dm.archetype,
-      },
-      {
-        id: 'energyChart',
-        title: 'Your Cosmic Energy Distribution',
-        elements: baziResult.fiveElements.percentages,
-      },
-      {
-        id: 'lifePath',
-        title: 'Your Life Path & Opportunities',
-        goal: goal,
-      },
-    ],
-    tier: tier,
-    isPremium: tier === 'grandMaster',
-  };
+  // Add all advanced data
+  const advanced = calculateAdvancedBaziData(
+    base,
+    gender,
+    dateStr,
+    timeStr,
+    longitude,
+    timezoneOffset
+  );
+
+  if (advanced) {
+    return {
+      ...base,
+      hiddenStems: advanced.hiddenStems,
+      tenDeities: advanced.tenDeities,
+      fullElements: advanced.fullElementCounts,
+      daYun: advanced.daYun,
+      branchInteractions: advanced.branchInteractions,
+      annualForecasts: advanced.annualForecasts,
+    };
+  }
+
+  return base;
 }
 
 module.exports = {
   getEnglishBazi,
+  getEnglishBaziWithTier,
   getTrueSolarTimeCorrection,
-  getReportContentTemplate,
 };
