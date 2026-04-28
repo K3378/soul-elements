@@ -7,12 +7,11 @@ function PreviewContent() {
   const searchParams = useSearchParams();
   const key = searchParams.get('key');
   const isTest = searchParams.get('test') === '1';
+  const coupon = searchParams.get('coupon') || '';
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [purchaseLoading, setPurchaseLoading] = useState(null);
   const [purchaseError, setPurchaseError] = useState('');
-  const [couponCode, setCouponCode] = useState('');
-  const [couponApplied, setCouponApplied] = useState(false);
 
   useEffect(() => {
     if (key) {
@@ -41,7 +40,7 @@ function PreviewContent() {
 
     // TEST MODE: skip Stripe, go straight to report
     if (isTest) {
-      sessionStorage.setItem('test_report', JSON.stringify(data?.bazi || {}));
+      sessionStorage.setItem('test_report', JSON.stringify(data));
       window.location.href = `/report?test=1&tier=${tier}`;
       return;
     }
@@ -50,7 +49,7 @@ function PreviewContent() {
       const res = await fetch('/api/create-checkout-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tier, reportData: data?.bazi, coupon: couponApplied ? couponCode : undefined }),
+        body: JSON.stringify({ tier, reportData: data, coupon: coupon || undefined }),
       });
       const result = await res.json();
       if (result.url) {
@@ -180,26 +179,6 @@ function PreviewContent() {
           <div className="text-xs" style={{ color: '#434759' }}>
             <span className="inline-block text-lg" style={{ color: '#C9A84C' }}>✦</span> Full content hidden &mdash; choose your edition below
           </div>
-        </div>
-
-        {/* COUPON CODE */}
-        <div className="text-center mb-6">
-          <div className="inline-flex items-center gap-2 p-2 rounded" style={{ border: '1px solid rgba(201,168,76,0.15)' }}>
-            <input type="text" placeholder="Coupon code" value={couponCode}
-              onChange={(e) => { setCouponCode(e.target.value.toUpperCase()); setCouponApplied(false); }}
-              className="text-xs w-24 !p-1.5 !border-0 !shadow-none !bg-transparent" style={{ color: '#6B6F80' }} />
-            <button onClick={() => setCouponApplied(true)}
-              className="text-[10px] px-2 py-1 rounded font-semibold uppercase"
-              style={{ background: couponApplied ? 'rgba(76,175,80,0.15)' : 'rgba(201,168,76,0.1)', color: couponApplied ? '#4CAF50' : '#C9A84C' }}>
-              {couponApplied ? 'Applied' : 'Apply'}
-            </button>
-          </div>
-          {couponApplied && couponCode === 'FREE' && (
-            <div className="text-[10px] mt-1" style={{ color: '#4CAF50' }}>FREE — Standard edition unlocked!</div>
-          )}
-          {couponApplied && couponCode === 'FREE2' && (
-            <div className="text-[10px] mt-1" style={{ color: '#4CAF50' }}>FREE2 — Grand Master edition unlocked!</div>
-          )}
         </div>
 
         {/* PRICING: Two Tiers */}

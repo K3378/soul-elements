@@ -6,6 +6,7 @@
 const express = require('express');
 const router = express.Router();
 const { getEnglishBazi, getReportContentTemplate } = require('../lib/baziEngine');
+const { generateFullReport } = require('../lib/reportContent');
 
 router.post('/analyze', (req, res) => {
   try {
@@ -30,18 +31,15 @@ router.post('/analyze', (req, res) => {
     let effectiveLongitude = longitude;
     let effectiveOffset = timezoneOffset;
 
-    // Handle unknown time
     if (unknownTime || !birthTime) {
       effectiveTime = '12:00';
     }
 
-    // Handle missing location
     if (!longitude || !timezoneOffset) {
       effectiveLongitude = 0;
       effectiveOffset = 0;
     }
 
-    // Calculate BaZi
     const baziResult = getEnglishBazi(
       birthDate,
       effectiveTime,
@@ -49,7 +47,8 @@ router.post('/analyze', (req, res) => {
       effectiveOffset
     );
 
-    // Prepare response with preview content
+    // Generate full report content
+    const fullReport = generateFullReport(baziResult, goal || 'all');
     const contentTemplate = getReportContentTemplate(baziResult, goal || 'all', 'standard');
 
     res.json({
@@ -57,6 +56,7 @@ router.post('/analyze', (req, res) => {
       isPremium: false,
       reportId: generateId(),
       bazi: baziResult,
+      report: fullReport,  // Full generated content
       preview: {
         soulElement: `Your core identity is ${baziResult.dayMaster.element} — ${baziResult.dayMaster.archetype}. ${baziResult.dayMaster.keywords}.`,
         personality: `As a ${baziResult.dayMaster.element} individual, you embody the essence of ${baziResult.dayMaster.archetype.toLowerCase()}...`,
