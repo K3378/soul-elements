@@ -3,10 +3,10 @@
 @tailwind utilities;
 
 :root {
-  --bg-deep: #07070D;
-  --bg-surface: #0C0C14;
-  --bg-elevated: #111120;
-  --bg-card: rgba(17, 17, 32, 0.85);
+  --bg-deep: #070D1A;
+  --bg-surface: #0C1422;
+  --bg-elevated: #111828;
+  --bg-card: rgba(12, 20, 34, 0.9);
   --gold: #D4A54A;
   --gold-light: #E8C97A;
   --gold-subtle: rgba(212, 165, 74, 0.12);
@@ -33,9 +33,9 @@
 body {
   background: var(--bg-deep);
   background-image: 
-    radial-gradient(ellipse at 20% 50%, rgba(212,165,74,0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at 80% 20%, rgba(80,60,120,0.04) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 80%, rgba(40,50,80,0.05) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 50%, rgba(52,152,219,0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at 80% 20%, rgba(212,165,74,0.03) 0%, transparent 50%),
+    radial-gradient(ellipse at 50% 80%, rgba(30,60,114,0.06) 0%, transparent 50%);
   color: var(--text-primary);
   font-family: var(--font-body);
   font-size: 16px;

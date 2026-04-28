@@ -174,7 +174,7 @@ function FiveElementsCycle() {
         {/* Center Tai Chi symbol */}
         <circle cx={cx} cy={cy} r="12" fill="rgba(212,165,74,0.03)" stroke="rgba(212,165,74,0.1)" strokeWidth="0.5" />
         <path d={`M${cx} ${cy - 6} A6 6 0 0 1 ${cx} ${cy} A3 3 0 0 0 ${cx} ${cy + 6} A6 6 0 0 1 ${cx} ${cy - 6}`} fill="rgba(212,165,74,0.2)" />
-        <circle cx={cx} cy={cy - 3} r="1.5" fill="#0D1117" />
+        <circle cx={cx} cy={cy - 3} r="1.5" fill="#0A0E1A" />
         <circle cx={cx} cy={cy + 3} r="1.5" fill="rgba(212,165,74,0.3)" />
       </svg>
       <p className="text-[10px] mt-2" style={{ color: '#6B6F80' }}>
@@ -282,7 +282,7 @@ function Testimonials() {
         {testimonials.map((t, i) => (
           <div key={i} style={{
             background: 'rgba(13,17,23,0.6)',
-            border: '1px solid #21262D',
+            border: '1px solid #1A2235',
             borderRadius: '12px',
             padding: '20px',
             transition: 'border-color 0.2s',
@@ -331,13 +331,13 @@ function FaqSection() {
       </h2>
       <div style={{
         background: 'rgba(13,17,23,0.6)',
-        border: '1px solid #21262D',
+        border: '1px solid #1A2235',
         borderRadius: '15px',
         padding: '8px',
       }}>
         {faqs.map((faq, i) => (
           <div key={i} style={{
-            borderBottom: i < faqs.length - 1 ? '1px solid #21262D' : 'none',
+            borderBottom: i < faqs.length - 1 ? '1px solid #1A2235' : 'none',
           }}>
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
               className="w-full flex items-center justify-between text-left px-4 py-3.5"
@@ -372,7 +372,7 @@ function PricingPreview() {
         {/* Free Teaser */}
         <div style={{
           background: 'rgba(13,17,23,0.6)',
-          border: '1px solid #21262D',
+          border: '1px solid #1A2235',
           borderRadius: '15px',
           padding: '28px',
           textAlign: 'center',
@@ -463,7 +463,7 @@ function SectionDivider({ variant }) {
       <div className="w-full max-w-4xl flex items-center justify-center mb-8" style={{ opacity: 0.3 }}>
         <svg width="24" height="24" viewBox="0 0 100 100">
           <path d="M50 5 A45 45 0 0 1 50 95 A22.5 22.5 0 0 1 50 50 A22.5 22.5 0 0 0 50 5 Z" fill="rgba(212,165,74,0.4)" />
-          <circle cx="50" cy="27.5" r="10" fill="#0D1117" />
+          <circle cx="50" cy="27.5" r="10" fill="#0A0E1A" />
           <circle cx="50" cy="72.5" r="10" fill="rgba(212,165,74,0.4)" />
         </svg>
       </div>
@@ -481,7 +481,7 @@ function SectionDivider({ variant }) {
 function SiteFooter() {
   return (
     <div className="w-full" style={{
-      borderTop: '1px solid #21262D',
+      borderTop: '1px solid #1A2235',
       padding: '40px 20px 24px',
       marginTop: '16px',
     }}>
@@ -759,7 +759,7 @@ export default function HomePage() {
             <svg width="32" height="32" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="46" fill="none" stroke="#3498DB" strokeWidth="1.5" opacity="0.5" />
               <path d="M50 4 A46 46 0 0 1 50 50 A23 23 0 0 0 50 96 A46 46 0 0 1 50 4" fill="#3498DB" opacity="0.75" />
-              <circle cx="50" cy="73" r="7" fill="#0D1117" />
+              <circle cx="50" cy="73" r="7" fill="#0A0E1A" />
               <circle cx="50" cy="27" r="7" fill="#3498DB" />
             </svg>
           </div>
@@ -817,7 +817,7 @@ export default function HomePage() {
         <div id="input-form" className="w-full max-w-lg mb-12">
           <div style={{
             background: 'rgba(13,17,23,0.9)',
-            border: '1px solid #21262D',
+            border: '1px solid #1A2235',
             borderRadius: '15px',
             padding: '36px',
             boxShadow: '0 10px 40px rgba(0,0,0,0.4)',
@@ -835,7 +835,7 @@ export default function HomePage() {
                 <input type="date" value={form.birthDate}
                   onChange={(e) => handleChange('birthDate', e.target.value)} required
                   className="w-full max-w-[220px] mx-auto text-center"
-                  style={{ background: '#0D1117', border: '2px solid #21262D', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }} />
+                  style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }} />
               </div>
 
               {/* Time */}
@@ -849,7 +849,7 @@ export default function HomePage() {
                 </div>
                 {!form.unknownTime ? (
                   <input type="time" value={form.birthTime} onChange={e => handleChange('birthTime', e.target.value)}
-                    style={{ background: '#0D1117', border: '2px solid #21262D', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }}
+                    style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9', colorScheme: 'dark' }}
                     className="w-full max-w-[220px] mx-auto text-center" />
                 ) : (
                   <div className="text-xs p-2.5 rounded max-w-[280px] mx-auto" style={{ background: 'rgba(52,152,219,0.08)', border: '1px solid rgba(52,152,219,0.2)', color: '#8B949E' }}>
@@ -858,7 +858,7 @@ export default function HomePage() {
                 )}
               </div>
 
-              <hr style={{ border: 'none', borderTop: '1px solid #21262D', maxWidth: '160px', margin: '16px auto' }} />
+              <hr style={{ border: 'none', borderTop: '1px solid #1A2235', maxWidth: '160px', margin: '16px auto' }} />
 
               {/* Location */}
               <div className="text-center">
@@ -867,15 +867,15 @@ export default function HomePage() {
                   <input type="text" placeholder="Search city, e.g. Hong Kong, London..."
                     value={form.location}
                     onChange={(e) => handleLocationInput(e.target.value)}
-                    style={{ background: '#0D1117', border: '2px solid #21262D', borderRadius: '5px', padding: '10px', color: '#C9D1D9' }}
+                    style={{ background: '#0A0E1A', border: '2px solid #1A2235', borderRadius: '5px', padding: '10px', color: '#C9D1D9' }}
                     className="w-full text-center text-sm" />
                   {locationSuggestions.length > 0 && (
                     <div className="absolute left-0 right-0 mt-0.5 z-10 text-left rounded-lg overflow-hidden"
-                      style={{ background: '#161B22', border: '1px solid #21262D', maxHeight: '200px', overflowY: 'auto' }}>
+                      style={{ background: '#0F1728', border: '1px solid #1A2235', maxHeight: '200px', overflowY: 'auto' }}>
                       {locationSuggestions.map((loc, i) => (
                         <button key={i} type="button" onClick={() => selectLocationAndTz(loc)}
                           className="w-full text-xs text-left px-3 py-2.5 transition-colors"
-                          style={{ color: '#8B949E', borderBottom: i < locationSuggestions.length - 1 ? '1px solid #21262D' : 'none' }}>
+                          style={{ color: '#8B949E', borderBottom: i < locationSuggestions.length - 1 ? '1px solid #1A2235' : 'none' }}>
                           {loc.display.split(',')[0]}, {loc.display.split(',').slice(1, 3).join(',')}
                         </button>
                       ))}
@@ -904,7 +904,7 @@ export default function HomePage() {
                 </button>
               </div>
 
-              <hr style={{ border: 'none', borderTop: '1px solid #21262D', maxWidth: '160px', margin: '16px auto' }} />
+              <hr style={{ border: 'none', borderTop: '1px solid #1A2235', maxWidth: '160px', margin: '16px auto' }} />
 
               {/* Gender */}
               <div className="text-center">
@@ -985,7 +985,7 @@ export default function HomePage() {
               ].map((item, i) => (
                 <div key={i} style={{
                   background: 'rgba(13,17,23,0.6)',
-                  border: '1px solid #21262D',
+                  border: '1px solid #1A2235',
                   borderRadius: '15px',
                   padding: '28px',
                   textAlign: 'center',
@@ -1013,7 +1013,7 @@ export default function HomePage() {
                 { icon: '', title: 'Five Elements', text: 'Understand the cosmic balance of Wood, Fire, Earth, Metal, and Water within you.' },
                 { icon: '', title: 'Life Guidance', text: 'Personalized insights into your career, relationships, and life path.' },
               ].map(f => (
-                <div key={f.title} className="text-center p-5 rounded-lg" style={{ background: 'rgba(13,17,23,0.6)', border: '1px solid #21262D' }}>
+                <div key={f.title} className="text-center p-5 rounded-lg" style={{ background: 'rgba(13,17,23,0.6)', border: '1px solid #1A2235' }}>
                   <div className="text-xl mb-2" style={{ color: '#3498DB', opacity: 0.6 }}>{f.icon}</div>
                   <h3 className="text-sm font-semibold mb-1.5" style={{ color: '#E6EDF3' }}>{f.title}</h3>
                   <p className="text-sm leading-relaxed" style={{ color: '#8B949E' }}>{f.text}</p>
@@ -1035,7 +1035,7 @@ export default function HomePage() {
             </h2>
             <div style={{
               background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #21262D',
+              border: '1px solid #1A2235',
               borderRadius: '15px',
               padding: '40px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
@@ -1066,7 +1066,7 @@ export default function HomePage() {
                     for the scientific-minded seeker.
                   </p>
                 </div>
-                <div style={{ borderLeft: '1px solid #21262D', paddingLeft: '32px' }}>
+                <div style={{ borderLeft: '1px solid #1A2235', paddingLeft: '32px' }}>
                   <h3 className="text-lg font-bold mb-3" style={{ color: '#3498DB' }}>A 5,000-Year Conversation</h3>
                   <p className="text-base leading-relaxed mb-4" style={{ color: '#8B949E', lineHeight: '1.8' }}>
                     The story does not begin with a fortune-teller in a market stall. It begins with
@@ -1097,7 +1097,7 @@ export default function HomePage() {
               </div>
 
               {/* Key Concepts Cards */}
-              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #21262D' }}>
+              <div className="mt-8 pt-6" style={{ borderTop: '1px solid #1A2235' }}>
                 <h3 className="text-base font-bold text-center mb-5" style={{ color: '#E6EDF3' }}>The Three Pillars of Ba Zi</h3>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   {[
@@ -1133,7 +1133,7 @@ export default function HomePage() {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{
               background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #21262D',
+              border: '1px solid #1A2235',
               borderRadius: '15px',
               padding: '36px',
             }}>
@@ -1185,7 +1185,7 @@ export default function HomePage() {
             </h2>
             <div style={{
               background: 'rgba(13,17,23,0.8)',
-              border: '1px solid #21262D',
+              border: '1px solid #1A2235',
               borderRadius: '15px',
               padding: '40px',
               boxShadow: '0 10px 30px rgba(0,0,0,0.3)',
@@ -1275,15 +1275,15 @@ export default function HomePage() {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)' }}
           onClick={(e) => { if (e.target === e.currentTarget) setShowTzPicker(false); }}>
           <div className="w-full max-w-sm max-h-[70vh] rounded-lg overflow-hidden flex flex-col"
-            style={{ background: '#161B22', border: '1px solid #21262D' }}>
-            <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: '#21262D' }}>
+            style={{ background: '#0F1728', border: '1px solid #1A2235' }}>
+            <div className="flex items-center justify-between p-3 border-b" style={{ borderColor: '#1A2235' }}>
               <span className="text-sm font-semibold" style={{ color: '#E6EDF3' }}>Select Timezone</span>
               <button type="button" onClick={() => setShowTzPicker(false)} className="text-sm px-2 py-1 rounded" style={{ color: '#6B6F80' }}>&#10005;</button>
             </div>
             <div className="p-3">
               <input type="text" placeholder="Search city or offset..."
                 value={tzSearch} onChange={e => setTzSearch(e.target.value)}
-                style={{ background: '#0D1117', border: '1px solid #21262D', borderRadius: '5px', padding: '8px', color: '#C9D1D9' }}
+                style={{ background: '#0A0E1A', border: '1px solid #1A2235', borderRadius: '5px', padding: '8px', color: '#C9D1D9' }}
                 className="w-full text-xs text-center" />
             </div>
             <div className="flex-1 overflow-y-auto px-3 pb-3 space-y-1">

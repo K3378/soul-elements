@@ -1,5 +1,17 @@
 import './globals.css';
 
+export const metadata = {
+  title: 'Soul Elements | Ba Zi Four Pillars Destiny Reading — Discover Your True Nature',
+  description: 'Unlock the wisdom of the Four Pillars of Destiny (Ba Zi). Get your personalized Ba Zi chart with Day Master analysis, Five Elements balance, hidden stems, ten deities, and 10-year luck cycles. Ancient Chinese metaphysics for modern self-discovery.',
+  keywords: 'Ba Zi, Four Pillars, Chinese astrology, Five Elements, destiny reading, Day Master, Zi Ping Ba Zi, soul elements, Chinese metaphysics',
+  openGraph: {
+    title: 'Soul Elements — Ba Zi Four Pillars Destiny Reading',
+    description: 'A 2,500-year-old system for understanding your true nature. Ancient Chinese metaphysics meets modern self-discovery.',
+    type: 'website',
+    locale: 'en_US',
+  },
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
