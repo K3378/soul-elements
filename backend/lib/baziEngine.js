@@ -126,6 +126,9 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
   
   // Step 5: Five Element analysis (basic — stems + branch main energy)
   const elementCount = { '木': 0, '火': 0, '土': 0, '金': 0, '水': 0 };
+
+  // Chinese to English element mapping
+  const ELEMENT_EN = { '木': 'Wood', '火': 'Fire', '土': 'Earth', '金': 'Metal', '水': 'Water' };
   
   // Count from stems
   const allStems = [yearPillar.stem, monthPillar.stem, dayPillar.stem, hourPillar.stem];
@@ -145,11 +148,11 @@ function getEnglishBazi(dateStr, timeStr, longitude, timezoneOffset) {
     if (elem) elementCount[elem]++;
   });
   
-  // Calculate percentages
+  // Calculate percentages (English keys)
   const total = Object.values(elementCount).reduce((a, b) => a + b, 0);
   const elementPercentages = {};
   Object.entries(elementCount).forEach(([elem, count]) => {
-    elementPercentages[elem] = Math.round((count / total) * 100);
+    elementPercentages[ELEMENT_EN[elem]] = Math.round((count / total) * 100);
   });
   
   // Step 6: Day Master info

@@ -1,14 +1,70 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense } from 'react';
+import { Suspense, useState, useEffect } from 'react';
 
 function PreviewContent() {
   const searchParams = useSearchParams();
-  const dataStr = searchParams.get('data');
-  const data = dataStr ? JSON.parse(decodeURIComponent(dataStr)) : null;
+  const key = searchParams.get('key');
+  const [data, setData] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [purchaseLoading, setPurchaseLoading] = useState(null);
+
+  useEffect(() => {
+    if (key) {
+      const stored = sessionStorage.getItem(key);
+      if (stored) {
+        setData(JSON.parse(stored));
+        setLoading(false);
+      } else {
+        // If no sessionStorage (e.g. direct link), try legacy URL param
+        const dataStr = searchParams.get('data');
+        if (dataStr) {
+          try {
+            const parsed = JSON.parse(decodeURIComponent(dataStr));
+            setData(parsed);
+          } catch(e) {}
+        }
+        setLoading(false);
+      }
+    } else {
+      setLoading(false);
+    }
+  }, [key]);
+
+  const handlePurchase = async (tier) => {
+    setPurchaseLoading(tier);
+    try {
+      const res = await fetch('/api/create-checkout-session', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tier, reportData: data?.bazi }),
+      });
+      const result = await res.json();
+      if (result.url) window.location.href = result.url;
+      else throw new Error(result.error || 'Checkout failed');
+    } catch (err) {
+      alert('Payment failed. Please try again.');
+      setPurchaseLoading(null);
+    }
+  };
 
   if (!data) {
+    if (loading) {
+      return (
+        <div className="min-h-screen flex flex-col items-center justify-center">
+          <div className="tai-chi-spin mb-4">
+            <svg width="60" height="60" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="48" fill="none" stroke="#C9A84C" strokeWidth="2" />
+              <path d="M50 2 A48 48 0 0 1 50 50 A24 24 0 0 0 50 98 A48 48 0 0 1 50 2" fill="#C9A84C" opacity="0.9" />
+              <circle cx="50" cy="74" r="8" fill="#0B0E1A" />
+              <circle cx="50" cy="26" r="8" fill="#C9A84C" />
+            </svg>
+          </div>
+          <p style={{ color: '#8B8FA3' }}>Loading your reading...</p>
+        </div>
+      );
+    }
     return (
       <div className="min-h-screen flex items-center justify-center">
         <p style={{ color: '#8B8FA3' }}>No data available. Please start again.</p>
@@ -123,8 +179,8 @@ function PreviewContent() {
             <p className="text-sm mb-4" style={{ color: '#8B8FA3' }}>
               15 pages of personalized wisdom. Your true cosmic blueprint awaits.
             </p>
-          <button className="btn-gold text-lg px-12 py-4 glow-gold">
-              Unlock Full Report — $49
+          <button onClick={() => handlePurchase('standard')} disabled={purchaseLoading !== null} className="btn-gold text-lg px-12 py-4 glow-gold">
+              {purchaseLoading === 'standard' ? 'Redirecting...' : 'Unlock Full Report — $49'}
             </button>
           </div>
         </div>

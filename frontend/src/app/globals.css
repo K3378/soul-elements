@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Montserrat:wght@300;400;500;600&display=swap');
-
 :root {
   --bg-primary: #0B0E1A;
   --bg-secondary: #12162B;
@@ -65,10 +63,14 @@ h1, h2, h3, h4 {
   height: 2px;
   background: white;
   border-radius: 50%;
+  will-change: transform;
+  transform: translateZ(0);
   animation: twinkle var(--duration, 3s) ease-in-out infinite;
 }
 
 .tai-chi-spin {
+  will-change: transform;
+  transform: translateZ(0);
   animation: tai-chi-rotate 8s linear infinite;
 }
 
@@ -124,7 +126,7 @@ input::placeholder {
   border: none;
   cursor: pointer;
   font-family: var(--font-body);
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 
 .btn-gold:hover {
@@ -132,10 +134,34 @@ input::placeholder {
   box-shadow: 0 8px 30px var(--gold-glow);
 }
 
+.btn-gold:active {
+  transform: translateY(0);
+}
+
 .btn-gold:disabled {
   opacity: 0.5;
   cursor: not-allowed;
   transform: none;
+}
+
+/* Warning box animation */
+.warning-box {
+  animation: slide-down 0.3s ease-out;
+}
+
+@keyframes slide-down {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Form field validation */
+.field-error {
+  border-color: #FF6B6B !important;
+  box-shadow: 0 0 10px rgba(255, 50, 50, 0.2) !important;
+}
+
+.field-success {
+  border-color: rgba(76, 175, 80, 0.4) !important;
 }
 
 /* Cards */

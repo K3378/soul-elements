@@ -26,10 +26,18 @@ function InputForm() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [touched, setTouched] = useState({}); // Track which fields user has interacted with
 
   const handleChange = (field, value) => {
     setForm(prev => ({ ...prev, [field]: value }));
+    setTouched(prev => ({ ...prev, [field]: true }));
   };
+
+  const handleBlur = (field) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+  };
+
+  const isValidDate = form.birthDate && form.birthDate.length > 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -64,7 +72,10 @@ function InputForm() {
         throw new Error(data.error || 'Analysis failed');
       }
 
-      router.push(`/preview?data=${encodeURIComponent(JSON.stringify(data))}`);
+      // Store in sessionStorage (avoids URL length limits) then navigate
+      const previewKey = `preview_${data.reportId}`;
+      sessionStorage.setItem(previewKey, JSON.stringify(data));
+      router.push(`/preview?key=${encodeURIComponent(previewKey)}`);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {
@@ -95,7 +106,17 @@ function InputForm() {
         <form onSubmit={handleSubmit} className="space-y-5 fade-in-up" style={{ animationDelay: '0.3s' }}>
           <div>
             <label className="block text-sm mb-1" style={{ color: '#C9A84C' }}>Date of Birth *</label>
-            <input type="date" value={form.birthDate} onChange={(e) => handleChange('birthDate', e.target.value)} required className="w-full" style={{ colorScheme: 'dark' }} />
+            <input 
+              type="date" value={form.birthDate} 
+              onChange={(e) => handleChange('birthDate', e.target.value)} 
+              onBlur={() => handleBlur('birthDate')}
+              required 
+              className={`w-full ${touched.birthDate && !isValidDate ? 'field-error' : ''}`} 
+              style={{ colorScheme: 'dark' }} 
+            />
+            {touched.birthDate && !isValidDate && (
+              <p className="text-xs mt-1" style={{ color: '#FF6B6B' }}>Please enter your date of birth</p>
+            )}
           </div>
 
           <div>
@@ -109,7 +130,7 @@ function InputForm() {
             {!form.unknownTime ? (
               <input type="time" value={form.birthTime} onChange={(e) => handleChange('birthTime', e.target.value)} className="w-full" style={{ colorScheme: 'dark' }} />
             ) : (
-              <div className="p-3 rounded-lg text-xs" style={{ background: 'rgba(201, 168, 76, 0.1)', border: '1px solid rgba(201, 168, 76, 0.3)', color: '#E8D48B' }}>
+              <div className="warning-box p-3 rounded-lg text-xs" style={{ background: 'rgba(201, 168, 76, 0.1)', border: '1px solid rgba(201, 168, 76, 0.3)', color: '#E8D48B' }}>
                 ⚠ Without your exact birth time, accuracy will be reduced. We will use 12:00 PM (noon) as default.
               </div>
             )}
