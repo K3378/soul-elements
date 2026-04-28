@@ -9,8 +9,13 @@ const cors = require('cors');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-// Middleware
-app.use(cors());
+// CORS - allow frontend on any origin
+app.use(cors({
+  origin: process.env.FRONTEND_URL || '*',
+  methods: ['GET', 'POST'],
+  allowedHeaders: ['Content-Type'],
+}));
+
 app.use(express.json());
 
 // Routes
@@ -24,11 +29,12 @@ app.get('/health', (req, res) => {
 
 // Stripe webhook (raw body needed for signature verification)
 app.post('/webhook/stripe', express.raw({ type: 'application/json' }), (req, res) => {
-  // Phase 1: Placeholder — Kevin will setup Stripe products
+  const sig = req.headers['stripe-signature'];
+  // TODO: Verify webhook signature when Kevin provides the secret
   res.json({ received: true });
 });
 
-// Report status endpoint (placeholder)
+// Report status endpoint
 app.get('/api/report/status', (req, res) => {
   res.json({ status: 'ready', message: 'Report generation endpoint ready.' });
 });
@@ -39,7 +45,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`Soul Elements API running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/health`);
+  console.log(`Health check: http://0.0.0.0:${PORT}/health`);
 });
