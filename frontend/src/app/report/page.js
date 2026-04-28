@@ -8,12 +8,23 @@ function ReportContent() {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get('session_id');
   const tier = searchParams.get('tier') || 'standard';
+  const isTest = searchParams.get('test') === '1';
 
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
+    // TEST MODE: read from sessionStorage
+    if (isTest) {
+      const stored = sessionStorage.getItem('test_report');
+      if (stored) {
+        setData({ bazi: JSON.parse(stored) });
+        setLoading(false);
+        return;
+      }
+    }
+
     if (!sessionId) {
       setError('No session ID found. Please access this page after completing payment.');
       setLoading(false);
