@@ -195,7 +195,10 @@ function PreviewContent() {
             </button>
           </div>
           {couponApplied && couponCode === 'FREE' && (
-            <div className="text-[10px] mt-1" style={{ color: '#4CAF50' }}>FREE — Standard edition unlocked at no cost!</div>
+            <div className="text-[10px] mt-1" style={{ color: '#4CAF50' }}>FREE — Standard edition unlocked!</div>
+          )}
+          {couponApplied && couponCode === 'FREE2' && (
+            <div className="text-[10px] mt-1" style={{ color: '#4CAF50' }}>FREE2 — Grand Master edition unlocked!</div>
           )}
         </div>
 

@@ -30,7 +30,7 @@ router.post('/create-checkout-session', async (req, res) => {
       return res.status(400).json({ error: 'Invalid tier. Use "standard" or "grandmaster".' });
     }
 
-    // Handle FREE coupon: skip Stripe for Standard tier
+    // Handle coupon codes: skip Stripe
     if (coupon === 'FREE' && tier === 'standard') {
       const dummySessionId = `free_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
       if (reportData) {
@@ -40,9 +40,26 @@ router.post('/create-checkout-session', async (req, res) => {
         });
       }
       const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3001}`;
-      console.log(`🎟️ FREE coupon used — redirecting to report (session: ${dummySessionId})`);
+      console.log(`🎟️ FREE coupon used — Standard free (session: ${dummySessionId})`);
       return res.json({
         url: `${frontendUrl}/report?session_id=${dummySessionId}&tier=standard`,
+        sessionId: dummySessionId,
+        free: true,
+      });
+    }
+
+    if (coupon === 'FREE2' && tier === 'grandmaster') {
+      const dummySessionId = `free_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      if (reportData) {
+        reportStore.set(dummySessionId, {
+          data: reportData,
+          timestamp: Date.now(),
+        });
+      }
+      const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3001}`;
+      console.log(`🎟️ FREE2 coupon used — Grand Master free (session: ${dummySessionId})`);
+      return res.json({
+        url: `${frontendUrl}/report?session_id=${dummySessionId}&tier=grandmaster`,
         sessionId: dummySessionId,
         free: true,
       });
