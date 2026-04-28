@@ -688,9 +688,9 @@ export default function HomePage() {
     return (
       <div id={id} data-reveal={id} className={className}
         style={{
-          transition: 'all 0.8s cubic-bezier(0.22, 1, 0.36, 1)',
-          opacity: visible[id] ? 1 : 0,
-          transform: visible[id] ? 'translateY(0)' : 'translateY(30px)',
+          // Always visible. Fade-in from useEffect is a progressive enhancement.
+          opacity: 1,
+          transform: 'translateY(0)',
         }}>
         {children}
       </div>
