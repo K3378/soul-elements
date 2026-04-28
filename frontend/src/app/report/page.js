@@ -86,10 +86,15 @@ function ReportContent() {
     <div className="min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '4vh', paddingBottom: '4vh' }}>
       <div className="w-full max-w-4xl">
         {/* Print Header - hidden on screen */}
-        <div className="hidden print:block text-center mb-8">
-          <h1 className="text-2xl font-bold" style={{ fontFamily: "'Playfair Display', serif" }}>Soul Elements</h1>
-          <p className="text-sm" style={{ color: '#6B6F80' }}>Your Complete Destiny Report</p>
-          <p className="text-xs mt-1" style={{ color: '#434759' }}>{isGrandmaster ? 'Grand Master Edition' : 'Standard Edition'}</p>
+        <div className="print-header" style={{ display: 'none' }}>
+          <h1>Soul Elements</h1>
+          <div className="subtitle">Your Complete Destiny Report</div>
+          <div className="edition">{isGrandmaster ? 'Grand Master Edition' : 'Standard Edition'}</div>
+        </div>
+
+        {/* Print Footer */}
+        <div className="print-footer" style={{ display: 'none' }}>
+          Soul Elements &mdash; Personalized Destiny Report &mdash; Page 1
         </div>
 
         {/* Download Bar */}

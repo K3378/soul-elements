@@ -147,7 +147,104 @@ input::placeholder, select::placeholder { color: var(--text-dim); }
 
 /* Print */
 @media print {
-  body { background: #fff !important; color: #111 !important; }
-  .card-glass { border: 1px solid #ddd !important; background: #fff !important; }
-  .btn-gold, .btn-ghost { display: none !important; }
+  @page {
+    margin: 1.5cm 2cm;
+    size: A4;
+  }
+
+  body {
+    background: #fff !important;
+    color: #1a1a1a !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  .card-glass {
+    border: 1px solid #e0d8cc !important;
+    background: #faf8f5 !important;
+    border-radius: 8px !important;
+    padding: 24px !important;
+    backdrop-filter: none !important;
+    page-break-inside: avoid;
+  }
+
+  .card-premium::before {
+    background: linear-gradient(90deg, transparent, #D4A54A, transparent) !important;
+  }
+
+  .btn-gold, .btn-ghost, .print\\:hidden {
+    display: none !important;
+  }
+
+  .print-header {
+    display: block !important;
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #D4A54A;
+  }
+
+  .print-header h1 {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 24px !important;
+    color: #1a1a1a !important;
+    margin-bottom: 4px;
+  }
+
+  .print-header .subtitle {
+    font-size: 12px !important;
+    color: #888 !important;
+  }
+
+  .print-header .edition {
+    font-size: 11px !important;
+    color: #D4A54A !important;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-top: 4px;
+  }
+
+  .print-footer {
+    display: block !important;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 9px !important;
+    color: #999 !important;
+    padding: 10px 0;
+    border-top: 1px solid #e0d8cc;
+  }
+
+  h1, h2, h3 {
+    color: #1a1a1a !important;
+  }
+
+  /* Force gold text to dark in print */
+  [style*="color: var(--gold)"] {
+    color: #D4A54A !important;
+  }
+
+  [style*="color: var(--text-secondary)"] {
+    color: #555 !important;
+  }
+
+  [style*="color: var(--text-muted)"] {
+    color: #666 !important;
+  }
+
+  [style*="color: var(--text-dim)"] {
+    color: #888 !important;
+  }
+
+  [style*="color: #6B6F80"] {
+    color: #555 !important;
+  }
+
+  [style*="color: #434759"] {
+    color: #888 !important;
+  }
+
+  .spinner { display: none !important; }
 }
