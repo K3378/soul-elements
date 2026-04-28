@@ -4,9 +4,7 @@
     {
       "name": "backend",
       "build": {
-        "builder": "DOCKERFILE",
-        "dockerfilePath": "Dockerfile",
-        "watchPatterns": ["backend/**", "frontend/**"]
+        "builder": "NIXPACKS"
       },
       "deploy": {
         "numReplicas": 1,

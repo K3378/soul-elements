@@ -64,7 +64,7 @@ function InputForm() {
         throw new Error(data.error || 'Analysis failed');
       }
 
-      router.push(`/preview/${data.reportId}?data=${encodeURIComponent(JSON.stringify(data))}`);
+      router.push(`/preview?data=${encodeURIComponent(JSON.stringify(data))}`);
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.');
     } finally {

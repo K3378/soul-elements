@@ -1,20 +1,19 @@
 /**
- * Soul Elements — Main Server Entry
+ * Soul Elements — Unified Server
  * 
- * Unified server that runs Express API + Next.js frontend.
- * In production, the Next.js standalone server is started as a child process
- * and Express proxies frontend requests to it.
+ * Serves both the Express API and Next.js static frontend export.
  */
 
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
-const { fork } = require('child_process');
-const http = require('http');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
+
+// Frontend static files (Next.js export with trailingSlash)
+const frontendDir = path.join(__dirname, '..', 'frontend', 'out');
 
 // CORS
 app.use(cors({
@@ -46,53 +45,34 @@ app.get('/api/report/status', (req, res) => {
   res.json({ status: 'ready', message: 'Report generation endpoint ready.' });
 });
 
-// ========== Frontend (Next.js) ==========
-// In production, proxy to the Next.js standalone server
-let nextServerUrl = `http://127.0.0.1:${PORT + 1}`;
-let nextServerReady = false;
+// ========== Frontend Static Files ==========
+// Serve Next.js static assets (JS, CSS, images) with long cache
+app.use('/_next', express.static(path.join(frontendDir, '_next'), {
+  maxAge: '1y',
+  immutable: true,
+}));
 
-function proxyToNext(req, res) {
-  if (!nextServerReady) {
-    // Serve a loading page if Next.js isn't ready yet
-    return res.send(`<!DOCTYPE html><html><head><title>Soul Elements</title><style>
-      body{background:#0B0E1A;color:#F5F0E5;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:system-ui,sans-serif;text-align:center}
-      h1{font-family:Georgia,serif;color:#C9A84C;font-size:2rem}
-      .spinner{width:40px;height:40px;border:3px solid rgba(201,168,76,0.2);border-top-color:#C9A84C;border-radius:50%;animation:spin .8s linear infinite;margin:20px auto}
-      @keyframes spin{to{transform:rotate(360deg)}}
-    </style></head><body>
-    <div><div class="spinner"></div><h1>Awakening the Cosmos...</h1><p style="color:#8B8FA3">Your reading is being prepared</p></div>
-    </body></html>`);
-  }
+// Serve root-level static assets (favicon, svg, etc.)
+app.use(express.static(frontendDir, {
+  maxAge: '1h',
+}));
 
-  const options = {
-    hostname: '127.0.0.1',
-    port: PORT + 1,
-    path: req.url,
-    method: req.method,
-    headers: req.headers,
-  };
+// SPA-style fallback: for /input, /preview, /report, serve their index.html
+app.get('/input*', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'input', 'index.html'));
+});
 
-  const proxyReq = http.request(options, (proxyRes) => {
-    // Remove chunked encoding for 1:1 passthrough
-    delete proxyRes.headers['content-length'];
-    res.writeHead(proxyRes.statusCode, proxyRes.headers);
-    proxyRes.pipe(res);
-  });
+app.get('/preview*', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'preview', 'index.html'));
+});
 
-  proxyReq.on('error', (err) => {
-    console.error('Proxy error:', err.message);
-    res.status(502).send('Frontend unavailable');
-  });
+app.get('/report*', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'report', 'index.html'));
+});
 
-  req.pipe(proxyReq);
-}
-
-// Catch-all: proxy everything except API routes to Next.js
-app.use((req, res, next) => {
-  if (req.path.startsWith('/api') || req.path.startsWith('/health') || req.path.startsWith('/webhook')) {
-    return next();
-  }
-  proxyToNext(req, res);
+// Redirect plain / to index
+app.get('/', (req, res) => {
+  res.sendFile(path.join(frontendDir, 'index.html'));
 });
 
 // Error handler
@@ -102,51 +82,8 @@ app.use((err, req, res, next) => {
 });
 
 // ========== Start ==========
-async function start() {
-  // Start Next.js standalone server
-  const frontendDir = path.join(__dirname, '..', 'frontend');
-  const standaloneServer = path.join(frontendDir, 'server.js');
-
-  try {
-    const fs = require('fs');
-    if (fs.existsSync(standaloneServer)) {
-      const child = fork(standaloneServer, [], {
-        env: { ...process.env, PORT: String(PORT + 1) },
-        cwd: path.dirname(standaloneServer),
-        stdio: 'pipe',
-      });
-
-      child.stdout.on('data', (data) => {
-        const msg = data.toString();
-        process.stdout.write(`[Next.js] ${msg}`);
-        if (msg.includes('started') || msg.includes('listening') || msg.includes('ready')) {
-          nextServerReady = true;
-        }
-      });
-
-      child.stderr.on('data', (data) => {
-        process.stderr.write(`[Next.js] ${data}`);
-      });
-
-      child.on('exit', (code) => {
-        console.log(`Next.js server exited with code ${code}`);
-        nextServerReady = false;
-      });
-
-      // Give Next.js time to start, then mark ready
-      setTimeout(() => { nextServerReady = true; }, 5000);
-    } else {
-      console.log('Frontend standalone build not found. API-only mode.');
-      console.log('Expected at:', standaloneServer);
-    }
-  } catch (err) {
-    console.error('Failed to start Next.js:', err.message);
-  }
-
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Soul Elements running on port ${PORT}`);
-    console.log(`Health check: http://0.0.0.0:${PORT}/health`);
-  });
-}
-
-start();
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Soul Elements running on port ${PORT}`);
+  console.log(`Frontend: ${frontendDir}`);
+  console.log(`Health: http://0.0.0.0:${PORT}/health`);
+});
