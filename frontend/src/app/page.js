@@ -254,17 +254,21 @@ function StatsBar() {
         }}>
         {stats.map((s, i) => (
           <div key={s.label} className="flex items-center gap-1.5">
-            <span className="text-sm font-bold" style={{ color: '#C9A84C', fontFamily: "'JetBrains Mono', monospace" }}>{s.value}</span>
-            <span className="text-[10px]" style={{ color: '#6B6F80' }}>{s.label}</span>
-            {i < stats.length - 1 && <span className="text-[8px] ml-1" style={{ color: '#3D3947' }}>|</span>}
+            <span className="text-sm font-bold" style={{ color: '#C9A84C', fontFamily: "'JetBrains Mono', monospace" }}>
+              {s.value}
+            </span>
+            <span className="text-[10px]" style={{ color: '#6B6F80' }}>
+              {s.label}
+            </span>
+            {i < stats.length - 1 && <span className="text-[8px] ml-1" style={{ color: '#3D3947' }}>
+              |
+            </span>}
           </div>
         ))}
       </div>
     </div>
   );
 }
-
-
 
 // ===================== FAQ =====================
 function FaqSection() {
@@ -281,8 +285,10 @@ function FaqSection() {
 
   return (
     <div className="w-full max-w-4xl mb-16">
-      <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Common <span style={{ color: '#3B82F6' }}>Questions</span>
+      <h2 className="heading-2 text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
+        Common <span style={{ color: '#3B82F6' }}>
+          Questions
+        </span>
       </h2>
       <div style={{
         background: 'rgba(13,17,23,0.6)',
@@ -297,12 +303,16 @@ function FaqSection() {
             <button onClick={() => setOpenIdx(openIdx === i ? null : i)}
               className="w-full flex items-center justify-between text-left px-4 py-3.5"
               style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#E6EDF3' }}>
-              <span className="text-sm font-medium">{faq.q}</span>
+              <span className="text-sm font-medium">
+                {faq.q}
+              </span>
               <span style={{
                 color: '#C9A84C', fontSize: '14px', transition: 'transform 0.2s',
                 transform: openIdx === i ? 'rotate(45deg)' : 'rotate(0deg)',
                 display: 'inline-block',
-              }}>+</span>
+              }}>
+                +
+              </span>
             </button>
             {openIdx === i && (
               <div className="px-4 pb-4 text-xs leading-relaxed" style={{ color: '#8B949E', lineHeight: '1.8', maxWidth: '600px' }}>
@@ -367,8 +377,10 @@ function RealtimeBaziChart() {
 
   return (
     <div className="w-full max-w-4xl mb-16">
-      <h2 className="text-2xl font-bold text-center mb-6" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Your Four Pillars <span style={{ color: '#3B82F6' }}>Instantly</span>
+      <h2 className="heading-2 text-2xl font-bold text-center mb-6" style={{ color: '#E6EDF3' }}>
+        Your Four Pillars <span style={{ color: '#3B82F6' }}>
+          Instantly
+        </span>
       </h2>
       <p className="text-xs text-center mb-6" style={{ color: '#8B949E' }}>
         Type any date and see your Ba Zi chart generated in real time
@@ -393,7 +405,9 @@ function RealtimeBaziChart() {
             <div className="flex items-center justify-center gap-2 sm:gap-4 flex-wrap">
               {chart.map((p, i) => (
                 <div key={p.label} style={{ textAlign: 'center', minWidth: '70px' }}>
-                  <div className="text-[9px] font-semibold mb-2" style={{ color: '#6B6F80', letterSpacing: '0.05em' }}>{p.label}</div>
+                  <div className="text-[9px] font-semibold mb-2" style={{ color: '#6B6F80', letterSpacing: '0.05em' }}>
+                    {p.label}
+                  </div>
                   <div style={{
                     background: 'rgba(10,14,26,0.8)',
                     border: `1px solid ${ELEM_COLORS[ELEMENTS[p.stem]]}25`,
@@ -452,8 +466,10 @@ function RealtimeBaziChart() {
 function PricingPreview() {
   return (
     <div className="w-full max-w-4xl mb-16">
-      <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
-        Choose Your <span style={{ color: '#3B82F6' }}>Depth</span>
+      <h2 className="heading-2 text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
+        Choose Your <span style={{ color: '#3B82F6' }}>
+          Depth
+        </span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-2xl mx-auto">
         {/* Free Teaser */}
@@ -464,13 +480,17 @@ function PricingPreview() {
           padding: '28px',
           textAlign: 'center',
         }}>
-          <div className="text-xs font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>FREE PREVIEW</div>
+          <div className="text-xs font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>
+            FREE PREVIEW
+          </div>
           <div className="text-2xl font-bold mb-3" style={{ color: '#E6EDF3' }}>
             $0
           </div>
           <div className="text-[10px] mb-4" style={{ color: '#6B6F80', lineHeight: '1.7' }}>
-            Your Four Pillars with Day Master element<br />
-            Basic element balance overview<br />
+            Your Four Pillars with Day Master element
+            <br />
+            Basic element balance overview
+            <br />
             Blurred preview of the full report
           </div>
         </div>
@@ -491,16 +511,23 @@ function PricingPreview() {
           }}>
             MOST POPULAR
           </div>
-          <div className="text-xs font-bold mb-3" style={{ color: '#3B82F6', letterSpacing: '0.05em' }}>FULL REPORT</div>
+          <div className="text-xs font-bold mb-3" style={{ color: '#3B82F6', letterSpacing: '0.05em' }}>
+            FULL REPORT
+          </div>
           <div className="text-2xl font-bold mb-3" style={{ color: '#E6EDF3' }}>
             $49
           </div>
           <div className="text-[10px] mb-4" style={{ color: '#6B6F80', lineHeight: '1.8' }}>
-            Complete 12-page PDF report<br />
-            Hidden Stems & Ten Deities<br />
-            Favorable Elements & Missing Elements<br />
-            Life Focus Guidance (Career / Love / Peace)<br />
-            10-Year Luck Cycle Analysis<br />
+            Complete 12-page PDF report
+            <br />
+            Hidden Stems & Ten Deities
+            <br />
+            Favorable Elements & Missing Elements
+            <br />
+            Life Focus Guidance (Career / Love / Peace)
+            <br />
+            10-Year Luck Cycle Analysis
+            <br />
             Current Year Outlook
           </div>
         </div>
@@ -516,16 +543,23 @@ function PricingPreview() {
           maxWidth: '320px',
           margin: '0 auto',
         }}>
-          <div className="text-xs font-bold mb-3" style={{ color: '#C9A84C', letterSpacing: '0.05em' }}>PREMIUM</div>
+          <div className="text-xs font-bold mb-3" style={{ color: '#C9A84C', letterSpacing: '0.05em' }}>
+            PREMIUM
+          </div>
           <div className="text-2xl font-bold mb-3" style={{ color: '#E6EDF3' }}>
             $99
           </div>
           <div className="text-[10px]" style={{ color: '#6B6F80', lineHeight: '1.8' }}>
-            Everything in Full Report plus:<br />
-            Complete 20-page PDF<br />
-            Extended 30-Year Luck Cycle Analysis<br />
-            Year-by-Year Detail for Current Decade<br />
-            Hidden Element Depth Analysis<br />
+            Everything in Full Report plus:
+            <br />
+            Complete 20-page PDF
+            <br />
+            Extended 30-Year Luck Cycle Analysis
+            <br />
+            Year-by-Year Detail for Current Decade
+            <br />
+            Hidden Element Depth Analysis
+            <br />
             Elemental Balance Therapy Recommendations
           </div>
         </div>
@@ -540,7 +574,9 @@ function SectionDivider({ variant }) {
     return (
       <div className="w-full max-w-4xl flex items-center justify-center gap-3 mb-8">
         <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)' }} />
-        <div className="flex items-center gap-2" style={{ color: '#3D3947', fontSize: '10px', letterSpacing: '0.3em' }}>✦ ✦ ✦</div>
+        <div className="flex items-center gap-2" style={{ color: '#3D3947', fontSize: '10px', letterSpacing: '0.3em' }}>
+          ✦ ✦ ✦
+        </div>
         <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.05), transparent)' }} />
       </div>
     );
@@ -577,15 +613,21 @@ function SiteFooter() {
           {/* Brand */}
           <div>
             <div className="text-sm font-bold mb-2" style={{ color: '#E6EDF3' }}>
-              <span style={{ color: '#3B82F6' }}>Soul</span> Elements
+              <span style={{ color: '#3B82F6' }}>
+                Soul
+              </span>
+              Elements
             </div>
             <p className="text-[10px] leading-relaxed" style={{ color: '#6B6F80', lineHeight: '1.8' }}>
-              Ancient Chinese metaphysics meets modern self-discovery. Understanding yourself through the Four Pillars of Destiny.
+              Ancient Chinese metaphysics meets modern self-discovery.
+              Understanding yourself through the Four Pillars of Destiny.
             </p>
           </div>
           {/* Links */}
           <div>
-            <div className="text-[10px] font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>EXPLORE</div>
+            <div className="text-[10px] font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>
+              EXPLORE
+            </div>
             <div className="space-y-1.5">
               {['What is Ba Zi?', 'How It Works', 'The Five Elements', 'Pricing'].map(link => (
                 <div key={link} className="text-[10px] cursor-pointer" style={{ color: '#6B6F80' }}
@@ -601,10 +643,15 @@ function SiteFooter() {
           </div>
           {/* Legal */}
           <div>
-            <div className="text-[10px] font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>LEGAL</div>
+            <div className="text-[10px] font-bold mb-3" style={{ color: '#8B949E', letterSpacing: '0.05em' }}>
+              LEGAL
+            </div>
             <div className="text-[10px] leading-relaxed" style={{ color: '#6B6F80', lineHeight: '1.8' }}>
-              For entertainment and self-reflection purposes.<br />
-              Not a substitute for professional advice.<br /><br />
+              For entertainment and self-reflection purposes.
+              <br />
+              Not a substitute for professional advice.
+              <br />
+              <br />
               &copy; {new Date().getFullYear()} Soul Elements. All rights reserved.
             </div>
           </div>
@@ -651,69 +698,33 @@ export default function HomePage() {
     } catch (e) {}
   }, []);
 
-  // === PARTICLE SYSTEM FOR HERO BACKGROUND ===
+  // === CONSTELLATION STAR GENERATOR (CSS-only, no CPU overhead) ===
+  // Generates a static star field using CSS custom properties.
+  // Each star is a tiny dot with a random CSS animation delay for twinkling.
   useEffect(() => {
-    const canvas = document.getElementById('hero-particles');
-    if (!canvas) return;
-    const ctx = canvas.getContext('2d');
-    let animId;
-    const particles = [];
-    const W = () => window.innerWidth;
-    const H = () => window.innerHeight;
-    canvas.width = W();
-    canvas.height = H();
-    
-    for (let i = 0; i < 80; i++) {
-      particles.push({
-        x: Math.random() * W(),
-        y: Math.random() * H(),
-        vx: (Math.random() - 0.5) * 0.6,
-        vy: (Math.random() - 0.5) * 0.6,
-        r: Math.random() * 2 + 0.5,
-        alpha: Math.random() * 0.5 + 0.1,
+    const container = document.getElementById('constellation-stars');
+    if (!container) return;
+    const starCount = 60;
+    const stars = [];
+    for (let i = 0; i < starCount; i++) {
+      stars.push({
+        x: Math.random() * 100,
+        y: Math.random() * 100,
+        size: Math.random() * 2 + 0.5,
+        delay: Math.random() * 6,
+        duration: 3 + Math.random() * 4,
+        opacity: 0.08 + Math.random() * 0.2,
       });
     }
-    
-    function draw() {
-      ctx.clearRect(0, 0, W(), H());
-      for (const p of particles) {
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(212, 165, 74, ${p.alpha})`;
-        ctx.fill();
-        p.x += p.vx;
-        p.y += p.vy;
-        if (p.x < 0) p.x = W();
-        if (p.x > W()) p.x = 0;
-        if (p.y < 0) p.y = H();
-        if (p.y > H()) p.y = 0;
-      }
-      // Draw connections between nearby particles
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < particles.length; j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < 120) {
-            ctx.beginPath();
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.strokeStyle = `rgba(52, 152, 219, ${0.08 * (1 - dist / 120)})`;
-            ctx.stroke();
-          }
-        }
-      }
-      animId = requestAnimationFrame(draw);
-    }
-    draw();
-    
-    const resize = () => { canvas.width = W(); canvas.height = H(); };
-    window.addEventListener('resize', resize);
-    
-    return () => {
-      cancelAnimationFrame(animId);
-      window.removeEventListener('resize', resize);
-    };
+    container.innerHTML = stars.map((s, i) =>
+      `<div class="constellation-star" style="
+        left:${s.x}%;top:${s.y}%;
+        width:${s.size}px;height:${s.size}px;
+        opacity:${s.opacity};
+        animation-delay:-${s.delay}s;
+        animation-duration:${s.duration}s;
+      "></div>`
+    ).join('');
   }, []);
 
   const searchLocation = useCallback(async (query) => {
@@ -870,13 +881,11 @@ export default function HomePage() {
         <div className="absolute inset-0" style={{
           backgroundImage: 'url(/bg-design.jpg)',
           backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: 0.25,
+          opacity: 0.22,
         }} />
-        <div className="absolute" style={{
-          top: '15%', right: '-5%', width: '500px', height: '500px',
-          opacity: 0.04, transform: 'rotate(15deg)',
-        }}>
-          <svg viewBox="0 0 200 200" style={{ animation: 'spin 30s linear infinite' }}>
+        {/* Tai Chi ornaments using CSS animations */}
+        <div className="tai-chi-ornament tai-chi-ornament-1" style={{ top: '5%', right: '-5%' }}>
+          <svg viewBox="0 0 200 200" width="500" height="500">
             <defs>
               <clipPath id="taiChiBg">
                 <path d="M100 10 A90 90 0 0 1 100 190 A45 45 0 0 1 100 100 A45 45 0 0 0 100 10 Z" />
@@ -887,75 +896,116 @@ export default function HomePage() {
             <circle cx="100" cy="145" r="20" fill="#C9A84C" />
           </svg>
         </div>
-        <div className="absolute" style={{
-          bottom: '10%', left: '-3%', width: '350px', height: '350px',
-          opacity: 0.03, transform: 'rotate(-20deg)',
-        }}>
-          <svg viewBox="0 0 200 200" style={{ animation: 'spin 40s linear infinite reverse' }}>
+        <div className="tai-chi-ornament tai-chi-ornament-2" style={{ bottom: '5%', left: '-3%' }}>
+          <svg viewBox="0 0 200 200" width="350" height="350">
             <circle cx="100" cy="100" r="90" fill="#C9A84C" />
             <path d="M100 10 A45 45 0 0 0 100 100 A90 90 0 0 0 100 190 A45 45 0 0 1 100 100 A45 45 0 0 1 100 10 Z" fill="#07070D" />
             <circle cx="100" cy="55" r="18" fill="#C9A84C" />
             <circle cx="100" cy="145" r="18" fill="#07070D" />
           </svg>
         </div>
+        {/* Star dot field rendered via CSS gradients (lighter than individual divs) */}
         <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(1px 1px at 20% 30%, rgba(201,168,76,0.3), transparent), radial-gradient(1px 1px at 40% 70%, rgba(201,168,76,0.2), transparent), radial-gradient(1.5px 1.5px at 60% 20%, rgba(201,168,76,0.3), transparent), radial-gradient(1px 1px at 80% 60%, rgba(201,168,76,0.2), transparent), radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,0.15), transparent), radial-gradient(1.5px 1.5px at 70% 90%, rgba(255,255,255,0.1), transparent), radial-gradient(1px 1px at 90% 10%, rgba(201,168,76,0.2), transparent), radial-gradient(1px 1px at 50% 40%, rgba(255,255,255,0.1), transparent)',
+          backgroundImage: 'radial-gradient(1px 1px at 15% 20%, rgba(201,168,76,0.35), transparent),' +
+            'radial-gradient(1px 1px at 25% 65%, rgba(201,168,76,0.25), transparent),' +
+            'radial-gradient(1.5px 1.5px at 35% 15%, rgba(255,215,120,0.3), transparent),' +
+            'radial-gradient(1px 1px at 45% 75%, rgba(201,168,76,0.2), transparent),' +
+            'radial-gradient(1px 1px at 55% 25%, rgba(255,215,120,0.25), transparent),' +
+            'radial-gradient(1.5px 1.5px at 65% 55%, rgba(201,168,76,0.2), transparent),' +
+            'radial-gradient(1px 1px at 75% 35%, rgba(255,215,120,0.15), transparent),' +
+            'radial-gradient(1px 1px at 85% 80%, rgba(201,168,76,0.2), transparent),' +
+            'radial-gradient(1.2px 1.2px at 20% 85%, rgba(201,168,76,0.2), transparent),' +
+            'radial-gradient(1px 1px at 50% 45%, rgba(255,255,255,0.12), transparent),' +
+            'radial-gradient(1px 1px at 70% 10%, rgba(201,168,76,0.15), transparent),' +
+            'radial-gradient(1.2px 1.2px at 90% 50%, rgba(201,168,76,0.2), transparent),' +
+            'radial-gradient(1px 1px at 5% 50%, rgba(255,215,120,0.15), transparent),' +
+            'radial-gradient(1px 1px at 40% 90%, rgba(201,168,76,0.15), transparent),' +
+            'radial-gradient(1px 1px at 95% 15%, rgba(255,255,255,0.1), transparent)',
         }} />
       </div>
 
-      <canvas id="hero-particles" className="fixed inset-0 z-[1] pointer-events-none" style={{ opacity: 0.3 }} />
+      <div id="constellation-stars" className="fixed inset-0 z-[1] pointer-events-none" style={{ opacity: 0.35 }} />
 
       <div ref={revealRef} className="relative z-[2] min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '4vh' }}>
 
-        {/* ========== HERO SECTION ========== */}
-        <div className="w-full max-w-4xl text-center mb-8" style={{ paddingTop: '6vh' }}>
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full mb-6" style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)' }}>
-            <svg width="32" height="32" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="#3B82F6" strokeWidth="1.5" opacity="0.5" />
-              <path d="M50 4 A46 46 0 0 1 50 50 A23 23 0 0 0 50 96 A46 46 0 0 1 50 4" fill="#3B82F6" opacity="0.75" />
-              <circle cx="50" cy="73" r="7" fill="#0F1111" />
-              <circle cx="50" cy="27" r="7" fill="#3B82F6" />
+        {/* ========== HERO SECTION — Enhanced ========== */}
+        <div className="w-full max-w-4xl text-center mb-8" style={{ paddingTop: '10vh' }}>
+          {/* Gold tai chi emblem with glow */}
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8"
+            style={{
+              background: 'rgba(201,168,76,0.06)',
+              border: '1px solid rgba(201,168,76,0.2)',
+              boxShadow: '0 0 40px rgba(201,168,76,0.06)',
+              animation: 'glowPulse 4s ease-in-out infinite',
+            }}>
+            <svg width="36" height="36" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A84C" strokeWidth="1.2" opacity="0.4" />
+              <path d="M50 4 A46 46 0 0 1 50 96 A23 23 0 0 0 50 50 A23 23 0 0 1 50 4" fill="#C9A84C" opacity="0.8" />
+              <circle cx="50" cy="73" r="7" fill="#07080A" />
+              <circle cx="50" cy="27" r="7" fill="#C9A84C" />
             </svg>
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{ letterSpacing: '-0.02em', color: '#E6EDF3' }}>
+
+          {/* Dramatic heading with Playfair Display */}
+          <h1 className="heading-display text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold mb-6"
+            style={{ color: '#E6EDF3', lineHeight: '1.0' }}>
             Discover Your<br />
-            <span style={{ color: '#3B82F6' }}>Soul Element</span>
+            <span style={{
+              background: 'linear-gradient(135deg, #C9A84C 0%, #D4B85A 40%, #C9A84C 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              backgroundClip: 'text',
+            }}>Soul Element</span>
           </h1>
-          <p className="text-xl max-w-2xl mx-auto mb-8" style={{ color: '#8B949E', lineHeight: '1.7' }}>
+
+          {/* Refined subtitle */}
+          <p className="max-w-2xl mx-auto mb-10" style={{
+            color: '#8B949E',
+            fontSize: '17px',
+            lineHeight: '1.8',
+            fontFamily: "'Cormorant Garamond', 'Playfair Display', Georgia, serif",
+            fontWeight: 400,
+            fontStyle: 'italic',
+          }}>
             Ancient Chinese metaphysics meets modern self-discovery.
             Unlock the wisdom of the Four Pillars of Destiny (Ba Zi) —
             a 2,500-year-old system for understanding your true nature.
           </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap">
+
+          {/* Refined CTA buttons */}
+          <div className="flex items-center justify-center gap-4 flex-wrap">
             <button onClick={() => document.getElementById('input-form')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
-                background: 'linear-gradient(135deg, #3B82F6, #2980B9)',
-                border: '2px solid #3B82F6',
-                borderRadius: '25px',
-                padding: '14px 32px',
-                color: '#fff', fontSize: '16px', fontWeight: 600, cursor: 'pointer',
+                background: 'linear-gradient(135deg, #C9A84C, #B8962E)',
+                border: '1px solid #C9A84C',
+                borderRadius: '8px',
+                padding: '14px 36px',
+                color: '#07080A', fontSize: '15px', fontWeight: 600, cursor: 'pointer',
                 transition: 'all 0.2s',
-                boxShadow: '0 4px 20px rgba(59,130,246,0.3)',
+                boxShadow: '0 4px 24px rgba(201,168,76,0.25)',
+                letterSpacing: '0.01em',
               }}>
-              Start Now
+              Begin Your Reading
             </button>
             <button onClick={() => document.getElementById('about-bazi')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
-                background: 'transparent',
-                border: '2px solid #30363D',
-                borderRadius: '25px',
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.1)',
+                borderRadius: '8px',
                 padding: '14px 28px',
                 color: '#E6EDF3', fontSize: '14px', fontWeight: 500, cursor: 'pointer',
+                transition: 'all 0.2s',
               }}>
               What is Ba Zi?
             </button>
             <button onClick={() => document.getElementById('oracle-section')?.scrollIntoView({ behavior: 'smooth' })}
               style={{
                 background: 'transparent',
-                border: '1px solid rgba(201,168,76,0.2)',
-                borderRadius: '25px',
+                border: '1px solid rgba(201,168,76,0.15)',
+                borderRadius: '8px',
                 padding: '14px 24px',
                 color: '#C9A84C', fontSize: '13px', fontWeight: 400, cursor: 'pointer',
+                transition: 'all 0.2s',
               }}>
               Draw a Fortune Stick
             </button>
@@ -1184,7 +1234,7 @@ export default function HomePage() {
         {/* ========== WHAT IS BA ZI ========== */}
         <SectionWrapper>
           <RevealSection id="about-bazi">
-            <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
+            <h2 className="heading-2 text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
               What is <span style={{ color: '#3B82F6' }}>Ba Zi</span>?
             </h2>
             <div style={{
@@ -1282,7 +1332,7 @@ export default function HomePage() {
         {/* ========== THE FIVE ELEMENTS DEEP DIVE + SVG CYCLE ========== */}
         <SectionWrapper alt>
           <RevealSection id="five-elements">
-            <h2 className="text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3', fontFamily: "'Cormorant Garamond', 'Playfair Display', serif" }}>
+            <h2 className="heading-2 text-2xl font-bold text-center mb-8" style={{ color: '#E6EDF3' }}>
               The Five Elements: A <span style={{ color: '#3B82F6' }}>Living</span> Cycle
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8" style={{

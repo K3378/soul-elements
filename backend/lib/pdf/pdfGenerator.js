@@ -130,15 +130,11 @@ function generatePDF(baziData, reportContent, tier = 'standard') {
  * Register fonts for the PDF
  */
 function registerFonts(doc) {
-  // Use built-in Helvetica as fallback since we can't depend on custom fonts in Railway
-  // For production, bundle Inter/Playfair fonts
-  doc.registerFont('Inter', 'Helvetica');
-  doc.registerFont('Inter-Bold', 'Helvetica-Bold');
-  doc.registerFont('Inter-Italic', 'Helvetica-Oblique');
-  
-  // Use built-in Courier for monospace
-  doc.registerFont('Mono', 'Courier');
-  doc.registerFont('Mono-Bold', 'Courier-Bold');
+  // Use PDFKit built-in fonts - Helvetica for UI, Courier for mono
+  // For Railway Hobby plan, we rely on built-in PDF fonts
+  // To add custom fonts (Inter, Playfair), bundle .ttf files and update paths below
+  // Built-in fonts are referenced directly via doc.font('Helvetica') etc.
+  // No registration needed for built-in PDF fonts
 }
 
 // ============================================================
@@ -167,18 +163,18 @@ function buildCoverPage(doc, data) {
 
   // Title
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('SOUL ELEMENTS', 55, 155, { letterSpacing: 0.3 });
 
   doc.fontSize(22)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.textPrimary)
     .text('Destiny Audit', 55, 182);
 
   // Subtitle
   doc.fontSize(10)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('A Complete Ba Zi Four Pillars Analysis', 55, 215);
 
@@ -192,17 +188,17 @@ function buildCoverPage(doc, data) {
   if (bazi?.dayMaster) {
     const dm = bazi.dayMaster;
     doc.fontSize(10)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text('Day Master', 55, 260);
 
     doc.fontSize(13)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${dm.en} (${dm.element} ${dm.polarity || ''})`, 55, 280);
 
     doc.fontSize(9)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(dm.archetype || '', 55, 305);
   }
@@ -210,13 +206,13 @@ function buildCoverPage(doc, data) {
   // Tier badge
   const tierText = (data.tier || 'Standard').toUpperCase();
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text(tierText + ' EDITION', 55, 350, { letterSpacing: 0.15 });
 
   // Confidential
   doc.fontSize(7)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text('CONFIDENTIAL — For personal use only', 55, 370);
 
@@ -246,12 +242,12 @@ function buildDocumentStructure(doc, tier) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('DOCUMENT STRUCTURE', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(8)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(isGrandMaster ? 'Grand Master Edition — 24 Page Breakdown' : 'Standard Edition — 14 Page Breakdown', 55, 82);
 
@@ -289,17 +285,17 @@ function buildDocumentStructure(doc, tier) {
       .fill(boxBg);
 
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`PAGE ${section.page}`, 65, yPos);
 
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(section.title, 65, yPos + 11);
 
     doc.fontSize(7)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(section.desc, 175, yPos + 11, { width: doc.page.width - 290 });
 
@@ -318,12 +314,12 @@ function buildArchitecturalChart(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ARCHITECTURAL CHART', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Four Pillars of Destiny — Each pillar reveals a different life dimension.', 55, 82);
 
@@ -340,7 +336,7 @@ function buildArchitecturalChart(doc, data) {
   const pillarWidth = (doc.page.width - 160) / 4;
 
   doc.fontSize(6.5)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold);
 
   pillarData.forEach((p, i) => {
@@ -361,36 +357,36 @@ function buildArchitecturalChart(doc, data) {
       .fillColor(COLORS.goldDark + '40');
 
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(p.name, px + 5, p.pos + 4, { width: pillarWidth - 10 });
 
     // Stem
     const stemColor = ELEMENT_COLORS[transformElement(pillar.stemElement)] || COLORS.textPrimary;
     doc.fontSize(10)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(stemColor)
       .text(pillar.stemEn || '', px + 5, p.pos + 25);
 
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(pillar.stemElement || '', px + pillarWidth / 2, p.pos + 30, { width: pillarWidth / 2 - 10 });
 
     // Branch
     doc.fontSize(10)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(pillar.animal || pillar.branchEn || '', px + 5, p.pos + 45);
 
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(pillar.branchEn || '', px + pillarWidth / 2, p.pos + 48, { width: pillarWidth / 2 - 10 });
 
     // Dimension label below box
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(p.dimension, px, p.pos + 90, { width: pillarWidth, align: 'center' });
   });
@@ -404,18 +400,18 @@ function buildArchitecturalChart(doc, data) {
     .stroke();
 
   doc.fontSize(7)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('DAY MASTER', 72, yDM + 10);
 
   if (dayMaster) {
     doc.fontSize(9)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(ELEMENT_COLORS[transformElement(dayMaster.element)] || COLORS.textPrimary)
       .text(`${dayMaster.en} (${dayMaster.element} ${dayMaster.polarity || ''})`, 72, yDM + 26);
 
     doc.fontSize(7)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(dayMaster.archetype || '', 200, yDM + 28, { width: pageW - 270 });
   }
@@ -428,7 +424,7 @@ function buildArchitecturalChart(doc, data) {
     let yPos = 310;
 
     doc.fontSize(9)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text('ELEMENT PROPORTIONS', 55, yPos);
 
@@ -439,7 +435,7 @@ function buildArchitecturalChart(doc, data) {
       const barY = yPos + i * 20;
 
       doc.fontSize(6)
-        .font('Inter')
+        .font('Helvetica')
         .fillColor(COLORS.textSecondary)
         .text(elem, 55, barY + 2);
 
@@ -449,7 +445,7 @@ function buildArchitecturalChart(doc, data) {
         .fillColor(ELEMENT_COLORS[elem] || COLORS.gold);
 
       doc.fontSize(6)
-        .font('Inter-Bold')
+.font('Helvetica')
         .fillColor(COLORS.textPrimary)
         .text(`${pct}%`, 100 + barW + 5, barY + 1);
     });
@@ -470,7 +466,7 @@ function buildFourPillarsDetail(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('PILLAR DEEP ANALYSIS', 55, 58, { letterSpacing: 0.15 });
 
@@ -495,22 +491,22 @@ function buildFourPillarsDetail(doc, data) {
 
     const stemColor = ELEMENT_COLORS[transformElement(pillar.stemElement)] || COLORS.textPrimary;
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(p.name, 70, yPos + 6);
 
     doc.fontSize(7)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(stemColor)
       .text(`${pillar.stemEn || ''} (${pillar.stemElement || ''})`, 70, yPos + 21);
 
     doc.fontSize(7)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${pillar.animal || pillar.branchEn || ''}`, 190, yPos + 21);
 
     doc.fontSize(6)
-      .font('Inter-Italic')
+.font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(p.desc, 280, yPos + 10, { width: pageW - 350 });
 
@@ -524,24 +520,24 @@ function buildFourPillarsDetail(doc, data) {
       .fillColor(COLORS.gold + '30');
 
     doc.fontSize(9)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text('DAY MASTER DEEP ANALYSIS', 55, yPos + 15);
 
     const dmColor = ELEMENT_COLORS[transformElement(dayMaster.element)] || COLORS.textPrimary;
     doc.fontSize(10)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(dmColor)
       .text(`${dayMaster.en} (${dayMaster.element} ${dayMaster.polarity || ''})`, 55, yPos + 35);
 
     doc.fontSize(7)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(dayMaster.archetype || '', 55, yPos + 55);
 
     if (dayMaster.keywords) {
       doc.fontSize(7)
-        .font('Inter')
+        .font('Helvetica')
         .fillColor(COLORS.textTertiary)
         .text(dayMaster.keywords, 55, yPos + 72, { width: pageW - 110 });
     }
@@ -562,12 +558,12 @@ function buildElementDistribution(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ELEMENTAL DISTRIBUTION', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Five Elements with Weighted Percentages', 55, 82);
 
@@ -588,7 +584,7 @@ function buildElementDistribution(doc, data) {
 
     // Label
     doc.fontSize(7)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(elem, 55, y + 4);
 
@@ -602,7 +598,7 @@ function buildElementDistribution(doc, data) {
 
     // Percentage
     doc.fontSize(7)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${pct}%`, barX + barW + 8, y + 4);
   });
@@ -610,7 +606,7 @@ function buildElementDistribution(doc, data) {
   // Legend
   const legendY = barY + 5 * gap + 25;
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ELEMENT PROPORTIONS', 55, legendY);
 
@@ -627,11 +623,11 @@ function buildElementDistribution(doc, data) {
     doc.rect(55, y, 6, 6)
       .fillColor(ELEMENT_COLORS[elem]);
     doc.fontSize(6.5)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(elem, 68, y - 1.5);
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(elementDescriptions[elem], 110, y - 1, { width: 250 });
   });
@@ -651,18 +647,18 @@ function buildElementBalance(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ELEMENT BALANCE & CYCLE ANALYSIS', 55, 58, { letterSpacing: 0.15 });
 
   // Generating Cycle
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text('GENERATING CYCLE', 55, 100, { letterSpacing: 0.1 });
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Each element gives birth to the next: Wood → Fire → Earth → Metal → Water → Wood', 55, 118);
 
@@ -677,12 +673,12 @@ function buildElementBalance(doc, data) {
 
   // Controlling Cycle
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.error)
     .text('CONTROLLING CYCLE', 55, 360, { letterSpacing: 0.1 });
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Each element controls another: Wood → Earth → Water → Fire → Metal → Wood', 55, 378);
 
@@ -709,12 +705,12 @@ function buildHiddenStems(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('HIDDEN STEMS', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Subconscious energies embedded in every earthly branch.', 55, 82);
 
@@ -733,12 +729,12 @@ function buildHiddenStems(doc, data) {
       .stroke();
 
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(`${pos.toUpperCase()} PILLAR — ${hs.branchEn || ''}`, 70, yPos + 5);
 
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`Animal: ${hs.hiddenStems?.[0]?.element || ''}`, 300, yPos + 5);
 
@@ -754,12 +750,12 @@ function buildHiddenStems(doc, data) {
         .fillColor(COLORS.bgSurface);
 
       doc.fontSize(6)
-        .font('Inter-Bold')
+.font('Helvetica')
         .fillColor(stemColor)
         .text(`${stem.stemEn || ''} — ${stem.element}`, 82, yPos + 4);
 
       doc.fontSize(6)
-        .font('Inter')
+        .font('Helvetica')
         .fillColor(COLORS.textTertiary)
         .text(depthLabels[stem.depth] || stem.depth, 250, yPos + 4);
 
@@ -772,12 +768,12 @@ function buildHiddenStems(doc, data) {
   // Hidden stems explanation
   yPos = Math.max(yPos + 10, 400);
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text(
       'Hidden Stems (藏干) are the internal energies contained within each Earthly Branch. ' +
@@ -803,12 +799,12 @@ function buildTenDeities(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('TEN DEITIES ANALYSIS', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Energetic roles played by each pillar in relation to the Day Master.', 55, 82);
 
@@ -828,23 +824,23 @@ function buildTenDeities(doc, data) {
       .stroke();
 
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(`${pos.toUpperCase()} PILLAR`, 70, yPos + 6);
 
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(deityColor)
       .text(deity.tenGodEn || 'The Self (Day Master)', 70, yPos + 22, { width: 230 });
 
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`${deity.stemEn || ''} (${deity.element || ''}, ${deity.polarity || ''})`, 290, yPos + 22);
 
     if (deity.tenGodSubtitle) {
       doc.fontSize(6)
-        .font('Inter-Italic')
+.font('Helvetica')
         .fillColor(COLORS.textTertiary)
         .text(deity.tenGodSubtitle, 70, yPos + 35, { width: pageW - 140 });
     }
@@ -855,7 +851,7 @@ function buildTenDeities(doc, data) {
   // Legend
   yPos = Math.max(yPos + 10, 400);
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('DEITY RELATIONSHIP TYPES', 55, yPos);
 
@@ -872,11 +868,11 @@ function buildTenDeities(doc, data) {
     doc.rect(55, ly, 6, 6)
       .fillColor(COLORS.gold + '40');
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(item.name, 68, ly - 1.5);
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(item.desc, 210, ly - 1, { width: 200 });
   });
@@ -896,19 +892,19 @@ function buildLuckCycles(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('LUCK CYCLES OVERVIEW', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(`10-Year Chapters of Destiny — Starting at age ${daYun.startingAge}`, 55, 82);
 
   // Starting age info
   if (daYun.calculationDetail) {
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(
         `You begin your first luck cycle at age ${Math.round(daYun.startingAge)}. ` +
@@ -933,7 +929,7 @@ function buildLuckCycles(doc, data) {
 
   headers.forEach((h, i) => {
     doc.fontSize(6.5)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(h, tableX + 5 + i * colW, tableY + 4, { width: colW - 10 });
   });
@@ -947,28 +943,28 @@ function buildLuckCycles(doc, data) {
       .fillColor(bgColor);
 
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`${p.pillar}`, tableX + 5, rowY + 6, { width: colW - 10 });
 
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(p.ageRange || '', tableX + 5 + colW, rowY + 6, { width: colW - 10 });
 
     doc.fontSize(6.5)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(p.stemEn || '', tableX + 5 + colW * 2, rowY + 6, { width: colW - 10 });
 
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(p.branchAnimal || p.branchEn || '', tableX + 5 + colW * 3, rowY + 6, { width: colW - 10 });
 
     const elemColor = ELEMENT_COLORS[transformElement(p.stemElement)] || COLORS.textPrimary;
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(elemColor)
       .text(p.stemElement || '', tableX + 5 + colW * 4, rowY + 6, { width: colW - 10 });
   });
@@ -992,7 +988,7 @@ function buildLuckCyclesDetail(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('LUCK CYCLES — DETAILED ANALYSIS', 55, 58, { letterSpacing: 0.15 });
 
@@ -1006,12 +1002,12 @@ function buildLuckCyclesDetail(doc, data) {
       .stroke();
 
     doc.fontSize(8)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(`Cycle ${p.pillar} (Ages ${p.ageRange})`, 70, yPos + 5);
 
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${p.stemEn || ''} ${p.branchAnimal || ''} — ${p.stemElement || ''}`, 70, yPos + 20);
 
@@ -1038,12 +1034,12 @@ function buildAnnualForecast(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ANNUAL ENERGY FORECAST', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('2025-2030 — Year-by-Year Analysis', 55, 82);
 
@@ -1059,7 +1055,7 @@ function buildAnnualForecast(doc, data) {
 
     // Year header
     doc.fontSize(9)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(`${f.year} — ${f.animal || ''} (${f.stemEn || ''} ${f.branchEn || ''})`, 70, yPos + 6);
 
@@ -1068,13 +1064,13 @@ function buildAnnualForecast(doc, data) {
     doc.rect(70, yPos + 22, 5, 5)
       .fillColor(elemColor);
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(f.stemElement || '', 80, yPos + 20);
 
     // Relationship
     doc.fontSize(6.5)
-      .font('Inter-Italic')
+.font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(f.relationship || '', 140, yPos + 20, { width: pageW - 260 });
 
@@ -1096,12 +1092,12 @@ function buildAnnualForecastGrandMaster(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ANNUAL ENERGY FORECAST', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('2025-2030 — Comprehensive Year-by-Year Analysis', 55, 82);
 
@@ -1115,25 +1111,25 @@ function buildAnnualForecastGrandMaster(doc, data) {
 
     // Year header
     doc.fontSize(9)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold)
       .text(`${f.year} — ${f.animal || ''} Year`, 70, yPos + 6);
 
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`${f.stemEn || ''} ${f.branchEn || ''} | Element: ${f.stemElement || ''}`, 70, yPos + 22);
 
     // Relationship
     doc.fontSize(6.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(f.relationship || '', 70, yPos + 36, { width: pageW - 140 });
 
     // Branch interactions
     if (f.branchInteractions && f.branchInteractions.length > 0) {
       doc.fontSize(6)
-        .font('Inter-Italic')
+.font('Helvetica')
         .fillColor(COLORS.textTertiary)
         .text(f.branchInteractions.join('; '), 70, yPos + 50, { width: pageW - 140 });
     }
@@ -1153,17 +1149,17 @@ function buildNaYinShenSha(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('NA YIN & SHEN SHA', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Musical Note Energy and Divine Star Influences', 55, 82);
 
   doc.fontSize(7)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text(
       'The Na Yin represents the musical note of each pillar — a deeper vibrational quality ' +
@@ -1175,7 +1171,7 @@ function buildNaYinShenSha(doc, data) {
 
   // Placeholder — real implementation would calculate Na Yin and Shen Sha
   doc.fontSize(6.5)
-    .font('Inter-Italic')
+.font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text('Full Na Yin and Shen Sha analysis available in the complete report.', 55, 200,
       { width: pageW - 110 });
@@ -1195,18 +1191,18 @@ function buildPersonalityProfile(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('PERSONALITY PROFILE', 55, 58, { letterSpacing: 0.15 });
 
   // Archetype
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text(`YOUR ARCHETYPE: ${(dm.archetype || '').toUpperCase()}`, 55, 100);
 
   doc.fontSize(7)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
       `As a ${dm.en} (${dm.element} ${dm.polarity || ''}), you embody the ${dm.archetype || ''} archetype — ` +
@@ -1217,7 +1213,7 @@ function buildPersonalityProfile(doc, data) {
 
   // Traits
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('KEY TRAITS', 55, 180);
 
@@ -1226,7 +1222,7 @@ function buildPersonalityProfile(doc, data) {
     let yPos = 200;
     traits.forEach((trait, i) => {
       doc.fontSize(6.5)
-        .font('Inter')
+        .font('Helvetica')
         .fillColor(COLORS.textPrimary)
         .text(`• ${trait}`, 70, yPos);
       yPos += 18;
@@ -1235,12 +1231,12 @@ function buildPersonalityProfile(doc, data) {
 
   // Strengths & Weaknesses section
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.success)
     .text('STRENGTHS', 55, 340);
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
       'Your chart configuration reveals natural talents for leadership, creative expression, ' +
@@ -1250,12 +1246,12 @@ function buildPersonalityProfile(doc, data) {
     );
 
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.warning)
     .text('GROWTH AREAS', 55, 430);
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
       'Your growth path involves balancing your natural intensity with patience, ' +
@@ -1276,17 +1272,17 @@ function buildCareerStrategy(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('CAREER & WEALTH STRATEGY', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Optimized career direction and wealth potential based on your chart.', 55, 82);
 
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text('OPTIMAL CAREER DIRECTIONS', 55, 120);
 
@@ -1303,11 +1299,11 @@ function buildCareerStrategy(doc, data) {
       .fillColor(COLORS.bgElevated);
 
     doc.fontSize(6.5)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(dir.field, 70, yPos + 4);
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(dir.reason, 230, yPos + 5, { width: 200 });
 
@@ -1315,12 +1311,12 @@ function buildCareerStrategy(doc, data) {
   });
 
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('WEALTH POTENTIAL', 55, 340);
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
       'Your chart indicates strong wealth potential during favorable luck cycles. ' +
@@ -1332,12 +1328,12 @@ function buildCareerStrategy(doc, data) {
     );
 
   doc.fontSize(8)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.warning)
     .text('TIMING — FAVORABLE PERIODS', 55, 430);
 
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
       'Your most favorable periods for career advancement and wealth accumulation ' +
@@ -1359,18 +1355,18 @@ function buildRemediationGuide(doc, data) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('REMEDIATION GUIDE', 55, 58, { letterSpacing: 0.15 });
 
   doc.fontSize(9)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('Environmental & Behavioral adjustments to harmonize your energy.', 55, 82);
 
   // Favorable directions
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text('FAVORABLE DIRECTIONS', 55, 115);
 
@@ -1387,11 +1383,11 @@ function buildRemediationGuide(doc, data) {
       .fillColor(COLORS.bgElevated);
 
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(ELEMENT_COLORS[d.element] || COLORS.textPrimary)
       .text(`${d.dir} (${d.element})`, 68, yPos + 4);
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(d.benefit, 160, yPos + 5, { width: 150 });
 
@@ -1401,7 +1397,7 @@ function buildRemediationGuide(doc, data) {
   // Colors
   yPos += 10;
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('COLORS', 55, yPos);
 
@@ -1418,7 +1414,7 @@ function buildRemediationGuide(doc, data) {
     doc.rect(55, yPos, 8, 8)
       .fillColor(c.hex);
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${c.name} — ${c.element}`, 70, yPos);
     yPos += 14;
@@ -1427,13 +1423,13 @@ function buildRemediationGuide(doc, data) {
   // Lucky numbers
   yPos += 10;
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.blue)
     .text('LUCKY NUMBERS', 55, yPos);
 
   yPos += 20;
   doc.fontSize(6.5)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text('1, 6 (Water), 3, 8 (Wood), 2, 7 (Fire), 5, 10 (Earth), 4, 9 (Metal)', 55, yPos,
       { width: pageW - 110 });
@@ -1441,7 +1437,7 @@ function buildRemediationGuide(doc, data) {
   // Lifestyle
   yPos += 25;
   doc.fontSize(9)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('LIFESTYLE RECOMMENDATIONS', 55, yPos);
 
@@ -1456,7 +1452,7 @@ function buildRemediationGuide(doc, data) {
 
   recs.forEach(rec => {
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textSecondary)
       .text(`• ${rec}`, 70, yPos, { width: pageW - 140 });
     yPos += 16;
@@ -1477,7 +1473,7 @@ function buildPersonalAffirmation(doc, data) {
   const centerX = pageW / 2;
 
   doc.fontSize(14)
-    .font('Inter-Bold')
+.font('Helvetica')
     .fillColor(COLORS.gold)
     .text('YOUR AFFIRMATION', centerX, 158, { align: 'center', letterSpacing: 0.15 });
 
@@ -1499,19 +1495,19 @@ function buildPersonalAffirmation(doc, data) {
       'I honor the unique energy that flows through me and embrace my cosmic destiny.';
 
     doc.fontSize(12)
-      .font('Inter-Italic')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`"${affirmation}"`, 55, 220, { align: 'center', width: pageW - 110 });
   }
 
   // Closing
   doc.fontSize(7)
-    .font('Inter')
+    .font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text('This report was generated for your personal guidance and reflection.', 55, 320, { align: 'center', width: pageW - 110 });
 
   doc.fontSize(6)
-    .font('Inter-Italic')
+.font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text('This report is based on the Four Pillars of Destiny (Ba Zi) system. ' +
       'It is intended for personal insight and reflection, not as a substitute for professional advice.', 55, 360,
@@ -1546,13 +1542,13 @@ function buildFooter(doc) {
 
     // Page number
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`Page ${i} of ${pages.count - 1}`, 55, pageH - 28);
 
     // Brand
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.gold + '50')
       .text('SOUL ELEMENTS', pageW - 140, pageH - 28, { width: 80, align: 'right' });
   }
@@ -1600,13 +1596,13 @@ function drawCycleDiagram(doc, startX, startY, elements, data) {
 
     // Label
     doc.fontSize(6)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(elem.label, x - 10, y + circleRadius + 4, { width: 20, align: 'center' });
 
     // Percentage
     doc.fontSize(5.5)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textPrimary)
       .text(`${pct}%`, x - 10, y - 5, { width: 20, align: 'center' });
   });
@@ -1647,12 +1643,12 @@ function buildMiniPillars(doc, pillars, x, y) {
 
     const stemColor = ELEMENT_COLORS[transformElement(p.stemElement)] || COLORS.textPrimary;
     doc.fontSize(7)
-      .font('Inter-Bold')
+.font('Helvetica')
       .fillColor(stemColor)
       .text(p.stemEn || '', px + 3, y + 4, { width: width - 6 });
 
     doc.fontSize(6)
-      .font('Inter')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(p.animal || p.branchEn || '', px + 3, y + 17, { width: width - 6 });
   });

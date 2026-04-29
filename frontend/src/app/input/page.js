@@ -28,7 +28,6 @@ const s = (styles) => styles;
 function InputForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialTier = searchParams.get('tier') === 'grandmaster' ? 'grandmaster' : 'standard';
 
   const [step, setStep] = useState(0);
   const [form, setForm] = useState({
@@ -42,12 +41,19 @@ function InputForm() {
     gender: '',
     goal: 'all',
     unknownTime: false,
-    tier: initialTier,
+    tier: 'standard',
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [touched, setTouched] = useState({});
   const [fadeIn, setFadeIn] = useState(true);
+  // Pull tier from URL safely after mount
+  useEffect(() => {
+    try {
+      const tier = searchParams.get('tier');
+      if (tier === 'grandmaster') setForm(prev => ({ ...prev, tier: 'grandmaster' }));
+    } catch {}
+  }, [searchParams]);
 
   // City autocomplete state
   const [cityQuery, setCityQuery] = useState('');

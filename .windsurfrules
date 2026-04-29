@@ -1,0 +1,74 @@
+# Soul Elements - Project Context + Active Cascade Task
+
+!! ACTIVE TASK: Improve the frontend UI. See `.cascade-tasks.md` for full details. Start with page.js (landing page hero section).
+
+# Soul Elements - Project Context
+
+## Overview
+BaZi (Chinese Four Pillars) fortune-telling web app. Dark-themed, all English content.
+
+## Tech Stack
+- **Frontend**: Next.js (app directory), React, CSS
+- **Backend**: Express.js (Node.js)
+- **Database**: Neon PostgreSQL
+- **PDF**: PDFKit (server-side)
+- **Hosting**: Railway (stemssouls.up.railway.app)
+- **Payments**: Stripe
+
+## Design System
+- Background: #07080A
+- Gold accent: #C9A84C
+- Blue accent: #3B82F6
+- Font size: text-base minimum for body text
+- Tai Chi background image (bg-design.jpg, opacity ~0.2-0.25)
+
+## Project Structure
+```
+soul-elements/
+  frontend/        # Next.js app
+    src/app/
+      page.js              - Homepage
+      input/page.js        - Birth info input form
+      preview/page.js      - Report preview before purchase
+      report/page.js       - Full report with PDF download
+      success/page.js      - Stripe payment success
+      components/
+        ElementRadarChart.js    - Element chart
+        FortuneStickOracle.js   - 60 sticks oracle
+      globals.css         - Global styles
+      layout.js           - Root layout
+    public/
+      bg-design.jpg       - Background image
+      data/sixtySticks.json
+
+  backend/         # Express.js server
+    server.js
+    routes/         - API routes (analyze, report, geocode, stripe, webhook)
+    lib/
+      baziEngine.js       - BaZi calculation engine
+      advancedCalculations.js
+      reportContent.js    - Report content builder
+      translationMap.js   - English translations
+      core/               - soul-elements-core library
+        tst.js            - True Solar Time (Meeus algorithm)
+        dayun.js          - DaYun calculation (jieqi-based)
+        elements.js       - Element scoring
+      pdf/
+        pdfGenerator.js   - PDFKit generation (34pg Standard / 46pg Grand Master)
+```
+
+## Pages Flow
+Homepage -> Input (birth date/time/location) -> Preview -> Purchase (Stripe) -> Report + PDF Download
+
+## Key Conventions
+- All English content (no Chinese characters)
+- Keep text-base minimum font sizes
+- Maintain dark theme with gold/blue accents
+- BG image visible at ~0.2-0.25 opacity
+- Match Dante Calculator Pro style (blue #3498DB accent, dark #0D1117 bg) as reference
+
+## Important Notes
+- Frontend uses Next.js app router
+- PDF generation is server-side (PDFKit), not browser print
+- Location uses Nominatim geocoding (Nominatim is just for city/country; timezone uses grouped UTC modal picker)
+- Email delivery is skipped for v1 (Stripe auto-receipt)
