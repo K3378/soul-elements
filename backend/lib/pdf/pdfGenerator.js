@@ -80,26 +80,42 @@ function generatePDF(baziData, reportContent, tier = 'standard') {
 
       // ============ BUILD PAGES ============
       buildCoverPage(doc, baziData);
+      doc.addPage();
       buildDocumentStructure(doc, tier);
+      doc.addPage();
       buildArchitecturalChart(doc, baziData);
+      doc.addPage();
       buildFourPillarsDetail(doc, baziData);
+      doc.addPage();
       buildElementDistribution(doc, baziData);
+      doc.addPage();
       buildElementBalance(doc, baziData);
+      doc.addPage();
       buildHiddenStems(doc, baziData);
+      doc.addPage();
       buildTenDeities(doc, baziData);
 
       if (tier === 'grandmaster') {
+        doc.addPage();
         buildLuckCyclesDetail(doc, baziData);
+        doc.addPage();
         buildAnnualForecastGrandMaster(doc, baziData);
+        doc.addPage();
         buildNaYinShenSha(doc, baziData);
+        doc.addPage();
         buildPersonalityProfile(doc, baziData);
+        doc.addPage();
         buildCareerStrategy(doc, baziData);
       } else {
+        doc.addPage();
         buildLuckCycles(doc, baziData);
+        doc.addPage();
         buildAnnualForecast(doc, baziData);
       }
 
+      doc.addPage();
       buildRemediationGuide(doc, baziData);
+      doc.addPage();
       buildPersonalAffirmation(doc, baziData);
       buildFooter(doc);
 
@@ -212,8 +228,6 @@ function buildCoverPage(doc, data) {
   // Bottom gold line
   doc.rect(0, pageH - 3, pageW, 3)
     .fill(COLORS.gold);
-
-  doc.addPage();
 }
 
 /**
