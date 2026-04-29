@@ -214,7 +214,7 @@ function calculateDaYun(gender, dayMasterStem, monthStem, monthBranch, birthDate
   return {
     startingAge: result.startingAgeRounded, // Use rounded age for display
     startingAgePrecise: result.startingAge,
-    direction: result.directionChinese,
+    direction: result.direction,
     directionEn: result.direction,
     jieqiDetail: result.calculationDetail,
     pillars: result.pillars,

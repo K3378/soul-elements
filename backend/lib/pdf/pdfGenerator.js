@@ -370,7 +370,7 @@ function buildArchitecturalChart(doc, data) {
     doc.fontSize(10)
       .font('Inter-Bold')
       .fillColor(stemColor)
-      .text(pillar.stem || pillar.stemEn || '', px + 5, p.pos + 25);
+      .text(pillar.stemEn || '', px + 5, p.pos + 25);
 
     doc.fontSize(6)
       .font('Inter')
@@ -502,7 +502,7 @@ function buildFourPillarsDetail(doc, data) {
     doc.fontSize(7)
       .font('Inter-Bold')
       .fillColor(stemColor)
-      .text(`${pillar.stem || pillar.stemEn || ''} (${pillar.stemElement || ''})`, 70, yPos + 21);
+      .text(`${pillar.stemEn || ''} (${pillar.stemElement || ''})`, 70, yPos + 21);
 
     doc.fontSize(7)
       .font('Inter')
@@ -659,7 +659,7 @@ function buildElementBalance(doc, data) {
   doc.fontSize(8)
     .font('Inter-Bold')
     .fillColor(COLORS.blue)
-    .text('GENERATING CYCLE (相生)', 55, 100, { letterSpacing: 0.1 });
+    .text('GENERATING CYCLE', 55, 100, { letterSpacing: 0.1 });
 
   doc.fontSize(6.5)
     .font('Inter')
@@ -679,7 +679,7 @@ function buildElementBalance(doc, data) {
   doc.fontSize(8)
     .font('Inter-Bold')
     .fillColor(COLORS.error)
-    .text('CONTROLLING CYCLE (相剋)', 55, 360, { letterSpacing: 0.1 });
+    .text('CONTROLLING CYCLE', 55, 360, { letterSpacing: 0.1 });
 
   doc.fontSize(6.5)
     .font('Inter')
@@ -711,7 +711,7 @@ function buildHiddenStems(doc, data) {
   doc.fontSize(11)
     .font('Inter-Bold')
     .fillColor(COLORS.gold)
-    .text('HIDDEN STEMS (藏干)', 55, 60, { letterSpacing: 0.15 });
+    .text('HIDDEN STEMS', 55, 60, { letterSpacing: 0.15 });
 
   doc.fontSize(8)
     .font('Inter')
@@ -735,7 +735,7 @@ function buildHiddenStems(doc, data) {
     doc.fontSize(7)
       .font('Inter-Bold')
       .fillColor(COLORS.gold)
-      .text(`${pos.toUpperCase()} PILLAR — ${hs.branchEn || ''} (${hs.branch})`, 70, yPos + 5);
+      .text(`${pos.toUpperCase()} PILLAR — ${hs.branchEn || ''}`, 70, yPos + 5);
 
     doc.fontSize(6)
       .font('Inter')
@@ -747,7 +747,7 @@ function buildHiddenStems(doc, data) {
     // Hidden stems detail
     const stems = hs.hiddenStems || [];
     stems.forEach((stem, i) => {
-      const depthLabels = { main: 'Main (本氣)', secondary: 'Secondary (中氣)', residual: 'Residual (餘氣)' };
+      const depthLabels = { main: 'Main', secondary: 'Secondary', residual: 'Residual' };
       const stemColor = ELEMENT_COLORS[transformElement(stem.element)] || COLORS.textPrimary;
 
       doc.roundedRect(70, yPos, pageW - 140, 18, 2)
@@ -756,7 +756,7 @@ function buildHiddenStems(doc, data) {
       doc.fontSize(6)
         .font('Inter-Bold')
         .fillColor(stemColor)
-        .text(`${stem.stemEn || ''} (${stem.stem}) — ${stem.element}`, 82, yPos + 4);
+        .text(`${stem.stemEn || ''} — ${stem.element}`, 82, yPos + 4);
 
       doc.fontSize(5.5)
         .font('Inter')
@@ -1166,8 +1166,8 @@ function buildNaYinShenSha(doc, data) {
     .font('Inter')
     .fillColor(COLORS.textTertiary)
     .text(
-      'The Na Yin (納音) represents the musical note of each pillar — a deeper vibrational quality ' +
-      'that reveals hidden talents and innate qualities. The Shen Sha (神煞) are divine star influences ' +
+      'The Na Yin represents the musical note of each pillar — a deeper vibrational quality ' +
+      'that reveals hidden talents and innate qualities. The Shen Sha are divine star influences ' +
       'that indicate auspicious or challenging energies in your chart.',
       55, 120,
       { width: pageW - 110 }
@@ -1649,7 +1649,7 @@ function buildMiniPillars(doc, pillars, x, y) {
     doc.fontSize(7)
       .font('Inter-Bold')
       .fillColor(stemColor)
-      .text(p.stem || p.stemEn || '', px + 3, y + 4, { width: width - 6 });
+      .text(p.stemEn || '', px + 3, y + 4, { width: width - 6 });
 
     doc.fontSize(6)
       .font('Inter')
