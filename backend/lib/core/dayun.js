@@ -185,6 +185,7 @@ function calculateDaYun(params) {
       branch: luckBranch,
       branchEn: BRANCH_EN[luckBranch]?.en || luckBranch,
       branchAnimal: BRANCH_EN[luckBranch]?.animal || luckBranch,
+      animal: BRANCH_EN[luckBranch]?.animal || luckBranch,
       ageRange: `${ageStart}-${ageEnd}`,
     });
   }

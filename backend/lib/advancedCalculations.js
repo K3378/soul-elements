@@ -189,73 +189,35 @@ function calculateAllHiddenStems(pillars) {
 /**
  * Calculate Da Yun (大運) — 10-year luck cycles
  * 
+ * Uses jieqi-based starting age calculation from soul-elements-core.
+ * 
  * For males: Yang male or Yin female = forward
  * For females: Yang female or Yin male = reverse
- * 
- * @param {string} gender - 'male' or 'female'
- * @param {string} dayMasterStem - Heavenly stem of the Day Pillar
- * @param {string} monthStem - Heavenly stem of the Month Pillar
- * @param {string} monthBranch - Earthly branch of the Month Pillar
- * @param {string} birthDate - YYYY-MM-DD
- * @param {string} birthTime - HH:mm
- * @param {number} longitude - birth longitude
- * @param {number} timezoneOffset - timezone offset
  */
 function calculateDaYun(gender, dayMasterStem, monthStem, monthBranch, birthDate, birthTime, longitude, timezoneOffset) {
   if (!gender || gender === '') return [];
 
-  const dmYang = isStemYang(dayMasterStem);
-  const isMale = gender === 'male';
+  // Use the new jieqi-based DaYun from core library
+  const { calculateDaYun: coreDaYun } = require('./core/dayun');
   
-  // Determinate direction: Yang male or Yin female = forward; else reverse
-  const isForward = (isMale && dmYang) || (!isMale && !dmYang);
-  
-  const monthStemIdx = STEM_ORDER.indexOf(monthStem);
-  const monthBranchIdx = BRANCH_ORDER.indexOf(monthBranch);
+  const result = coreDaYun({
+    gender,
+    dayMasterStem,
+    monthStem,
+    monthBranch,
+    birthDate,
+  });
 
-  // Calculate starting age (起運歲數)
-  // Simplified algorithm: based on remaining days to next/prev seasonal change
-  // For a professional implementation we'd calculate exact jieqi boundaries
-  const startingAge = 3; // Simplified: age 3 for demo; real implementation needs jieqi calculation
-  
-  // Generate 8 luck pillars (80 years worth)
-  const luckPillars = [];
-  for (let i = 0; i < 8; i++) {
-    const step = isForward ? i : -i;
-    
-    // Calculate luck stem
-    let luckStemIdx = (monthStemIdx + (isForward ? 1 : -1) * (i + 1)) % 10;
-    if (luckStemIdx < 0) luckStemIdx += 10;
-    const luckStem = STEM_ORDER[luckStemIdx];
-    
-    // Calculate luck branch
-    let luckBranchIdx = (monthBranchIdx + (isForward ? 1 : -1) * (i + 1)) % 12;
-    if (luckBranchIdx < 0) luckBranchIdx += 12;
-    const luckBranch = BRANCH_ORDER[luckBranchIdx];
-    
-    const ageStart = startingAge + (i * 10);
-    const ageEnd = ageStart + 9;
-    const yearStart = new Date().getFullYear() + (ageStart - 30); // Estimate based on ~30 age
-    const yearEnd = yearStart + 9;
-    
-    luckPillars.push({
-      pillar: i + 1,
-      stem: luckStem,
-      stemEn: HEAVENLY_STEMS[luckStem]?.en || luckStem,
-      stemElement: STEM_TO_ELEMENT[luckStem] || 'Unknown',
-      branch: luckBranch,
-      branchEn: EARTHLY_BRANCHES[luckBranch]?.en || luckBranch,
-      branchAnimal: EARTHLY_BRANCHES[luckBranch]?.animal || luckBranch,
-      ageRange: `${ageStart}-${ageEnd}`,
-      yearRange: `${yearStart}-${yearEnd}`,
-      direction: isForward ? 'Forward' : 'Reverse',
-    });
-  }
+  // If no pillars (no gender), return empty
+  if (!result.pillars || result.pillars.length === 0) return [];
 
   return {
-    startingAge,
-    direction: isForward ? 'Forward (順排)' : 'Reverse (逆排)',
-    pillars: luckPillars,
+    startingAge: result.startingAgeRounded, // Use rounded age for display
+    startingAgePrecise: result.startingAge,
+    direction: result.directionChinese,
+    directionEn: result.direction,
+    jieqiDetail: result.calculationDetail,
+    pillars: result.pillars,
   };
 }
 

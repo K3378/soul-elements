@@ -17,7 +17,7 @@ const {
 const { calculateAdvancedBaziData } = require('./advancedCalculations');
 
 /**
- * Calculate True Solar Time correction
+ * Calculate True Solar Time correction using Meeus algorithm
  * Formula: correction = (longitude - timezoneMeridian) * 4 + equationOfTime
  * 
  * @param {number} longitude - Birth location longitude (e.g. 114.17 for HK)
@@ -25,21 +25,17 @@ const { calculateAdvancedBaziData } = require('./advancedCalculations');
  * @returns {number} Correction in minutes
  */
 function getTrueSolarTimeCorrection(longitude, timezoneOffset) {
-  // Step 1: Longitude correction (±4 min per degree from timezone center meridian)
-  const timezoneMeridian = timezoneOffset * 15;
-  const longitudeCorrection = (longitude - timezoneMeridian) * 4;
+  // Use the new Meeus-based TST from core library
+  const { getTrueSolarTimeCorrection: coreTST } = require('./core/tst');
   
-  // Step 2: Equation of Time correction (±16 min max)
-  // Using an approximation based on the day of year
   const now = new Date();
-  const startOfYear = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now - startOfYear) / (1000 * 60 * 60 * 24));
+  const result = coreTST(longitude, timezoneOffset, {
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+    day: now.getDate(),
+  });
   
-  // Fourier approximation of EOT (accuracy ~±2 min)
-  const B = (360 / 365) * (dayOfYear - 81) * (Math.PI / 180);
-  const equationOfTime = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
-  
-  return longitudeCorrection + equationOfTime;
+  return result.totalMinutes;
 }
 
 /**

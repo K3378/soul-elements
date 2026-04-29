@@ -72,6 +72,56 @@ function ReportContent() {
     window.print();
   };
 
+  const handleDownloadPDF = async () => {
+    try {
+      // Show loading state
+      const btn = document.getElementById('pdf-download-btn');
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = 'Generating PDF...';
+      }
+
+      let pdfBlob;
+
+      if (isTest || (!sessionId && bazi)) {
+        // Direct PDF generation for test mode
+        const res = await fetch('/api/report/generate-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ bazi, goal: 'all', tier }),
+        });
+        if (!res.ok) throw new Error('PDF generation failed');
+        pdfBlob = await res.blob();
+      } else if (sessionId) {
+        // Session-based PDF download
+        const res = await fetch(`/api/report/${encodeURIComponent(sessionId)}/pdf?tier=${tier}`);
+        if (!res.ok) throw new Error('PDF generation failed');
+        pdfBlob = await res.blob();
+      } else {
+        throw new Error('No data available');
+      }
+
+      // Trigger download
+      const url = window.URL.createObjectURL(pdfBlob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `soul-elements-destiny-audit-${tier}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error('PDF download error:', err);
+      alert('Failed to generate PDF. Please try again or use browser print.');
+    } finally {
+      const btn = document.getElementById('pdf-download-btn');
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = 'Download PDF Report';
+      }
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center">
@@ -122,7 +172,7 @@ function ReportContent() {
 
         {/* Download Bar */}
         <div className="text-right mb-6 print:hidden">
-          <button onClick={handlePrint} className="btn-gold text-sm px-6 py-2">
+          <button id="pdf-download-btn" onClick={handleDownloadPDF} className="btn-gold text-sm px-6 py-2" style={{ minWidth: '200px' }}>
             Download PDF Report
           </button>
         </div>
