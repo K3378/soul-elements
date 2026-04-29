@@ -269,8 +269,8 @@ function InputForm() {
 
   const renderProgressBar = () => (
     <div style={s({ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0', marginBottom: '32px', padding: '0 8px' })}>
-      {STEPS.map((s, i) => (
-        <div key={s.index} style={s({ display: 'flex', alignItems: 'center' })}>
+      {STEPS.map((st, i) => (
+        <div key={st.index} style={s({ display: 'flex', alignItems: 'center' })}>
           {/* Step dot + label */}
           <div style={s({ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' })}>
             <div style={s({
@@ -289,7 +289,7 @@ function InputForm() {
               letterSpacing: '0.02em',
               fontWeight: i <= step ? 500 : 400,
             })}>
-              {s.label}
+              {st.label}
             </span>
           </div>
           {/* Connector line */}
