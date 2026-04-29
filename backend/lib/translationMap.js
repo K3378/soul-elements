@@ -112,8 +112,8 @@ const TEN_GOD_RULES = {
 
 // =========== 地支 Relations ===========
 const BRANCH_SIX_COMBINATIONS = {
-  '子丑': '合土', '寅亥': '合木', '卯戌': '合火',
-  '辰酉': '合金', '巳申': '合水', '午未': '合土',
+  '子丑': 'Earth', '寅亥': 'Wood', '卯戌': 'Fire',
+  '辰酉': 'Metal', '巳申': 'Water', '午未': 'Earth',
 };
 
 const BRANCH_TRIPLE_COMBINATIONS = {

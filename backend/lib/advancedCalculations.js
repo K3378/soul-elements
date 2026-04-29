@@ -248,7 +248,7 @@ function calculateBranchInteractions(pillars) {
       );
       if (isClash) {
         interactions.push({
-          type: 'Six Clash (六沖)',
+          type: 'Six Clash',
           positions: `${branchNames[i]}-${branchNames[j]}`,
           branches: `${b1}-${b2}`,
           branchesEn: `${EARTHLY_BRANCHES[b1]?.animal || b1} vs ${EARTHLY_BRANCHES[b2]?.animal || b2}`,
@@ -262,7 +262,7 @@ function calculateBranchInteractions(pillars) {
       const combo = BRANCH_SIX_COMBINATIONS[pairKey1] || BRANCH_SIX_COMBINATIONS[pairKey2];
       if (combo) {
         interactions.push({
-          type: 'Six Combination (六合)',
+          type: 'Six Combination',
           positions: `${branchNames[i]}-${branchNames[j]}`,
           branches: `${b1}-${b2}`,
           branchesEn: `${EARTHLY_BRANCHES[b1]?.animal || b1} + ${EARTHLY_BRANCHES[b2]?.animal || b2}`,
@@ -279,7 +279,7 @@ function calculateBranchInteractions(pillars) {
     const matched = needed.filter(n => presentBranches.includes(n));
     if (matched.length === 3) {
       interactions.push({
-        type: 'Triple Combination (三合)',
+        type: 'Triple Combination',
         branches: needed.join(''),
         branchesEn: info.animals.join(' + '),
         elementCreated: info.element,
@@ -300,7 +300,7 @@ function calculateBranchInteractions(pillars) {
       );
       if (isPunishment) {
         interactions.push({
-          type: 'Punishment (相刑)',
+          type: 'Punishment',
           positions: `${branchNames[i]}-${branchNames[j]}`,
           branches: `${b1}-${b2}`,
           branchesEn: `${EARTHLY_BRANCHES[b1]?.animal || b1} x ${EARTHLY_BRANCHES[b2]?.animal || b2}`,
@@ -316,7 +316,7 @@ function calculateBranchInteractions(pillars) {
       if (branches[branchNames[i]] === branches[branchNames[j]] && 
           BRANCH_SELF_PUNISHMENTS.includes(branches[branchNames[i]])) {
         interactions.push({
-          type: 'Self-Punishment (自刑)',
+          type: 'Self-Punishment',
           positions: `${branchNames[i]}-${branchNames[j]}`,
           branches: `${branches[branchNames[i]]}`,
           branchesEn: `Two ${EARTHLY_BRANCHES[branches[branchNames[i]]]?.animal || branches[branchNames[i]]}`,
