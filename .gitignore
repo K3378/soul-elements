@@ -3,3 +3,6 @@ __pycache__/
 gen_v*.py
 generate_*.py
 gen_test.py
+node_modules/
+.next/
+out/
