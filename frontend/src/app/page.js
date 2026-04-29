@@ -682,7 +682,7 @@ export default function HomePage() {
   const [tzAutoDetected, setTzAutoDetected] = useState(false);
   const [showTzPicker, setShowTzPicker] = useState(false);
   const [tzSearch, setTzSearch] = useState('');
-
+  const searchTimerRef = useRef(null);  // Refs don't cause stale closures
   // Auto-detect browser timezone
   useEffect(() => {
     try {
@@ -741,11 +741,10 @@ export default function HomePage() {
     finally { setLocationSearching(false); }
   }, []);
 
-  let searchTimer;
   const handleLocationInput = (value) => {
     setForm(prev => ({ ...prev, location: value }));
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => searchLocation(value), 400);
+    clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => searchLocation(value), 400);
   };
 
   const selectLocationAndTz = async (loc) => {

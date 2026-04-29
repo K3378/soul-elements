@@ -137,93 +137,256 @@ function registerFonts(doc) {
   // No registration needed for built-in PDF fonts
 }
 
+/**
+ * Draw a Tai Chi (Yin-Yang) symbol
+ */
+function drawTaiChi(doc, cx, cy, radius, rotation = 0) {
+  const r = radius;
+  const smallR = r / 2;
+  const dotR = r / 6;
+
+  // Save state
+  doc.save();
+
+  // Apply rotation if needed
+  if (rotation !== 0) {
+    // Note: PDFKit doesn't support direct rotation, so we manually transform points
+    // For simplicity, we'll draw without rotation or use coordinate transforms
+  }
+
+  // Outer circle (border)
+  doc.circle(cx, cy, r)
+    .lineWidth(1)
+    .strokeColor(COLORS.gold + '60')
+    .stroke();
+
+  // Yin (dark) half - left side
+  doc.path(`M ${cx} ${cy - r}
+    A ${r} ${r} 0 0 1 ${cx} ${cy + r}
+    A ${smallR} ${smallR} 0 0 0 ${cx} ${cy}
+    A ${smallR} ${smallR} 0 0 1 ${cx} ${cy - r}
+    Z`)
+    .fillColor(COLORS.bgSurface)
+    .fill();
+
+  // Yang (light/gold) half - right side
+  doc.path(`M ${cx} ${cy - r}
+    A ${r} ${r} 0 0 0 ${cx} ${cy + r}
+    A ${smallR} ${smallR} 0 0 1 ${cx} ${cy}
+    A ${smallR} ${smallR} 0 0 0 ${cx} ${cy - r}
+    Z`)
+    .fillColor(COLORS.gold + '40')
+    .fill();
+
+  // Yang dot (gold dot in dark half)
+  doc.circle(cx, cy - smallR, dotR)
+    .fillColor(COLORS.gold)
+    .fill();
+
+  // Yin dot (dark dot in light half)
+  doc.circle(cx, cy + smallR, dotR)
+    .fillColor(COLORS.bgDeep)
+    .fill();
+
+  // Restore state
+  doc.restore();
+}
+
+/**
+ * Draw decorative mystical border
+ */
+function drawMysticalBorder(doc, x, y, width, height) {
+  const cornerSize = 15;
+  const lineWidth = 0.5;
+
+  // Set line style
+  doc.lineWidth(lineWidth)
+    .strokeColor(COLORS.gold + '40');
+
+  // Top-left corner
+  doc.moveTo(x, y + cornerSize)
+    .lineTo(x, y)
+    .lineTo(x + cornerSize, y)
+    .stroke();
+
+  // Top-right corner
+  doc.moveTo(x + width - cornerSize, y)
+    .lineTo(x + width, y)
+    .lineTo(x + width, y + cornerSize)
+    .stroke();
+
+  // Bottom-right corner
+  doc.moveTo(x + width, y + height - cornerSize)
+    .lineTo(x + width, y + height)
+    .lineTo(x + width - cornerSize, y + height)
+    .stroke();
+
+  // Bottom-left corner
+  doc.moveTo(x + cornerSize, y + height)
+    .lineTo(x, y + height)
+    .lineTo(x, y + height - cornerSize)
+    .stroke();
+
+  // Corner decorative dots
+  const dotRadius = 1.5;
+  doc.circle(x + cornerSize/2, y + cornerSize/2, dotRadius)
+    .fillColor(COLORS.gold + '60')
+    .fill();
+  doc.circle(x + width - cornerSize/2, y + cornerSize/2, dotRadius)
+    .fillColor(COLORS.gold + '60')
+    .fill();
+  doc.circle(x + width - cornerSize/2, y + height - cornerSize/2, dotRadius)
+    .fillColor(COLORS.gold + '60')
+    .fill();
+  doc.circle(x + cornerSize/2, y + height - cornerSize/2, dotRadius)
+    .fillColor(COLORS.gold + '60')
+    .fill();
+}
+
+/**
+ * Draw decorative divider with Tai Chi motif
+ */
+function drawTaiChiDivider(doc, x, y, width) {
+  const centerX = x + width / 2;
+
+  // Left line
+  doc.moveTo(x, y)
+    .lineTo(centerX - 20, y)
+    .strokeColor(COLORS.gold + '50')
+    .lineWidth(0.5)
+    .stroke();
+
+  // Right line
+  doc.moveTo(centerX + 20, y)
+    .lineTo(x + width, y)
+    .stroke();
+
+  // Mini Tai Chi in center
+  drawTaiChi(doc, centerX, y, 8);
+}
+
 // ============================================================
 // PAGE BUILDERS
 // ============================================================
 
 /**
- * COVER PAGE
+ * COVER PAGE — Enhanced with Tai Chi and mystical elements
  */
 function buildCoverPage(doc, data) {
   const { bazi } = data;
   const pageH = doc.page.height;
   const pageW = doc.page.width;
 
-  // Dark background
+  // Dark background with subtle gradient effect
   doc.rect(0, 0, pageW, pageH)
     .fill(COLORS.bgDeep);
 
-  // Decorative gold line at top
-  doc.rect(0, 0, pageW, 3)
+  // Decorative mystical border
+  drawMysticalBorder(doc, 40, 40, pageW - 80, pageH - 80);
+
+  // Large background Tai Chi symbol (watermark)
+  drawTaiChi(doc, pageW - 100, pageH - 120, 60);
+  drawTaiChi(doc, 80, pageH - 150, 40);
+
+  // Top gold bar with gradient effect
+  doc.rect(0, 0, pageW, 4)
     .fill(COLORS.gold);
 
-  // Decorative vertical gold line (left edge)
-  doc.rect(0, 0, 1, pageH)
-    .fill(COLORS.gold);
+  // Decorative corner Tai Chi symbols
+  drawTaiChi(doc, 50, 80, 12);
+  drawTaiChi(doc, pageW - 50, 80, 12);
 
-  // Title
-  doc.fontSize(14)
-.font('Helvetica')
-    .fillColor(COLORS.gold)
-    .text('SOUL ELEMENTS', 55, 155, { letterSpacing: 0.3 });
+  // Title section with elegant typography
+  doc.fontSize(11)
+    .font('Helvetica')
+    .fillColor(COLORS.gold + '80')
+    .text('◈  SOUL ELEMENTS  ◈', 55, 140, { align: 'center', width: pageW - 110 });
 
-  doc.fontSize(22)
-.font('Helvetica')
+  doc.fontSize(28)
+    .font('Helvetica-Bold')
     .fillColor(COLORS.textPrimary)
-    .text('Destiny Audit', 55, 182);
+    .text('Destiny Audit', 55, 175, { align: 'center', width: pageW - 110 });
+
+  // Tai Chi divider under title
+  drawTaiChiDivider(doc, 100, 220, pageW - 200);
 
   // Subtitle
   doc.fontSize(10)
-    .font('Helvetica')
+    .font('Helvetica-Oblique')
     .fillColor(COLORS.textSecondary)
-    .text('A Complete Ba Zi Four Pillars Analysis', 55, 215);
+    .text('A Complete Ba Zi Four Pillars Analysis', 55, 245, { align: 'center', width: pageW - 110 });
 
-  // Divider
-  doc.moveTo(55, 235)
-    .lineTo(200, 235)
-    .strokeColor(COLORS.gold)
-    .stroke();
-
-  // Day Master info
+  // Day Master info card
   if (bazi?.dayMaster) {
     const dm = bazi.dayMaster;
-    doc.fontSize(10)
-.font('Helvetica')
-      .fillColor(COLORS.gold)
-      .text('Day Master', 55, 260);
+    const cardY = 290;
+    const cardHeight = 70;
 
-    doc.fontSize(13)
-.font('Helvetica')
-      .fillColor(COLORS.textPrimary)
-      .text(`${dm.en} (${dm.element} ${dm.polarity || ''})`, 55, 280);
+    // Card background
+    doc.roundedRect(80, cardY, pageW - 160, cardHeight, 5)
+      .fillColor(COLORS.bgSurface + '60')
+      .fill()
+      .strokeColor(COLORS.gold + '30')
+      .stroke();
 
+    // Card content
     doc.fontSize(9)
       .font('Helvetica')
+      .fillColor(COLORS.gold)
+      .text('DAY MASTER', 95, cardY + 12);
+
+    doc.fontSize(16)
+      .font('Helvetica-Bold')
+      .fillColor(COLORS.textPrimary)
+      .text(`${dm.en || dm.element || 'Unknown'}`, 95, cardY + 30);
+
+    doc.fontSize(9)
+      .font('Helvetica-Oblique')
       .fillColor(COLORS.textSecondary)
-      .text(dm.archetype || '', 55, 305);
+      .text(`${dm.polarity || ''} ${dm.element || ''} — ${dm.archetype || 'The Mystic'}`, 95, cardY + 52);
+
+    // Element color indicator
+    const elemColor = ELEMENT_COLORS[transformElement(dm.element)] || COLORS.gold;
+    doc.circle(pageW - 115, cardY + 35, 8)
+      .fillColor(elemColor + '40')
+      .fill()
+      .strokeColor(elemColor)
+      .stroke();
   }
 
   // Tier badge
   const tierText = (data.tier || 'Standard').toUpperCase();
-  doc.fontSize(8)
-.font('Helvetica')
-    .fillColor(COLORS.gold)
-    .text(tierText + ' EDITION', 55, 350, { letterSpacing: 0.15 });
+  const badgeY = bazi?.dayMaster ? 380 : 320;
 
-  // Confidential
-  doc.fontSize(7)
-    .font('Helvetica')
-    .fillColor(COLORS.textTertiary)
-    .text('CONFIDENTIAL — For personal use only', 55, 370);
+  // Badge background
+  doc.roundedRect(pageW/2 - 50, badgeY, 100, 22, 11)
+    .fillColor(COLORS.gold + '15')
+    .fill()
+    .strokeColor(COLORS.gold + '40')
+    .stroke();
+
+  doc.fontSize(8)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text(tierText + ' EDITION', pageW/2 - 50, badgeY + 7, { width: 100, align: 'center' });
 
   // Four Pillars Mini Display
   if (bazi?.pillars) {
-    buildMiniPillars(doc, bazi.pillars, 55, 420);
+    buildMiniPillars(doc, bazi.pillars, 80, 430);
   }
 
-  // Bottom gold line
-  doc.rect(0, pageH - 3, pageW, 3)
+  // Confidential text
+  doc.fontSize(7)
+    .font('Helvetica')
+    .fillColor(COLORS.textTertiary)
+    .text('◈  CONFIDENTIAL — For personal use only  ◈', 55, pageH - 80, { align: 'center', width: pageW - 110 });
+
+  // Bottom gold bar
+  doc.rect(0, pageH - 4, pageW, 4)
     .fill(COLORS.gold);
+
+  // Small Tai Chi at bottom center
+  drawTaiChi(doc, pageW / 2, pageH - 50, 10);
 }
 
 /**
