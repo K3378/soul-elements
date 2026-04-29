@@ -81,6 +81,13 @@ router.get('/:sessionId/pdf', async (req, res) => {
     const goal = data.goal || 'all';
     const fullReport = generateFullReport(bazi, goal, tier);
 
+    // Ensure percentages exist for PDF
+    if (!bazi.fiveElements || !bazi.fiveElements.percentages) {
+      const chart = bazi.fiveElements?.chart || {};
+      bazi.fiveElements = bazi.fiveElements || {};
+      bazi.fiveElements.percentages = chart;
+    }
+
     console.log(`Generating PDF for session ${sessionId} (${tier})...`);
 
     // Generate PDF using PDFKit
@@ -147,6 +154,13 @@ router.post('/generate-pdf', async (req, res) => {
     const { bazi, goal, tier } = req.body;
     if (!bazi || !bazi.pillars) {
       return res.status(400).json({ success: false, error: 'Invalid BaZi data.' });
+    }
+
+    // Ensure percentages exist for PDF
+    if (!bazi.fiveElements || !bazi.fiveElements.percentages) {
+      const chart = bazi.fiveElements?.chart || {};
+      bazi.fiveElements = bazi.fiveElements || {};
+      bazi.fiveElements.percentages = chart;
     }
 
     const fullReport = generateFullReport(bazi, goal || 'all', tier || 'standard');
