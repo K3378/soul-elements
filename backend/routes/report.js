@@ -100,7 +100,7 @@ router.get('/:sessionId/pdf', async (req, res) => {
     res.send(pdfBuffer);
   } catch (error) {
     console.error('PDF generation error:', error);
-    res.status(500).json({ success: false, error: 'Failed to generate PDF.' });
+    res.status(500).json({ success: false, error: 'Failed to generate PDF: ' + error.message });
   }
 });
 
@@ -157,7 +157,7 @@ router.post('/generate-pdf', async (req, res) => {
     res.send(pdfBuffer);
   } catch (error) {
     console.error('PDF generation error:', error);
-    res.status(500).json({ success: false, error: 'Failed to generate PDF.' });
+    res.status(500).json({ success: false, error: 'Failed to generate PDF: ' + error.message });
   }
 });
 
