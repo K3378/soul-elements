@@ -7,9 +7,9 @@
 
 const express = require('express');
 const router = express.Router();
-const geoTz = require('geo-tz');
 
 const NOMINATIM_URL = 'https://nominatim.openstreetmap.org/search';
+const TIMEZONE_API = 'https://timeapi.io/api/TimeZone/coordinate';
 
 /**
  * Parse a timezone name (e.g. 'Asia/Hong_Kong') into its current UTC offset in hours.
@@ -18,7 +18,6 @@ function getTimezoneOffset(timezone) {
   try {
     const now = new Date();
     const localeString = now.toLocaleString('en-US', { timeZone: timezone, timeZoneName: 'longOffset' });
-    // Extract offset from strings like 'GMT+8:00', 'GMT-5:00', 'GMT+5:30', 'GMT+0:00'
     const match = localeString.match(/GMT([+-]\d+)(?::(\d+))?/);
     if (match) {
       const hours = parseInt(match[1], 10);
@@ -48,9 +47,7 @@ router.post('/geocode', async (req, res) => {
     });
 
     const response = await fetch(`${NOMINATIM_URL}?${params}`, {
-      headers: {
-        'User-Agent': 'SoulElements/1.0 (backend)',
-      },
+      headers: { 'User-Agent': 'SoulElements/1.0 (backend)' },
     });
 
     if (!response.ok) {
@@ -69,10 +66,28 @@ router.post('/geocode', async (req, res) => {
     const lng = parseFloat(result.lon);
     const displayName = result.display_name;
 
-    // Get timezone from coordinates
-    const timezones = geoTz.find(lat, lng);
-    const timezone = timezones && timezones.length > 0 ? timezones[0] : 'UTC';
-    const timezoneOffset = getTimezoneOffset(timezone);
+    // Get timezone from coordinates using free timeapi.io
+    let timezone = 'UTC';
+    let timezoneOffset = 0;
+    try {
+      const tzUrl = `${TIMEZONE_API}?latitude=${lat}&longitude=${lng}`;
+      const tzRes = await fetch(tzUrl, { signal: AbortSignal.timeout(5000) });
+      if (tzRes.ok) {
+        const tzData = await tzRes.json();
+        timezone = tzData.timeZone || tzData.ianaTimeZone || 'UTC';
+        timezoneOffset = tzData.currentUtcOffset?.seconds 
+          ? tzData.currentUtcOffset.seconds / 3600 
+          : getTimezoneOffset(timezone);
+      } else {
+        // Fallback: calculate rough offset from longitude
+        timezoneOffset = Math.round(lng / 15);
+        timezone = `UTC${timezoneOffset >= 0 ? '+' : ''}${timezoneOffset}`;
+      }
+    } catch {
+      // Fallback: approximate from longitude
+      timezoneOffset = Math.round(lng / 15);
+      timezone = `UTC${timezoneOffset >= 0 ? '+' : ''}${timezoneOffset}`;
+    }
 
     res.json({
       success: true,
