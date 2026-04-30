@@ -14,6 +14,8 @@ function ReportContent() {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [pdfLoading, setPdfLoading] = useState(false);
+  const [pdfProgress, setPdfProgress] = useState('');
 
   useEffect(() => {
     if (isTest) {
@@ -74,17 +76,17 @@ function ReportContent() {
 
   const handleDownloadPDF = async () => {
     try {
-      // Show loading state
-      const btn = document.getElementById('pdf-download-btn');
-      if (btn) {
-        btn.disabled = true;
-        btn.textContent = 'Generating PDF...';
-      }
+      setPdfLoading(true);
+      setPdfProgress('Generating your PDF report...');
+      
+      // Allow UI to update before blocking
+      await new Promise(r => setTimeout(r, 50));
 
       let pdfBlob;
 
       if (isTest || (!sessionId && bazi)) {
         // Direct PDF generation for test mode
+        setPdfProgress('Building report pages...');
         const res = await fetch('/api/report/generate-pdf', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -94,12 +96,15 @@ function ReportContent() {
         pdfBlob = await res.blob();
       } else if (sessionId) {
         // Session-based PDF download
+        setPdfProgress('Generating 12-page document...');
         const res = await fetch(`/api/report/${encodeURIComponent(sessionId)}/pdf?tier=${tier}`);
         if (!res.ok) throw new Error('PDF generation failed');
         pdfBlob = await res.blob();
       } else {
         throw new Error('No data available');
       }
+
+      setPdfProgress('Finalizing download...');
 
       // Trigger download
       const url = window.URL.createObjectURL(pdfBlob);
@@ -114,11 +119,8 @@ function ReportContent() {
       console.error('PDF download error:', err);
       alert('Failed to generate PDF. Please try again or use browser print.');
     } finally {
-      const btn = document.getElementById('pdf-download-btn');
-      if (btn) {
-        btn.disabled = false;
-        btn.textContent = 'Download PDF Report';
-      }
+      setPdfLoading(false);
+      setPdfProgress('');
     }
   };
 
@@ -172,8 +174,22 @@ function ReportContent() {
 
         {/* Download Bar */}
         <div className="text-right mb-6 print:hidden">
-          <button id="pdf-download-btn" onClick={handleDownloadPDF} className="btn-gold text-sm px-6 py-2" style={{ minWidth: '200px' }}>
-            Download PDF Report
+          <button id="pdf-download-btn" onClick={handleDownloadPDF} disabled={pdfLoading}
+            className={`text-sm px-6 py-2 rounded transition-all inline-flex items-center gap-2 ${pdfLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+            style={{
+              background: pdfLoading ? 'rgba(201,168,76,0.1)' : 'linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.1))',
+              border: '1px solid rgba(201,168,76,0.3)',
+              color: pdfLoading ? '#6B6F80' : '#C9A84C',
+              minWidth: '220px',
+            }}>
+            {pdfLoading ? (
+              <>
+                <span className="inline-block w-3 h-3 rounded-full border-2 border-t-transparent animate-spin" style={{ borderColor: '#6B6F80', borderTopColor: 'transparent' }}></span>
+                {pdfProgress || 'Generating...'}
+              </>
+            ) : (
+              'Download PDF Report'
+            )}
           </button>
         </div>
 

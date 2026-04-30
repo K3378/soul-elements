@@ -641,6 +641,11 @@ function SiteFooter() {
                   {link}
                 </div>
               ))}
+              <a href="/blog" className="block text-[10px]" style={{ color: '#6B6F80', textDecoration: 'none' }}
+                onMouseEnter={e => e.target.style.color = '#C9A84C'}
+                onMouseLeave={e => e.target.style.color = '#6B6F80'}>
+                Blog
+              </a>
             </div>
           </div>
           {/* Legal */}
