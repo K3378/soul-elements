@@ -1798,22 +1798,25 @@ function buildFooter(doc) {
 
     const pageW = doc.page.width;
     const pageH = doc.page.height;
+    // Bottom margin = 50pt. Printable bottom = 792 (A4).
+    // Footer line at y=775, text at y=780, text ends at ~788 (< 792 ✓)
+    const footerY = pageH - 67; // 775
 
     // Footer line
-    doc.rect(55, pageH - 35, pageW - 110, 0.5)
+    doc.rect(55, footerY, pageW - 110, 0.5)
       .fillColor(COLORS.gold + '30');
 
     // Page number
     doc.fontSize(6)
       .font('Helvetica')
       .fillColor(COLORS.textTertiary)
-      .text(`Page ${i} of ${pages.count - 1}`, 55, pageH - 28);
+      .text(`Page ${i} of ${pages.count - 1}`, 55, footerY + 5);
 
     // Brand
     doc.fontSize(6)
-.font('Helvetica')
+      .font('Helvetica')
       .fillColor(COLORS.gold + '50')
-      .text('SOUL ELEMENTS', pageW - 140, pageH - 28, { width: 80, align: 'right' });
+      .text('SOUL ELEMENTS', pageW - 140, footerY + 5, { width: 80, align: 'right' });
   }
 }
 
