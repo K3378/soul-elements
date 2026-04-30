@@ -17,7 +17,7 @@ const frontendDir = path.join(__dirname, '..', 'frontend', 'out');
 
 // CORS
 app.use(cors({
-  origin: process.env.FRONTEND_URL || '*',
+  origin: process.env.FRONTEND_URL || 'https://stemssouls.up.railway.app',
   methods: ['GET', 'POST'],
   allowedHeaders: ['Content-Type'],
 }));

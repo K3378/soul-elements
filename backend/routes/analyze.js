@@ -5,6 +5,7 @@
 
 const express = require('express');
 const router = express.Router();
+const crypto = require('crypto');
 const { getEnglishBazi, getEnglishBaziWithTier } = require('../lib/baziEngine');
 
 router.post('/analyze', (req, res) => {
@@ -24,6 +25,31 @@ router.post('/analyze', (req, res) => {
     // Validation
     if (!birthDate || !birthDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
       return res.status(400).json({ error: 'Invalid birthDate. Use YYYY-MM-DD format.' });
+    }
+
+    // Validate birthTime format (HH:MM) or empty/null
+    if (birthTime && !birthTime.match(/^\d{2}:\d{2}$/)) {
+      return res.status(400).json({ error: 'Invalid birthTime. Use HH:MM format (e.g., 14:30).' });
+    }
+
+    // Validate latitude range
+    if (latitude !== undefined && latitude !== null && (typeof latitude !== 'number' || latitude < -90 || latitude > 90)) {
+      return res.status(400).json({ error: 'Invalid latitude. Must be a number between -90 and 90.' });
+    }
+
+    // Validate longitude range
+    if (longitude !== undefined && longitude !== null && (typeof longitude !== 'number' || longitude < -180 || longitude > 180)) {
+      return res.status(400).json({ error: 'Invalid longitude. Must be a number between -180 and 180.' });
+    }
+
+    // Validate gender
+    if (gender && !['male', 'female'].includes(gender)) {
+      return res.status(400).json({ error: 'Invalid gender. Must be "male" or "female".' });
+    }
+
+    // Validate goal length (if provided)
+    if (goal && typeof goal === 'string' && goal.length >= 100) {
+      return res.status(400).json({ error: 'Invalid goal. Must be under 100 characters.' });
     }
 
     let effectiveTime = birthTime;
@@ -70,7 +96,7 @@ router.post('/analyze', (req, res) => {
 });
 
 function generateId() {
-  return 'rep_' + Math.random().toString(36).substring(2, 15) + Date.now().toString(36);
+  return 'rep_' + crypto.randomUUID().split('-')[0] + Date.now().toString(36);
 }
 
 module.exports = router;

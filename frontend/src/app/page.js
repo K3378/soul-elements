@@ -2,9 +2,11 @@
 
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
-import FortuneStickOracle from './components/FortuneStickOracle';
+import dynamic from 'next/dynamic';
 
-const API_URL = '';
+const FortuneStickOracle = dynamic(() => import('./components/FortuneStickOracle'), { ssr: false });
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 const TZ_GROUPS = [
   { offset: -12, label: 'UTC-12', cities: 'Baker Island', examples: [{ name: 'Pacific/Kwajalein', label: 'Kwajalein' }] },

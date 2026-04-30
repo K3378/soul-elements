@@ -87,36 +87,36 @@ function generatePDF(baziData, reportContent, tier = 'standard') {
       doc.addPage();
       buildFourPillarsDetail(doc, baziData);
       doc.addPage();
-      buildElementDistribution(doc, baziData);
+      buildElementDistribution(doc, baziData, reportContent.elementAnalysis);
       doc.addPage();
-      buildElementBalance(doc, baziData);
+      buildElementBalance(doc, baziData, reportContent.fiveElementsInsight);
       doc.addPage();
-      buildHiddenStems(doc, baziData);
+      buildHiddenStems(doc, baziData, reportContent.hiddenStemsGuidance);
       doc.addPage();
-      buildTenDeities(doc, baziData);
+      buildTenDeities(doc, baziData, reportContent.tenDeities);
 
       if (tier === 'grandmaster') {
         doc.addPage();
-        buildLuckCyclesDetail(doc, baziData);
+        buildLuckCyclesDetail(doc, baziData, reportContent.daYun);
         doc.addPage();
-        buildAnnualForecastGrandMaster(doc, baziData);
+        buildAnnualForecastGrandMaster(doc, baziData, reportContent.annualForecast);
         doc.addPage();
         buildNaYinShenSha(doc, baziData);
         doc.addPage();
-        buildPersonalityProfile(doc, baziData);
+        buildPersonalityProfile(doc, baziData, reportContent.personality);
         doc.addPage();
-        buildCareerStrategy(doc, baziData);
+        buildCareerStrategy(doc, baziData, reportContent.lifeGuidance);
       } else {
         doc.addPage();
-        buildLuckCycles(doc, baziData);
+        buildLuckCycles(doc, baziData, reportContent.daYun);
         doc.addPage();
-        buildAnnualForecast(doc, baziData);
+        buildAnnualForecast(doc, baziData, reportContent.annualForecast);
       }
 
       doc.addPage();
       buildRemediationGuide(doc, baziData);
       doc.addPage();
-      buildPersonalAffirmation(doc, baziData);
+      buildPersonalAffirmation(doc, baziData, reportContent.personalAffirmation);
       buildFooter(doc);
 
       doc.end();
@@ -135,6 +135,15 @@ function registerFonts(doc) {
   // To add custom fonts (Inter, Playfair), bundle .ttf files and update paths below
   // Built-in fonts are referenced directly via doc.font('Helvetica') etc.
   // No registration needed for built-in PDF fonts
+
+  // Note on CJK / Chinese character rendering:
+  // The built-in Helvetica font does NOT include CJK glyphs. However,
+  // all pillar data is stored in English (stemEn/branchEn fields like
+  // "Jia", "Zi", "Rat"), so Chinese characters (甲子 etc.) are not
+  // rendered in the PDF output. If CJK rendering is ever needed,
+  // embed a font file (e.g., NotoSansSC-Regular.ttf) as:
+  //   doc.registerFont('CJK', 'path/to/NotoSansSC-Regular.ttf');
+  // and use doc.font('CJK') for text that may contain CJK characters.
 }
 
 /**
@@ -580,9 +589,9 @@ function buildArchitecturalChart(doc, data) {
   }
 
   // Element scores bar chart
-  if (data.bazi?.fiveElements?.chart) {
-    // Element scores inline
-    const chart = data.bazi.fiveElements.chart;
+  if (data.bazi?.fiveElements?.chart || data.bazi?.fiveElements?.percentages) {
+    // Element scores inline - prefer chart, fallback to percentages
+    const chart = data.bazi.fiveElements.chart || data.bazi.fiveElements.percentages;
     const elements = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
     let yPos = 310;
 
@@ -710,9 +719,9 @@ function buildFourPillarsDetail(doc, data) {
 /**
  * ELEMENT DISTRIBUTION PAGE
  */
-function buildElementDistribution(doc, data) {
+function buildElementDistribution(doc, data, content) {
   const pageW = doc.page.width;
-  const chart = data.bazi?.fiveElements?.chart || data.bazi?.fullElements?.percentages;
+  const chart = data.bazi?.fiveElements?.chart || data.bazi?.fiveElements?.percentages || data.bazi?.fullElements?.percentages;
   if (!chart) return;
 
   doc.rect(0, 0, pageW, doc.page.height)
@@ -794,14 +803,36 @@ function buildElementDistribution(doc, data) {
       .fillColor(COLORS.textTertiary)
       .text(elementDescriptions[elem], 110, y - 1, { width: 250 });
   });
+
+  // Render element analysis content from reportContent if available
+  if (content && content.details) {
+    const analysisY = legendY + 18 + 5 * 16 + 15;
+    doc.fontSize(8)
+      .font('Helvetica')
+      .fillColor(COLORS.blue)
+      .text('ELEMENT ANALYSIS', 55, analysisY);
+
+    let ay = analysisY + 20;
+    const elemKeys = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
+    elemKeys.forEach(elem => {
+      const detail = content.details[elem];
+      if (detail) {
+        doc.fontSize(6.5)
+          .font('Helvetica')
+          .fillColor(COLORS.textSecondary)
+          .text(detail, 55, ay, { width: pageW - 110 });
+        ay += doc.heightOfString(detail, { width: pageW - 110 }) + 8;
+      }
+    });
+  }
 }
 
 /**
  * ELEMENT BALANCE PAGE
  */
-function buildElementBalance(doc, data) {
+function buildElementBalance(doc, data, content) {
   const pageW = doc.page.width;
-  const chart = data.bazi?.fiveElements?.chart || data.bazi?.fullElements?.percentages;
+  const chart = data.bazi?.fiveElements?.chart || data.bazi?.fiveElements?.percentages || data.bazi?.fullElements?.percentages;
   if (!chart) return;
 
   doc.rect(0, 0, pageW, doc.page.height)
@@ -852,12 +883,21 @@ function buildElementBalance(doc, data) {
     { label: 'Fire', color: COLORS.fireColor },
     { label: 'Metal', color: COLORS.metalColor },
   ], chart);
+
+  // Render fiveElementsInsight text from reportContent
+  if (content) {
+    const insightY = 540;
+    doc.fontSize(7.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(content, 55, insightY, { width: pageW - 110 });
+  }
 }
 
 /**
  * HIDDEN STEMS PAGE
  */
-function buildHiddenStems(doc, data) {
+function buildHiddenStems(doc, data, content) {
   const pageW = doc.page.width;
   const hiddenStems = data.bazi?.hiddenStems;
   if (!hiddenStems) return;
@@ -928,30 +968,42 @@ function buildHiddenStems(doc, data) {
     yPos += 10;
   });
 
-  // Hidden stems explanation
+  // Hidden stems explanation - use reportContent if available
   yPos = Math.max(yPos + 10, 400);
-  doc.fontSize(8)
-.font('Helvetica')
-    .fillColor(COLORS.blue)
-    .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
+  if (content && content.intro) {
+    doc.fontSize(8)
+      .font('Helvetica')
+      .fillColor(COLORS.blue)
+      .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
 
-  doc.fontSize(6.5)
-    .font('Helvetica')
-    .fillColor(COLORS.textTertiary)
-    .text(
-      'Hidden Stems (藏干) are the internal energies contained within each Earthly Branch. ' +
-      'While the branch represents the surface expression, the hidden stems reveal deeper, ' +
-      'subconscious influences. Each branch contains 1-3 hidden stems ranked by depth: ' +
-      'main (primary energy), secondary (supporting energy), and residual (subtle influence).',
-      55, yPos + 18,
-      { width: pageW - 110 }
-    );
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(content.intro, 55, yPos + 18, { width: pageW - 110 });
+  } else {
+    doc.fontSize(8)
+      .font('Helvetica')
+      .fillColor(COLORS.blue)
+      .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
+
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(
+        'Hidden Stems (藏干) are the internal energies contained within each Earthly Branch. ' +
+        'While the branch represents the surface expression, the hidden stems reveal deeper, ' +
+        'subconscious influences. Each branch contains 1-3 hidden stems ranked by depth: ' +
+        'main (primary energy), secondary (supporting energy), and residual (subtle influence).',
+        55, yPos + 18,
+        { width: pageW - 110 }
+      );
+  }
 }
 
 /**
  * TEN DEITIES PAGE
  */
-function buildTenDeities(doc, data) {
+function buildTenDeities(doc, data, content) {
   const pageW = doc.page.width;
   const tenDeities = data.bazi?.tenDeities;
   if (!tenDeities) return;
@@ -969,7 +1021,7 @@ function buildTenDeities(doc, data) {
   doc.fontSize(9)
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
-    .text('Energetic roles played by each pillar in relation to the Day Master.', 55, 82);
+    .text(content && content.intro ? content.intro : 'Energetic roles played by each pillar in relation to the Day Master.', 55, 82);
 
   let yPos = 120;
   const positions = ['year', 'month', 'day', 'hour'];
@@ -1044,7 +1096,7 @@ function buildTenDeities(doc, data) {
 /**
  * LUCK CYCLES (Standard)
  */
-function buildLuckCycles(doc, data) {
+function buildLuckCycles(doc, data, content) {
   const pageW = doc.page.width;
   const daYun = data.bazi?.daYun;
   if (!daYun) return;
@@ -1064,8 +1116,13 @@ function buildLuckCycles(doc, data) {
     .fillColor(COLORS.textSecondary)
     .text(`10-Year Chapters of Destiny — Starting at age ${daYun.startingAge}`, 55, 82);
 
-  // Starting age info
-  if (daYun.calculationDetail) {
+  // Starting age info - use reportContent intro if available
+  if (content && content.intro) {
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(content.intro, 55, 105, { width: pageW - 110 });
+  } else if (daYun.calculationDetail) {
     doc.fontSize(6.5)
       .font('Helvetica')
       .fillColor(COLORS.textTertiary)
@@ -1136,8 +1193,8 @@ function buildLuckCycles(doc, data) {
 /**
  * LUCK CYCLES (Grand Master - more detail)
  */
-function buildLuckCyclesDetail(doc, data) {
-  buildLuckCycles(doc, data);
+function buildLuckCyclesDetail(doc, data, content) {
+  buildLuckCycles(doc, data, content);
   doc.addPage();
 
   // Additional detail page for Grand Master
@@ -1186,7 +1243,7 @@ function buildLuckCyclesDetail(doc, data) {
 /**
  * ANNUAL FORECAST (Standard)
  */
-function buildAnnualForecast(doc, data) {
+function buildAnnualForecast(doc, data, content) {
   const pageW = doc.page.width;
   const forecasts = data.bazi?.annualForecasts || [];
   if (forecasts.length === 0) return;
@@ -1204,7 +1261,7 @@ function buildAnnualForecast(doc, data) {
   doc.fontSize(9)
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
-    .text('2025-2030 — Year-by-Year Analysis', 55, 82);
+    .text(content && content.intro ? content.intro : '2025-2030 — Year-by-Year Analysis', 55, 82);
 
   let yPos = 115;
   forecasts.forEach((f) => {
@@ -1244,7 +1301,7 @@ function buildAnnualForecast(doc, data) {
 /**
  * ANNUAL FORECAST (Grand Master - more detail)
  */
-function buildAnnualForecastGrandMaster(doc, data) {
+function buildAnnualForecastGrandMaster(doc, data, content) {
   const pageW = doc.page.width;
   const forecasts = data.bazi?.annualForecasts || [];
   if (forecasts.length === 0) return;
@@ -1262,7 +1319,7 @@ function buildAnnualForecastGrandMaster(doc, data) {
   doc.fontSize(9)
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
-    .text('2025-2030 — Comprehensive Year-by-Year Analysis', 55, 82);
+    .text(content && content.intro ? content.intro : '2025-2030 — Comprehensive Year-by-Year Analysis', 55, 82);
 
   let yPos = 115;
   forecasts.forEach((f) => {
@@ -1343,7 +1400,7 @@ function buildNaYinShenSha(doc, data) {
 /**
  * PERSONALITY PROFILE (Grand Master only)
  */
-function buildPersonalityProfile(doc, data) {
+function buildPersonalityProfile(doc, data, content) {
   const pageW = doc.page.width;
   const dm = data.bazi?.dayMaster;
   if (!dm) return;
@@ -1392,7 +1449,7 @@ function buildPersonalityProfile(doc, data) {
     });
   }
 
-  // Strengths & Weaknesses section
+  // Strengths & Weaknesses section - use content if available
   doc.fontSize(8)
 .font('Helvetica')
     .fillColor(COLORS.success)
@@ -1402,8 +1459,9 @@ function buildPersonalityProfile(doc, data) {
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
-      'Your chart configuration reveals natural talents for leadership, creative expression, ' +
-      'and deep intuitive understanding. You excel in environments that value authenticity and vision.',
+      content && content.strengths
+        ? content.strengths
+        : (dm.keywords || 'Leadership, Creativity, Intuition'),
       55, 360,
       { width: pageW - 110 }
     );
@@ -1417,8 +1475,9 @@ function buildPersonalityProfile(doc, data) {
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(
-      'Your growth path involves balancing your natural intensity with patience, ' +
-      'and learning to harness your energy sustainably rather than in bursts.',
+      content && content.weaknesses
+        ? content.weaknesses
+        : 'Balancing natural intensity with patience, harnessing energy sustainably.',
       55, 450,
       { width: pageW - 110 }
     );
@@ -1427,7 +1486,7 @@ function buildPersonalityProfile(doc, data) {
 /**
  * CAREER & WEALTH STRATEGY (Grand Master only)
  */
-function buildCareerStrategy(doc, data) {
+function buildCareerStrategy(doc, data, content) {
   const pageW = doc.page.width;
   doc.rect(0, 0, pageW, doc.page.height)
     .fill(COLORS.bgDeep);
@@ -1447,7 +1506,26 @@ function buildCareerStrategy(doc, data) {
   doc.fontSize(8)
 .font('Helvetica')
     .fillColor(COLORS.blue)
-    .text('OPTIMAL CAREER DIRECTIONS', 55, 120);
+    .text('CAREER PATH GUIDANCE', 55, 120);
+
+  // Render career guidance from reportContent if available
+  if (content && content.careerPath) {
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(content.careerPath, 55, 142, { width: pageW - 110 });
+  } else if (content && content.guidance) {
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(content.guidance, 55, 142, { width: pageW - 110 });
+  }
+
+  // Career directions (always shown as visual reference)
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.blue)
+    .text('OPTIMAL CAREER DIRECTIONS', 55, content ? 300 : 120);
 
   const careerDirections = [
     { field: 'Leadership & Management', reason: 'Your chart shows natural authority energy' },
@@ -1625,7 +1703,7 @@ function buildRemediationGuide(doc, data) {
 /**
  * PERSONAL AFFIRMATION PAGE
  */
-function buildPersonalAffirmation(doc, data) {
+function buildPersonalAffirmation(doc, data, content) {
   const pageW = doc.page.width;
   doc.rect(0, 0, pageW, doc.page.height)
     .fill(COLORS.bgDeep);
@@ -1645,7 +1723,17 @@ function buildPersonalAffirmation(doc, data) {
     .strokeColor(COLORS.gold)
     .stroke();
 
-  if (dm) {
+  // Use affirmation from reportContent if available, else fallback to hardcoded
+  const affirmationText = content
+    ? (typeof content === 'string' ? content : content.affirmation || '')
+    : '';
+
+  if (affirmationText) {
+    doc.fontSize(12)
+      .font('Helvetica')
+      .fillColor(COLORS.textPrimary)
+      .text(`"${affirmationText}"`, 55, 220, { align: 'center', width: pageW - 110 });
+  } else if (dm) {
     const affirmations = {
       'Wood': 'I grow with purpose, bending without breaking, reaching toward the light.',
       'Fire': 'I shine with warmth and clarity, illuminating my path and those I love.',

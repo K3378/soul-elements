@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
-const API_URL = '';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 // --- Time presets for step 1 ---
 const TIME_PRESETS = [

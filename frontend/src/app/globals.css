@@ -436,7 +436,7 @@ input::placeholder, select::placeholder { color: var(--text-quaternary); }
   50% { transform: translateY(100vh); opacity: 0.6; }
 }
 
-/* Mystical符文装饰 */
+/* Mystical decorative symbols */
 .rune-border {
   position: relative;
   border: 1px solid rgba(201,168,76,0.2);

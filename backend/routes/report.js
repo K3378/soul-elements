@@ -88,7 +88,7 @@ router.get('/:sessionId/pdf', async (req, res) => {
       bazi.fiveElements.percentages = chart;
     }
 
-    console.log(`Generating PDF for session ${sessionId} (${tier})...`);
+    // console.log(`Generating PDF for session ${sessionId} (${tier})...`);
 
     // Generate PDF using PDFKit
     const pdfBuffer = await generatePDF(
@@ -97,7 +97,7 @@ router.get('/:sessionId/pdf', async (req, res) => {
       tier
     );
 
-    console.log(`PDF generated: ${(pdfBuffer.length / 1024).toFixed(1)} KB`);
+    // console.log(`PDF generated: ${(pdfBuffer.length / 1024).toFixed(1)} KB`);
 
     // Set response headers for PDF download
     res.setHeader('Content-Type', 'application/pdf');

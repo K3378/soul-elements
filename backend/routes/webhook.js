@@ -49,11 +49,11 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
       const sessionId = session.id;
       const reportSessionId = session.metadata?.report_session_id;
 
-      console.log(`✅ Payment received — ${tier} report`);
-      console.log(`   Session: ${sessionId}`);
-      console.log(`   Customer: ${customerEmail}`);
-      console.log(`   Amount: $${((session.amount_total || 0) / 100).toFixed(2)}`);
-      console.log(`   Report Session: ${reportSessionId || 'N/A'}`);
+      // console.log(`✅ Payment received — ${tier} report`);
+      // console.log(`   Session: ${sessionId}`);
+      // console.log(`   Customer: ${customerEmail}`);
+      // console.log(`   Amount: $${((session.amount_total || 0) / 100).toFixed(2)}`);
+      // console.log(`   Report Session: ${reportSessionId || 'N/A'}`);
 
       // PDF is generated on-demand when user clicks "Download PDF"
       // No server-side Puppeteer needed — using PDFKit (lightweight)
@@ -63,11 +63,11 @@ router.post('/', express.raw({ type: 'application/json' }), async (req, res) => 
       break;
     }
     case 'checkout.session.expired': {
-      console.log(`Session expired: ${event.data.object.id}`);
+      // console.log(`Session expired: ${event.data.object.id}`);
       break;
     }
     default:
-      console.log(`Unhandled event: ${event.type}`);
+      // console.log(`Unhandled event: ${event.type}`);
   }
 
   res.json({ received: true });

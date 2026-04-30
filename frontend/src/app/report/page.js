@@ -557,15 +557,7 @@ function ReportContent() {
           </div>
         </div>
 
-        {/* Download */}
-        <div className="text-center mt-10 mb-12 print:hidden">
-          <button onClick={handlePrint} className="btn-gold px-10 py-4">
-            Download Full PDF Report
-          </button>
-          <p className="text-xs mt-3" style={{ color: 'var(--text-muted)' }}>
-            Your report is always available for viewing.
-          </p>
-        </div>
+
       </div>
     </div>
   );

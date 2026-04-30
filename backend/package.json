@@ -14,9 +14,7 @@
     "lunar-javascript": "^1.7.7",
     "luxon": "^3.5.0",
     "pdfkit": "^0.18.0",
-    "puppeteer": "^23.0.0",
-    "stripe": "^17.0.0",
-    "uuid": "^10.0.0"
+    "stripe": "^17.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.0"

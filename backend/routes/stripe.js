@@ -7,6 +7,7 @@
 const express = require('express');
 const router = express.Router();
 const Stripe = require('stripe');
+const crypto = require('crypto');
 const { reportStore } = require('./report');
 
 function getStripe() {
@@ -14,9 +15,44 @@ function getStripe() {
 }
 
 const PRICES = {
-  standard: 'price_1TRBMQHHO3x30BrPDNeywBmu',  // $49 — Origin Map: The Essential Blueprint
-  grandmaster: 'price_1TRBPSHHO3x30BrPwWk0Xcpp', // $99 — Origin Map: The Grand Master's Strategy
+  standard: process.env.STRIPE_STANDARD_PRICE_ID || 'price_1TRBMQHHO3x30BrPDNeywBmu',  // $49 — Origin Map: The Essential Blueprint
+  grandmaster: process.env.STRIPE_GRANDMASTER_PRICE_ID || 'price_1TRBPSHHO3x30BrPwWk0Xcpp', // $99 — Origin Map: The Grand Master's Strategy
 };
+
+// Simple rate limiter for free coupons
+const freeCouponUsage = new Map();
+function checkFreeCouponRateLimit(ip) {
+  const key = ip;
+  const now = Date.now();
+  const per10MinMs = 10 * 60 * 1000; // 10 minutes
+  const perDayMs = 24 * 60 * 60 * 1000; // 24 hours
+  const maxPerDay = 3;
+
+  if (!freeCouponUsage.has(key)) {
+    freeCouponUsage.set(key, { count: 1, firstUse: now, lastUse: now });
+    return true;
+  }
+
+  const record = freeCouponUsage.get(key);
+
+  // Check 10-minute cooldown
+  if (now - record.lastUse < per10MinMs) {
+    return false;
+  }
+
+  // Check daily limit
+  if (now - record.firstUse > perDayMs) {
+    // Reset daily window
+    freeCouponUsage.set(key, { count: 1, firstUse: now, lastUse: now });
+    return true;
+  }
+
+  if (record.count >= maxPerDay) return false;
+
+  record.count++;
+  record.lastUse = now;
+  return true;
+}
 
 /**
  * Create Checkout Session
@@ -32,7 +68,11 @@ router.post('/create-checkout-session', async (req, res) => {
 
     // Handle coupon codes: skip Stripe
     if (coupon === 'FREE' && tier === 'standard') {
-      const dummySessionId = `free_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      if (!checkFreeCouponRateLimit(clientIp)) {
+        return res.status(429).json({ error: 'Free coupon rate limit exceeded. Please wait before trying again.' });
+      }
+      const dummySessionId = `free_${Date.now()}_${crypto.randomUUID().split('-')[0]}`;
       if (reportData) {
         reportStore.set(dummySessionId, {
           data: reportData,
@@ -40,7 +80,7 @@ router.post('/create-checkout-session', async (req, res) => {
         });
       }
       const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3001}`;
-      console.log(`🎟️ FREE coupon used — Standard free (session: ${dummySessionId})`);
+      console.warn(`FREE coupon used — IP: ${clientIp}, time: ${new Date().toISOString()}, session: ${dummySessionId}`);
       return res.json({
         url: `${frontendUrl}/report?session_id=${dummySessionId}&tier=standard`,
         sessionId: dummySessionId,
@@ -49,7 +89,11 @@ router.post('/create-checkout-session', async (req, res) => {
     }
 
     if (coupon === 'FREE2' && tier === 'grandmaster') {
-      const dummySessionId = `free_${Date.now()}_${Math.random().toString(36).substr(2, 6)}`;
+      const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress;
+      if (!checkFreeCouponRateLimit(clientIp)) {
+        return res.status(429).json({ error: 'Free coupon rate limit exceeded. Please wait before trying again.' });
+      }
+      const dummySessionId = `free_${Date.now()}_${crypto.randomUUID().split('-')[0]}`;
       if (reportData) {
         reportStore.set(dummySessionId, {
           data: reportData,
@@ -57,7 +101,7 @@ router.post('/create-checkout-session', async (req, res) => {
         });
       }
       const frontendUrl = process.env.FRONTEND_URL || `http://localhost:${process.env.PORT || 3001}`;
-      console.log(`🎟️ FREE2 coupon used — Grand Master free (session: ${dummySessionId})`);
+      console.warn(`FREE2 coupon used — IP: ${clientIp}, time: ${new Date().toISOString()}, session: ${dummySessionId}`);
       return res.json({
         url: `${frontendUrl}/report?session_id=${dummySessionId}&tier=grandmaster`,
         sessionId: dummySessionId,
@@ -91,10 +135,10 @@ router.post('/create-checkout-session', async (req, res) => {
         data: reportData,
         timestamp: Date.now(),
       });
-      console.log(`📦 Report data stored for session: ${session.id}`);
+      // console.log(`📦 Report data stored for session: ${session.id}`);
     }
 
-    console.log(`✅ Checkout session created: ${session.id} (tier: ${tier})`);
+    // console.log(`✅ Checkout session created: ${session.id} (tier: ${tier})`);
     res.json({ url: session.url, sessionId: session.id });
   } catch (error) {
     console.error('Checkout session error:', error);
