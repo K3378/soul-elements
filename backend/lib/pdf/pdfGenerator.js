@@ -70,6 +70,18 @@ function generatePDF(baziData, reportContent, tier = 'standard') {
         bufferPages: true,
       });
 
+      // Auto-format every page: dark bg, gold top bar
+      // Catches auto-created overflow pages from doc.text()
+      // Use hardcoded A4 dimensions (595x842 pts) to avoid accessing doc.page getter
+      doc.on('pageAdded', () => {
+        const A4_W = 595.28;
+        const A4_H = 841.89;
+        doc.rect(0, 0, A4_W, A4_H)
+          .fill(COLORS.bgDeep);
+        doc.rect(0, 0, A4_W, 2)
+          .fill(COLORS.gold);
+      });
+
       const buffers = [];
       doc.on('data', buffers.push.bind(buffers));
       doc.on('end', () => resolve(Buffer.concat(buffers)));
