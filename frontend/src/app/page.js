@@ -773,7 +773,7 @@ export default function HomePage() {
       const guessed = tzMap[country];
       if (guessed) {
         setForm(prev => ({ ...prev, timezone: guessed.name, timezoneOffset: String(guessed.offset) }));
-        setTzAutoDetected(true);
+        setTzAutoDetected(false);
         updateTstBadge(parseFloat(loc.lon), guessed.offset);
       }
     } catch (e) {}
@@ -797,8 +797,8 @@ export default function HomePage() {
 
   const handleSelectTz = (tzName, offset) => {
     setForm(prev => ({ ...prev, timezone: tzName, timezoneOffset: String(offset) }));
-    setShowTzPicker(false);
     setTzAutoDetected(false);
+    setShowTzPicker(false);
   };
 
   const handleSubmit = async (e) => {
@@ -1088,7 +1088,7 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-                <p className="text-[10px] mt-1" style={{ color: '#6B6F80' }}>Used for True Solar Time accuracy</p>
+                <p className="text-[10px] mt-1" style={{ color: '#6B6F80' }}>Enter your birth city — timezone and True Solar Time will adjust automatically</p>
                 {tstBadge && (
                   <div className="inline-flex items-center gap-1.5 text-[10px] mt-1.5 px-2.5 py-1 rounded-full"
                     style={{ background: tstBadge.type === 'adjusted' ? 'rgba(59,130,246,0.08)' : 'rgba(16,185,129,0.08)', border: `1px solid ${tstBadge.type === 'adjusted' ? 'rgba(59,130,246,0.2)' : 'rgba(16,185,129,0.2)'}`, color: tstBadge.type === 'adjusted' ? '#3B82F6' : '#10B981' }}>
@@ -1100,14 +1100,17 @@ export default function HomePage() {
 
               {/* Timezone */}
               <div className="text-center">
-                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Timezone</label>
+                <label className="block text-xs mb-1.5" style={{ color: '#3B82F6' }}>Birth Timezone</label>
                 <button type="button" onClick={() => setShowTzPicker(true)}
                   className="flex items-center justify-center gap-2 mx-auto py-2.5 px-4 rounded transition-all text-sm"
                   style={{ background: 'rgba(59,130,246,0.08)', border: '1px solid rgba(59,130,246,0.2)', color: form.timezone ? '#3B82F6' : '#6B6F80', maxWidth: '300px', width: '100%' }}>
-                  <span>{form.timezone ? currentTzLabel : 'Select your timezone'}</span>
+                  <span>{form.timezone ? currentTzLabel : 'Select your birth timezone'}</span>
                   {tzAutoDetected && <span className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: 'rgba(16,185,129,0.15)', color: '#10B981' }}>Auto</span>}
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9l6 6 6-6"/></svg>
                 </button>
+                <p className="text-[10px] mt-1" style={{ color: '#6B6F80', maxWidth: '280px', margin: '4px auto 0' }}>
+                  {tzAutoDetected ? 'Detected from your browser — change if your birth city has a different timezone' : 'Make sure this matches your birth city, not your current residence'}
+                </p>
               </div>
 
               <hr style={{ border: 'none', borderTop: '1px solid #202225', maxWidth: '160px', margin: '16px auto' }} />
