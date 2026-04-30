@@ -1760,7 +1760,7 @@ function buildPersonalAffirmation(doc, data, content) {
   doc.fontSize(14)
 .font('Helvetica')
     .fillColor(COLORS.gold)
-    .text('YOUR AFFIRMATION', centerX, 158, { align: 'center', letterSpacing: 0.15 });
+    .text('YOUR AFFIRMATION', 55, 158, { width: pageW - 110, align: 'center', letterSpacing: 0.15 });
 
   doc.moveTo(centerX - 40, 190)
     .lineTo(centerX + 40, 190)
