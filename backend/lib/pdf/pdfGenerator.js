@@ -47,6 +47,38 @@ const ELEMENT_COLORS = {
   'Water': COLORS.waterColor,
 };
 
+const FONT = {
+  coverTitle: 28,
+  coverBrand: 18,
+  coverSubtitle: 11,
+  pageTitle: 14,
+  sectionHeader: 11,
+  subSectionHeader: 9,
+  body: 9,
+  bodySmall: 7.5,
+  caption: 6.5,
+  meta: 6,
+  footer: 6,
+};
+
+function buildText(doc, text, x, y, options = {}) {
+  const sizes = {
+    coverTitle: 28, coverBrand: 18, coverSubtitle: 11,
+    pageTitle: 14, sectionHeader: 11, subSectionHeader: 9,
+    body: 9, bodySmall: 7.5, caption: 6.5, meta: 6, footer: 6
+  };
+  const size = sizes[options.level] || sizes.body;
+  const font = options.bold ? 'Helvetica-Bold' : (options.italic ? 'Helvetica-Oblique' : 'Helvetica');
+  const finalFont = options.fontFamily || font;
+  doc.fontSize(size).font(finalFont).fillColor(options.color || COLORS.textPrimary);
+  doc.text(text, x, y, {
+    width: options.width !== undefined ? options.width : (doc.page ? doc.page.width - 110 : 485),
+    align: options.align || 'left',
+    ...(options.letterSpacing ? { letterSpacing: options.letterSpacing } : {}),
+    ...(options.textOpts || {}),
+  });
+}
+
 /**
  * Generate a full BaZi report PDF
  * @param {Object} baziData - BaZi analysis data from baziEngine
@@ -318,7 +350,7 @@ function buildCoverPage(doc, data) {
   drawTaiChi(doc, pageW - 50, 80, 12);
 
   // Title section with elegant typography
-  doc.fontSize(11)
+  doc.fontSize(18)
     .font('Helvetica')
     .fillColor(COLORS.gold + '80')
     .text('◈  SOUL ELEMENTS  ◈', 55, 140, { align: 'center', width: pageW - 110 });
@@ -351,7 +383,7 @@ function buildCoverPage(doc, data) {
       .stroke();
 
     // Card content
-    doc.fontSize(9)
+    doc.fontSize(7)
       .font('Helvetica')
       .fillColor(COLORS.gold)
       .text('DAY MASTER', 95, cardY + 12);
@@ -386,7 +418,7 @@ function buildCoverPage(doc, data) {
     .strokeColor(COLORS.gold + '40')
     .stroke();
 
-  doc.fontSize(8)
+  doc.fontSize(7)
     .font('Helvetica-Bold')
     .fillColor(COLORS.gold)
     .text(tierText + ' EDITION', pageW/2 - 50, badgeY + 7, { width: 100, align: 'center' });
@@ -426,11 +458,11 @@ function buildDocumentStructure(doc, tier) {
     .fill(COLORS.gold);
 
   doc.fontSize(14)
-.font('Helvetica')
+    .font('Helvetica')
     .fillColor(COLORS.gold)
     .text('DOCUMENT STRUCTURE', 55, 58, { letterSpacing: 0.15 });
 
-  doc.fontSize(8)
+  doc.fontSize(9)
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
     .text(isGrandMaster ? 'Grand Master Edition — 24 Page Breakdown' : 'Standard Edition — 14 Page Breakdown', 55, 82);
@@ -469,12 +501,12 @@ function buildDocumentStructure(doc, tier) {
       .fill(boxBg);
 
     doc.fontSize(6)
-.font('Helvetica')
+      .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(`PAGE ${section.page}`, 65, yPos);
 
     doc.fontSize(8)
-.font('Helvetica')
+      .font('Helvetica')
       .fillColor(COLORS.gold)
       .text(section.title, 65, yPos + 11);
 
@@ -607,8 +639,8 @@ function buildArchitecturalChart(doc, data) {
     const elements = ['Wood', 'Fire', 'Earth', 'Metal', 'Water'];
     let yPos = 310;
 
-    doc.fontSize(9)
-.font('Helvetica')
+    doc.fontSize(11)
+      .font('Helvetica')
       .fillColor(COLORS.gold)
       .text('ELEMENT PROPORTIONS', 55, yPos);
 
@@ -703,8 +735,8 @@ function buildFourPillarsDetail(doc, data) {
     doc.rect(55, yPos, pageW - 110, 1)
       .fillColor(COLORS.gold + '30');
 
-    doc.fontSize(9)
-.font('Helvetica')
+    doc.fontSize(11)
+      .font('Helvetica')
       .fillColor(COLORS.gold)
       .text('DAY MASTER DEEP ANALYSIS', 55, yPos + 15);
 
@@ -789,8 +821,8 @@ function buildElementDistribution(doc, data, content) {
 
   // Legend
   const legendY = barY + 5 * gap + 25;
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.gold)
     .text('ELEMENT PROPORTIONS', 55, legendY);
 
@@ -819,7 +851,7 @@ function buildElementDistribution(doc, data, content) {
   // Render element analysis content from reportContent if available
   if (content && content.details) {
     const analysisY = legendY + 18 + 5 * 16 + 15;
-    doc.fontSize(8)
+    doc.fontSize(11)
       .font('Helvetica')
       .fillColor(COLORS.blue)
       .text('ELEMENT ANALYSIS', 55, analysisY);
@@ -858,8 +890,8 @@ function buildElementBalance(doc, data, content) {
     .text('ELEMENT BALANCE & CYCLE ANALYSIS', 55, 58, { letterSpacing: 0.15 });
 
   // Generating Cycle
-  doc.fontSize(9)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.blue)
     .text('GENERATING CYCLE', 55, 100, { letterSpacing: 0.1 });
 
@@ -878,8 +910,8 @@ function buildElementBalance(doc, data, content) {
   ], chart);
 
   // Controlling Cycle
-  doc.fontSize(9)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.error)
     .text('CONTROLLING CYCLE', 55, 360, { letterSpacing: 0.1 });
 
@@ -983,7 +1015,7 @@ function buildHiddenStems(doc, data, content) {
   // Hidden stems explanation - use reportContent if available
   yPos = Math.max(yPos + 10, 400);
   if (content && content.intro) {
-    doc.fontSize(8)
+    doc.fontSize(11)
       .font('Helvetica')
       .fillColor(COLORS.blue)
       .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
@@ -993,7 +1025,7 @@ function buildHiddenStems(doc, data, content) {
       .fillColor(COLORS.textTertiary)
       .text(content.intro, 55, yPos + 18, { width: pageW - 110 });
   } else {
-    doc.fontSize(8)
+    doc.fontSize(11)
       .font('Helvetica')
       .fillColor(COLORS.blue)
       .text('WHAT ARE HIDDEN STEMS?', 55, yPos);
@@ -1077,8 +1109,8 @@ function buildTenDeities(doc, data, content) {
 
   // Legend
   yPos = Math.max(yPos + 10, 400);
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.gold)
     .text('DEITY RELATIONSHIP TYPES', 55, yPos);
 
@@ -1134,7 +1166,7 @@ function buildLuckCycles(doc, data, content) {
       .font('Helvetica')
       .fillColor(COLORS.textTertiary)
       .text(content.intro, 55, 105, { width: pageW - 110 });
-  } else if (daYun.calculationDetail) {
+  } else if (daYun.calculationDetail || daYun.jieqiDetail) {
     doc.fontSize(6.5)
       .font('Helvetica')
       .fillColor(COLORS.textTertiary)
@@ -1428,8 +1460,8 @@ function buildPersonalityProfile(doc, data, content) {
     .text('PERSONALITY PROFILE', 55, 58, { letterSpacing: 0.15 });
 
   // Archetype
-  doc.fontSize(9)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.blue)
     .text(`YOUR ARCHETYPE: ${(dm.archetype || '').toUpperCase()}`, 55, 100);
 
@@ -1444,8 +1476,8 @@ function buildPersonalityProfile(doc, data, content) {
     );
 
   // Traits
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.gold)
     .text('KEY TRAITS', 55, 180);
 
@@ -1462,8 +1494,8 @@ function buildPersonalityProfile(doc, data, content) {
   }
 
   // Strengths & Weaknesses section - use content if available
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.success)
     .text('STRENGTHS', 55, 340);
 
@@ -1478,8 +1510,8 @@ function buildPersonalityProfile(doc, data, content) {
       { width: pageW - 110 }
     );
 
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.warning)
     .text('GROWTH AREAS', 55, 430);
 
@@ -1515,8 +1547,8 @@ function buildCareerStrategy(doc, data, content) {
     .fillColor(COLORS.textSecondary)
     .text('Optimized career direction and wealth potential based on your chart.', 55, 82);
 
-  doc.fontSize(8)
-.font('Helvetica')
+  doc.fontSize(11)
+    .font('Helvetica')
     .fillColor(COLORS.blue)
     .text('CAREER PATH GUIDANCE', 55, 120);
 
@@ -1806,17 +1838,11 @@ function buildFooter(doc) {
     doc.rect(55, footerY, pageW - 110, 0.5)
       .fillColor(COLORS.gold + '30');
 
-    // Page number
+    // Centered page number + brand
     doc.fontSize(6)
       .font('Helvetica')
       .fillColor(COLORS.textTertiary)
-      .text(`Page ${i} of ${pages.count - 1}`, 55, footerY + 5);
-
-    // Brand
-    doc.fontSize(6)
-      .font('Helvetica')
-      .fillColor(COLORS.gold + '50')
-      .text('SOUL ELEMENTS', pageW - 140, footerY + 5, { width: 80, align: 'right' });
+      .text(`Page ${i} of ${pages.count - 1}  •  SOUL ELEMENTS`, 55, footerY + 5, { align: 'center', width: pageW - 110 });
   }
 }
 

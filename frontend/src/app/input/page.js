@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import CityAutocomplete from '../components/CityAutocomplete';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -55,14 +56,6 @@ function InputForm() {
     } catch {}
   }, [searchParams]);
 
-  // City autocomplete state
-  const [cityQuery, setCityQuery] = useState('');
-  const [cityResults, setCityResults] = useState([]);
-  const [showCityDropdown, setShowCityDropdown] = useState(false);
-  const [cityLoading, setCityLoading] = useState(false);
-  const cityDebounce = useRef(null);
-  const cityRef = useRef(null);
-
   // Advanced toggle for step 2
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -73,49 +66,6 @@ function InputForm() {
 
   const handleBlur = useCallback((field) => {
     setTouched(prev => ({ ...prev, [field]: true }));
-  }, []);
-
-  // --- City autocomplete with Nominatim ---
-  useEffect(() => {
-    if (cityDebounce.current) clearTimeout(cityDebounce.current);
-    if (cityQuery.length < 3) {
-      setCityResults([]);
-      setShowCityDropdown(false);
-      return;
-    }
-    cityDebounce.current = setTimeout(async () => {
-      setCityLoading(true);
-      try {
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(cityQuery)}&limit=5&featureType=city`,
-          { headers: { 'User-Agent': 'SoulElements/1.0' } }
-        );
-        const data = await res.json();
-        const mapped = (data || []).map(item => ({
-          display: item.display_name,
-          lat: item.lat,
-          lon: item.lon,
-        }));
-        setCityResults(mapped);
-        setShowCityDropdown(mapped.length > 0);
-      } catch {
-        setCityResults([]);
-        setShowCityDropdown(false);
-      } finally {
-        setCityLoading(false);
-      }
-    }, 350);
-  }, [cityQuery]);
-
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handler = (e) => {
-      if (cityRef.current && !cityRef.current.contains(e.target)) {
-        setShowCityDropdown(false);
-      }
-    };
-    document.addEventListener('mousedown', handler);
-    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   // --- Auto-detect timezone from lat/lon ---
@@ -172,8 +122,6 @@ function InputForm() {
   // --- Handle city select ---
   const handleCitySelect = useCallback((item) => {
     setForm(prev => ({ ...prev, location: item.display }));
-    setCityQuery(item.display);
-    setShowCityDropdown(false);
     detectTimezone(item.lat, item.lon);
   }, [detectTimezone]);
 
@@ -415,64 +363,11 @@ function InputForm() {
 
   const renderStep2 = () => (
     <div style={s({ animation: fadeIn ? 'fadeIn 0.3s ease' : 'none' })}>
-      {/* City autocomplete */}
-      <div ref={cityRef} style={s({ position: 'relative', marginBottom: '20px', textAlign: 'center' })}>
-        <label style={s({ display: 'block', fontSize: '11px', marginBottom: '8px', color: 'var(--gold)', fontWeight: 500, letterSpacing: '0.03em' })}>
-          BIRTH LOCATION
-        </label>
-        <input
-          type="text"
-          placeholder="City, e.g. Hong Kong, London, New York"
-          value={cityQuery}
-          onChange={(e) => {
-            setCityQuery(e.target.value);
-            handleChange('location', e.target.value);
-          }}
-          style={s({ width: '100%', maxWidth: '300px', margin: '0 auto', display: 'block', textAlign: 'center' })}
-        />
-        <p style={s({ fontSize: '10px', marginTop: '6px', color: 'var(--text-tertiary)' })}>
-          For True Solar Time calculation
-        </p>
-
-        {/* City dropdown */}
-        {showCityDropdown && cityResults.length > 0 && (
-          <div style={s({
-            position: 'absolute', top: '100%', left: '50%', transform: 'translateX(-50%)',
-            width: '100%', maxWidth: '320px', zIndex: 50,
-            background: 'var(--bg-elevated)',
-            border: '1px solid var(--border-strong)',
-            borderRadius: 'var(--radius-md)',
-            boxShadow: '0 8px 32px rgba(0,0,0,0.4)',
-            marginTop: '4px',
-            overflow: 'hidden',
-          })}>
-            {cityLoading && (
-              <div style={s({ padding: '12px', textAlign: 'center', fontSize: '10px', color: 'var(--text-tertiary)' })}>
-                Searching...
-              </div>
-            )}
-            {!cityLoading && cityResults.map((item, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => handleCitySelect(item)}
-                style={s({
-                  width: '100%', textAlign: 'left', padding: '10px 14px',
-                  fontSize: '11px', color: 'var(--text-secondary)',
-                  background: 'transparent',
-                  border: 'none', borderBottom: idx < cityResults.length - 1 ? '1px solid var(--border-subtle)' : 'none',
-                  cursor: 'pointer',
-                  transition: 'background 0.15s',
-                })}
-                onMouseEnter={(e) => e.currentTarget.style.background = 'var(--gold-subtle)'}
-                onMouseLeave={(e) => e.currentTarget.style.background = 'transparent'}
-              >
-                {item.display}
-              </button>
-            ))}
-          </div>
-        )}
-      </div>
+      <CityAutocomplete
+        value={form.location}
+        onChange={(val) => handleChange('location', val)}
+        onCitySelect={handleCitySelect}
+      />
 
       {/* Advanced toggle */}
       <div style={s({ textAlign: 'center', marginBottom: '16px' })}>
