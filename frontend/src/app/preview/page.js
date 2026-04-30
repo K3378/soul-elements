@@ -1,7 +1,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { Suspense, useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useMemo } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -110,8 +110,43 @@ const PREVIEW_PAGES = [
   },
 ];
 
-function BlurredSection({ page, index, onUnlockClick }) {
+function BlurredSection({ page, index, onUnlockClick, bazi }) {
   const [hovered, setHovered] = useState(false);
+
+  // Generate personalized preview lines from actual bazi data
+  const previewLines = useMemo(() => {
+    if (!bazi) return page.previewLines;
+    switch (index) {
+      case 0: {
+        const dm = bazi.dayMaster;
+        return [
+          `Your Personal Destiny Audit`,
+          `Day Master: ${dm.name} (${dm.element}) — ${dm.archetype}`,
+          'Standard Edition | CONFIDENTIAL',
+        ];
+      }
+      case 4: {
+        const pcts = bazi.fiveElements?.percentages;
+        if (!pcts) return page.previewLines;
+        const sorted = Object.entries(pcts).sort((a, b) => b[1] - a[1]);
+        return [
+          `Five Elements with Weighted Percentages`,
+          `${sorted.map(([e, p]) => `${e} ${p}%`).join(' | ')}`,
+          `Your dominant element is ${sorted[0][0]} at ${sorted[0][1]}% — it shapes your core personality and life approach.`,
+        ];
+      }
+      case 5: {
+        const dm = bazi.dayMaster;
+        return [
+          `Five Element Cycle Assessment`,
+          `As a ${dm.element} Day Master, your elemental balance reveals how your natural energy interacts with the world around you.`,
+          `Your chart's unique blend of strengths and challenges guides your personal growth journey.`,
+        ];
+      }
+      default:
+        return page.previewLines;
+    }
+  }, [bazi, index, page.previewLines]);
 
   return (
     <div
@@ -142,7 +177,7 @@ function BlurredSection({ page, index, onUnlockClick }) {
 
         {/* Visible lines */}
         <div className="space-y-1.5 mb-3">
-          {page.previewLines.map((line, li) => (
+          {previewLines.map((line, li) => (
             <p key={li} className="text-[11px] leading-relaxed" style={{ color: li === 0 ? '#8B8FA0' : '#6B6F80', fontFamily: li === 0 ? "'Playfair Display', serif" : 'inherit' }}>
               {line}
             </p>
@@ -331,6 +366,7 @@ function PreviewContent() {
               key={i}
               page={pg}
               index={i}
+              bazi={bazi}
               onUnlockClick={() => setScrollToPricing(true)}
             />
           ))}
