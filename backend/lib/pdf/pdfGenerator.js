@@ -928,13 +928,12 @@ function buildElementBalance(doc, data, content) {
     { label: 'Metal', color: COLORS.metalColor },
   ], chart);
 
-  // Render fiveElementsInsight text from reportContent
+  // Render fiveElementsInsight text from reportContent — flowing across pages
   if (content) {
-    const insightY = 540;
-    doc.fontSize(7.5)
-      .font('Helvetica')
-      .fillColor(COLORS.textSecondary)
-      .text(content, 55, insightY, { width: pageW - 110 });
+    writeFlowingDetail(doc, content, 55, pageW - 110, { 
+      gap: 20, color: COLORS.textSecondary, fontSize: 7,
+      minY: 580,
+    });
   }
 }
 
@@ -1042,6 +1041,16 @@ function buildHiddenStems(doc, data, content) {
         { width: pageW - 110 }
       );
   }
+
+  // Expanded hidden stems guidance flowing across pages
+  if (content && content.positions) {
+    const detailText = content.positions.map(p => 
+      `The ${p.position.toUpperCase()} Pillar (${p.animal}):\n${p.hiddenStems.map(s => `- ${s.name} (${s.element}, ${s.depth}): ${s.meaning}`).join('\n')}`
+    ).join('\n\n');
+    writeFlowingDetail(doc, 
+      `${content.intro}\n\n${detailText}\n\n${content.conclusion || ''}`,
+      55, pageW - 110, { gap: 15, fontSize: 6.5 });
+  }
 }
 
 /**
@@ -1135,6 +1144,16 @@ function buildTenDeities(doc, data, content) {
       .fillColor(COLORS.textTertiary)
       .text(item.desc, 210, ly - 1, { width: 200 });
   });
+
+  // Expanded Ten Deities analysis flowing across pages
+  if (content && content.conclusion) {
+    const detailText = content.deities.map(d => 
+      `${d.position.toUpperCase()} Pillar — ${d.name}:\n${d.meaning}\n`
+    ).join('\n');
+    writeFlowingDetail(doc, 
+      `${content.intro}\n\n${detailText}\n${content.conclusion}`,
+      55, doc.page.width - 110, { gap: 15, fontSize: 6.5 });
+  }
 }
 
 /**
@@ -1232,6 +1251,16 @@ function buildLuckCycles(doc, data, content) {
       .fillColor(elemColor)
       .text(p.stemElement || '', tableX + 5 + colW * 4, rowY + 6, { width: colW - 10 });
   });
+
+  // Per-cycle guidance flowing text (from expanded reportContent)
+  if (content && content.pillars && content.pillars[0] && content.pillars[0].guidance) {
+    const guidanceText = content.pillars.map(p => 
+      `Cycle ${p.pillar} (Ages ${p.ageRange}):\n${p.guidance}`
+    ).join('\n\n');
+    writeFlowingDetail(doc,
+      `${content.intro}\n\n${guidanceText}\n\n${content.conclusion || ''}`,
+      55, doc.page.width - 110, { gap: 15, fontSize: 6.5 });
+  }
 }
 
 /**
@@ -1340,6 +1369,16 @@ function buildAnnualForecast(doc, data, content) {
 
     yPos += 58;
   });
+
+  // Per-year analysis flowing across pages (standard)
+  if (content && content.years && content.years[0] && content.years[0].analysis) {
+    const yearlyText = content.years.map(y => 
+      `${y.year} — ${y.animal || ''} Year: ${y.analysis}`
+    ).join('\n\n');
+    writeFlowingDetail(doc,
+      `${content.intro}\n\n${yearlyText}\n\n${content.conclusion || ''}`,
+      55, doc.page.width - 110, { gap: 15, fontSize: 6.5 });
+  }
 }
 
 /**
@@ -1400,6 +1439,16 @@ function buildAnnualForecastGrandMaster(doc, data, content) {
 
     yPos += 73;
   });
+
+  // Per-year detailed analysis flowing across pages
+  if (content && content.years && content.years[0] && content.years[0].analysis) {
+    const yearlyText = content.years.map(y => 
+      `${y.year} — ${y.animal || ''} Year (${y.stem} ${y.element}):\n${y.analysis}`
+    ).join('\n\n');
+    writeFlowingDetail(doc,
+      `${content.intro}\n\n${yearlyText}\n\n${content.conclusion || ''}`,
+      55, doc.page.width - 110, { gap: 15, fontSize: 6.5 });
+  }
 }
 
 /**
@@ -1627,6 +1676,19 @@ function buildCareerStrategy(doc, data, content) {
       55, 450,
       { width: pageW - 110 }
     );
+
+  // Extended career + life guidance flowing across pages
+  if (content && (content.guidance || content.advice)) {
+    const guidanceText = [
+      content.guidance || '',
+      content.advice || '',
+      content.careerPath ? `\nCareer Path Guidance:\n${content.careerPath}` : '',
+      content.lovePath ? `\nRelationship Path:\n${content.lovePath}` : '',
+      content.innerPath ? `\nInner Growth Path:\n${content.innerPath}` : '',
+    ].filter(Boolean).join('\n\n');
+    writeFlowingDetail(doc, guidanceText,
+      55, doc.page.width - 110, { gap: 20, fontSize: 7 });
+  }
 }
 
 /**
@@ -1948,6 +2010,31 @@ function buildMiniPillars(doc, pillars, x, y) {
 
 module.exports = {
   generatePDF,
-  COLORS,
-  ELEMENT_COLORS,
+  // Exposed for testing
+  transformElement,
 };
+
+/**
+ * Write a detailed text block that flows across pages naturally.
+ * After fixed-position visual elements, this appends flowing text
+ * starting at the current doc.y position, creating overflow pages as needed.
+ */
+function writeFlowingDetail(doc, text, x, width, options = {}) {
+  if (!text) return;
+  const margin = 55;
+  const startX = x || margin;
+  const textWidth = width || (doc.page.width - 110);
+  const gap = options.gap !== undefined ? options.gap : 20;
+  
+  doc.fontSize(options.fontSize || 6.5)
+    .font(options.font || 'Helvetica')
+    .fillColor(options.color || COLORS.textSecondary);
+  
+  // Start after any visual elements
+  const startY = Math.max(doc.y + gap, options.minY || doc.y + gap);
+  doc.text(text, startX, startY, { 
+    width: textWidth, 
+    align: options.align || 'left',
+    lineGap: options.lineGap || 2,
+  });
+}
