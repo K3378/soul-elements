@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import dynamic from 'next/dynamic';
+import FiveElementsParticles from './components/FiveElementsParticles';
 
 const FortuneStickOracle = dynamic(() => import('./components/FortuneStickOracle'), { ssr: false });
 
@@ -933,10 +934,12 @@ export default function HomePage() {
 
       <div id="constellation-stars" className="fixed inset-0 z-[1] pointer-events-none" style={{ opacity: 0.35 }} />
 
+      <FiveElementsParticles intensity={0.6} />
+
       <div ref={revealRef} className="relative z-[2] min-h-screen flex flex-col items-center px-4" style={{ paddingTop: '4vh' }}>
 
         {/* ========== HERO SECTION — Enhanced ========== */}
-        <div className="w-full max-w-4xl text-center mb-8" style={{ paddingTop: '10vh' }}>
+        <div className="w-full max-w-4xl text-center mb-8 reveal visible" style={{ paddingTop: '10vh' }}>
           {/* Gold tai chi emblem with glow */}
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8"
             style={{
