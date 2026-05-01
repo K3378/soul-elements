@@ -940,19 +940,19 @@ export default function HomePage() {
 
         {/* ========== HERO SECTION — Enhanced ========== */}
         <div className="w-full max-w-4xl text-center mb-8 reveal visible" style={{ paddingTop: '10vh' }}>
-          {/* Gold tai chi emblem with glow */}
+          {/* Black & White Tai Chi emblem — Nuwa + Elon unanimous: original purity */}
           <div className="inline-flex items-center justify-center w-20 h-20 rounded-full mb-8"
             style={{
-              background: 'rgba(201,168,76,0.06)',
-              border: '1px solid rgba(201,168,76,0.2)',
-              boxShadow: '0 0 40px rgba(201,168,76,0.06)',
+              background: 'rgba(255,255,255,0.03)',
+              border: '1px solid rgba(255,255,255,0.1)',
+              boxShadow: '0 0 30px rgba(255,255,255,0.04)',
               animation: 'glowPulse 4s ease-in-out infinite',
             }}>
             <svg width="36" height="36" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="none" stroke="#C9A84C" strokeWidth="1.2" opacity="0.4" />
-              <path d="M50 4 A46 46 0 0 1 50 96 A23 23 0 0 0 50 50 A23 23 0 0 1 50 4" fill="#C9A84C" opacity="0.8" />
-              <circle cx="50" cy="73" r="7" fill="#07080A" />
-              <circle cx="50" cy="27" r="7" fill="#C9A84C" />
+              <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(255,255,255,0.5)" strokeWidth="1.2" />
+              <path d="M50 4 A46 46 0 0 1 50 96 A23 23 0 0 0 50 50 A23 23 0 0 1 50 4" fill="rgba(255,255,255,0.85)" />
+              <circle cx="50" cy="73" r="7" fill="rgba(255,255,255,0.85)" />
+              <circle cx="50" cy="27" r="7" fill="#07080A" />
             </svg>
           </div>
 

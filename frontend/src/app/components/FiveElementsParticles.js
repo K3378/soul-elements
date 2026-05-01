@@ -3,12 +3,14 @@
 import { useEffect, useRef } from 'react';
 
 // Five Elements colors
+// Five Elements colors — with brightness hierarchy per Nuwa + Elon consensus
+// Fire brightest, Water dimmest — reflects elemental nature
 const ELEMENTS = [
-  { name: 'Wood', color: '#4ADE80', glow: 'rgba(74,222,128,0.3)', particles: 30 },
-  { name: 'Fire', color: '#EF4444', glow: 'rgba(239,68,68,0.3)', particles: 25 },
-  { name: 'Earth', color: '#C9A84C', glow: 'rgba(201,168,76,0.3)', particles: 35 },
-  { name: 'Metal', color: '#E2E8F0', glow: 'rgba(226,232,240,0.2)', particles: 20 },
-  { name: 'Water', color: '#3B82F6', glow: 'rgba(59,130,246,0.3)', particles: 30 },
+  { name: 'Wood', color: '#4ADE80', glow: 'rgba(74,222,128,0.08)', particles: 30, opacityMin: 0.12, opacityMax: 0.35 },
+  { name: 'Fire', color: '#EF4444', glow: 'rgba(239,68,68,0.12)', particles: 25, opacityMin: 0.2, opacityMax: 0.5 },
+  { name: 'Earth', color: '#C9A84C', glow: 'rgba(201,168,76,0.08)', particles: 35, opacityMin: 0.1, opacityMax: 0.3 },
+  { name: 'Metal', color: '#E2E8F0', glow: 'rgba(226,232,240,0.08)', particles: 20, opacityMin: 0.15, opacityMax: 0.4 },
+  { name: 'Water', color: '#3B82F6', glow: 'rgba(59,130,246,0.08)', particles: 30, opacityMin: 0.08, opacityMax: 0.25 },
 ];
 
 export default function FiveElementsParticles({ intensity = 1 }) {
@@ -52,7 +54,7 @@ export default function FiveElementsParticles({ intensity = 1 }) {
           glow: elem.glow,
           life: Math.random() * Math.PI * 2,
           lifeSpeed: 0.01 + Math.random() * 0.02,
-          opacity: 0.3 + Math.random() * 0.7,
+          opacity: elem.opacityMin + Math.random() * (elem.opacityMax - elem.opacityMin),
           originX: Math.random() * w,
           originY: Math.random() * h,
           orbitRadius: 20 + Math.random() * 80,
@@ -176,39 +178,15 @@ export default function FiveElementsParticles({ intensity = 1 }) {
         if (pt.y > H + margin) pt.y = -margin;
       }
 
-      // Second pass: draw connections + particles
-      // Connection lines between nearby particles of same or generating elements
-      const connDist = 100;
-      for (let i = 0; i < len; i++) {
-        const pt = p[i];
-
-        // Draw connections to nearby particles
-        for (let j = i + 1; j < len; j++) {
-          const pt2 = p[j];
-          const dx = pt.x - pt2.x;
-          const dy = pt.y - pt2.y;
-          const dist = Math.sqrt(dx * dx + dy * dy);
-          if (dist < connDist) {
-            const alpha = (1 - dist / connDist) * 0.12;
-            ctx.beginPath();
-            ctx.moveTo(pt.x, pt.y);
-            ctx.lineTo(pt2.x, pt2.y);
-            ctx.strokeStyle = `rgba(201,168,76,${alpha})`;
-            ctx.lineWidth = 0.5;
-            ctx.stroke();
-          }
-        }
-      }
-
-      // Draw particles
+      // Draw particles — no connection lines (per Elon's algorithm: delete first, optimize later)
       for (let i = 0; i < len; i++) {
         const pt = p[i];
         const sizeMod = 1 + Math.sin(pt.life) * pt.sizeOsc * 0.3;
         const size = pt.size * sizeMod;
         const alpha = pt.opacity * (0.6 + Math.sin(pt.life) * 0.2);
 
-        // Glow
-        const grad = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, size * 4);
+        // Glow — reduced radius per Nuwa consensus (size × 2 instead of × 4)
+        const grad = ctx.createRadialGradient(pt.x, pt.y, 0, pt.x, pt.y, size * 2);
         grad.addColorStop(0, pt.glow);
         grad.addColorStop(1, 'transparent');
         ctx.beginPath();
@@ -252,7 +230,7 @@ export default function FiveElementsParticles({ intensity = 1 }) {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none"
-      style={{ zIndex: 0, opacity: 0.8 }}
+      style={{ zIndex: 0, opacity: 0.3 }}
     />
   );
 }
