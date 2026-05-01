@@ -88,16 +88,21 @@ router.get('/:sessionId/pdf', async (req, res) => {
       bazi.fiveElements.percentages = chart;
     }
 
-    // console.log(`Generating PDF for session ${sessionId} (${tier})...`);
+    // Prepare baziData with personal info for cover page (session-based)
+    const pdfBaziData = {
+      bazi,
+      tier,
+      name: data.name || 'Valued Seeker',
+      dob: data.birthDate || '',
+      sessionId: sessionId,
+    };
 
     // Generate PDF using PDFKit
     const pdfBuffer = await generatePDF(
-      { bazi, tier },
+      pdfBaziData,
       fullReport,
       tier
     );
-
-    // console.log(`PDF generated: ${(pdfBuffer.length / 1024).toFixed(1)} KB`);
 
     // Set response headers for PDF download
     res.setHeader('Content-Type', 'application/pdf');
@@ -164,7 +169,17 @@ router.post('/generate-pdf', async (req, res) => {
     }
 
     const fullReport = generateFullReport(bazi, goal || 'all', tier || 'standard');
-    const pdfBuffer = await generatePDF({ bazi, tier }, fullReport, tier || 'standard');
+    
+    // Prepare baziData with defaults for test/direct PDF generation
+    const pdfBaziData = {
+      bazi,
+      tier: tier || 'standard',
+      name: bazi.name || (bazi.dayMaster ? bazi.dayMaster.en + ' — ' + bazi.dayMaster.archetype : 'Valued Seeker'),
+      dob: '',
+      sessionId: 'test-' + Date.now(),
+    };
+    
+    const pdfBuffer = await generatePDF(pdfBaziData, fullReport, tier || 'standard');
 
     res.setHeader('Content-Type', 'application/pdf');
     res.setHeader('Content-Disposition', `attachment; filename="soul-elements-test.pdf"`);

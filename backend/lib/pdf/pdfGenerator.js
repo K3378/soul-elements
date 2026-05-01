@@ -123,44 +123,98 @@ function generatePDF(baziData, reportContent, tier = 'standard') {
       registerFonts(doc);
 
       // ============ BUILD PAGES ============
-      buildCoverPage(doc, baziData);
+      buildCoverPage(doc, baziData, baziData.name, baziData.dob, baziData.sessionId);
       doc.addPage();
       buildDocumentStructure(doc, tier);
       doc.addPage();
+      buildSectionDivider(doc, 1, 'Architectural Chart', 'Your Four Pillars of Destiny with complete stem/branch data');
+      doc.addPage();
       buildArchitecturalChart(doc, baziData);
+      doc.addPage();
+      buildSectionDivider(doc, 2, 'Pillar Deep Analysis', 'Each of the four pillars analyzed individually');
       doc.addPage();
       buildFourPillarsDetail(doc, baziData);
       doc.addPage();
+      buildSectionDivider(doc, 3, 'Elemental Distribution', 'Weighted five-element percentages with visual chart');
+      doc.addPage();
       buildElementDistribution(doc, baziData, reportContent.elementAnalysis);
+      doc.addPage();
+      buildSectionDivider(doc, 4, 'Element Balance & Cycle', 'Generating and controlling cycle assessment');
       doc.addPage();
       buildElementBalance(doc, baziData, reportContent.fiveElementsInsight);
       doc.addPage();
+      buildSectionDivider(doc, 5, 'Hidden Stems', 'Subconscious energies embedded in each earthly branch');
+      doc.addPage();
       buildHiddenStems(doc, baziData, reportContent.hiddenStemsGuidance);
+      doc.addPage();
+      buildSectionDivider(doc, 6, 'Ten Deities', 'Energetic roles and relationships in your chart');
       doc.addPage();
       buildTenDeities(doc, baziData, reportContent.tenDeities);
 
       if (tier === 'grandmaster') {
         doc.addPage();
+        buildSectionDivider(doc, 7, 'Luck Cycles', '10-Year luck cycles with detailed analysis of each pillar');
+        doc.addPage();
         buildLuckCyclesDetail(doc, baziData, reportContent.daYun);
+        doc.addPage();
+        buildSectionDivider(doc, 8, 'Annual Energy Forecast', 'Year-by-year breakdown from 2025 to 2030');
         doc.addPage();
         buildAnnualForecastGrandMaster(doc, baziData, reportContent.annualForecast);
         doc.addPage();
+        buildSectionDivider(doc, 9, 'Na Yin & Shen Sha', 'Musical note energy and divine star influences');
+        doc.addPage();
         buildNaYinShenSha(doc, baziData);
         doc.addPage();
+        buildSectionDivider(doc, 10, 'Personality Profile', 'Comprehensive personality assessment based on your chart');
+        doc.addPage();
         buildPersonalityProfile(doc, baziData, reportContent.personality);
+        doc.addPage();
+        buildSectionDivider(doc, 11, 'Career & Wealth Strategy', 'Optimized career direction and wealth potential analysis');
         doc.addPage();
         buildCareerStrategy(doc, baziData, reportContent.lifeGuidance);
       } else {
         doc.addPage();
+        buildSectionDivider(doc, 7, 'Luck Cycles Overview', '10-Year luck cycle summary');
+        doc.addPage();
         buildLuckCycles(doc, baziData, reportContent.daYun);
+        doc.addPage();
+        buildSectionDivider(doc, 8, 'Annual Energy Forecast', 'Year-by-year analysis (2025-2030)');
         doc.addPage();
         buildAnnualForecast(doc, baziData, reportContent.annualForecast);
       }
 
+      const remediationCh = tier === 'grandmaster' ? 12 : 9;
+      const affirmationCh = tier === 'grandmaster' ? 13 : 10;
+      const appendixStartCh = tier === 'grandmaster' ? 14 : 11;
+
+      doc.addPage();
+      buildSectionDivider(doc, remediationCh, 'Remediation Guide', 'Adjustments, colors, and lifestyle recommendations');
       doc.addPage();
       buildRemediationGuide(doc, baziData);
       doc.addPage();
+      buildSectionDivider(doc, affirmationCh, 'Your Affirmation', 'A personalized destiny affirmation for your journey');
+      doc.addPage();
       buildPersonalAffirmation(doc, baziData, reportContent.personalAffirmation);
+
+      // Premium appendices
+      doc.addPage();
+      buildSectionDivider(doc, appendixStartCh, 'Element Reference Guide', 'The five elements and their correspondences');
+      doc.addPage();
+      buildAppendixElementReference(doc);
+
+      doc.addPage();
+      buildSectionDivider(doc, appendixStartCh + 1, 'Reading Your Chart', 'How to interpret your Ba Zi Four Pillars chart');
+      doc.addPage();
+      buildAppendixReadingGuide(doc);
+
+      doc.addPage();
+      buildSectionDivider(doc, appendixStartCh + 2, 'Glossary', 'Key terms and concepts explained');
+      doc.addPage();
+      buildGlossary(doc);
+
+      doc.addPage();
+      buildClosingPage(doc);
+
       buildFooter(doc);
 
       doc.end();
@@ -325,7 +379,7 @@ function drawTaiChiDivider(doc, x, y, width) {
 /**
  * COVER PAGE — Enhanced with Tai Chi and mystical elements
  */
-function buildCoverPage(doc, data) {
+function buildCoverPage(doc, data, name, dob, sessionId) {
   const { bazi } = data;
   const pageH = doc.page.height;
   const pageW = doc.page.width;
@@ -405,6 +459,14 @@ function buildCoverPage(doc, data) {
       .fill()
       .strokeColor(elemColor)
       .stroke();
+
+    // Date of birth below the Day Master card
+    if (dob) {
+      doc.fontSize(6.5)
+        .font('Helvetica')
+        .fillColor(COLORS.textTertiary)
+        .text(`Date of Birth: ${dob}`, 95, cardY + cardHeight + 10);
+    }
   }
 
   // Tier badge
@@ -423,6 +485,14 @@ function buildCoverPage(doc, data) {
     .fillColor(COLORS.gold)
     .text(tierText + ' EDITION', pageW/2 - 50, badgeY + 7, { width: 100, align: 'center' });
 
+  // Prepared for [name] — below tier badge
+  if (name) {
+    doc.fontSize(8)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(`Prepared for ${name}`, 55, badgeY + 30, { align: 'center', width: pageW - 110 });
+  }
+
   // Four Pillars Mini Display
   if (bazi?.pillars) {
     buildMiniPillars(doc, bazi.pillars, 80, 430);
@@ -433,6 +503,14 @@ function buildCoverPage(doc, data) {
     .font('Helvetica')
     .fillColor(COLORS.textTertiary)
     .text('◈  CONFIDENTIAL — For personal use only  ◈', 55, pageH - 80, { align: 'center', width: pageW - 110 });
+
+  // Session ID at the very bottom
+  if (sessionId) {
+    doc.fontSize(5.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textDim)
+      .text(`Session: ${sessionId}`, 55, pageH - 64, { align: 'center', width: pageW - 110 });
+  }
 
   // Bottom gold bar
   doc.rect(0, pageH - 4, pageW, 4)
@@ -465,33 +543,39 @@ function buildDocumentStructure(doc, tier) {
   doc.fontSize(9)
     .font('Helvetica')
     .fillColor(COLORS.textSecondary)
-    .text(isGrandMaster ? 'Grand Master Edition — 24 Page Breakdown' : 'Standard Edition — 14 Page Breakdown', 55, 82);
+    .text(isGrandMaster ? 'Grand Master Edition — 38 Page Breakdown' : 'Standard Edition — 33 Page Breakdown', 55, 82);
 
   const sections = isGrandMaster ? [
     { page: '3', title: 'Architectural Chart', desc: 'Your Four Pillars with complete stem/branch data and elemental energy scoring.' },
-    { page: '4-5', title: 'Pillar Deep Analysis', desc: 'Each of the four pillars analyzed individually with day master insight.' },
-    { page: '6', title: 'Elemental Distribution', desc: 'Weighted five-element percentages with visual distribution chart.' },
-    { page: '7', title: 'Element Balance & Cycle', desc: 'Generating and controlling cycle assessment with balance score.' },
-    { page: '8', title: 'Hidden Stems', desc: 'Subconscious energies embedded in each earthly branch.' },
-    { page: '9', title: 'Ten Deities', desc: 'Energetic roles and relationships in your chart.' },
-    { page: '10-12', title: 'Luck Cycles', desc: '10-Year luck cycles with detailed analysis of each pillar.' },
-    { page: '13-15', title: 'Annual Energy Forecast', desc: 'Year-by-year breakdown from 2025 to 2030.' },
-    { page: '16', title: 'Na Yin & Shen Sha', desc: 'Musical note energy and divine star influences.' },
-    { page: '17-18', title: 'Personality Profile', desc: 'Comprehensive personality assessment based on your chart.' },
-    { page: '19-20', title: 'Career & Wealth Strategy', desc: 'Optimized career direction and wealth potential analysis.' },
-    { page: '21-22', title: 'Remediation Guide', desc: 'Adjustments, colors, directions, and lifestyle recommendations.' },
-    { page: '23', title: 'Personal Affirmation', desc: 'Your customized destiny affirmation.' },
+    { page: '5-6', title: 'Pillar Deep Analysis', desc: 'Each of the four pillars analyzed individually with day master insight.' },
+    { page: '8', title: 'Elemental Distribution', desc: 'Weighted five-element percentages with visual distribution chart.' },
+    { page: '10', title: 'Element Balance & Cycle', desc: 'Generating and controlling cycle assessment with balance score.' },
+    { page: '12', title: 'Hidden Stems', desc: 'Subconscious energies embedded in each earthly branch.' },
+    { page: '14', title: 'Ten Deities', desc: 'Energetic roles and relationships in your chart.' },
+    { page: '16-17', title: 'Luck Cycles', desc: '10-Year luck cycles with detailed analysis of each pillar.' },
+    { page: '19-21', title: 'Annual Energy Forecast', desc: 'Year-by-year breakdown from 2025 to 2030.' },
+    { page: '23', title: 'Na Yin & Shen Sha', desc: 'Musical note energy and divine star influences.' },
+    { page: '25-26', title: 'Personality Profile', desc: 'Comprehensive personality assessment based on your chart.' },
+    { page: '28-29', title: 'Career & Wealth Strategy', desc: 'Optimized career direction and wealth potential analysis.' },
+    { page: '31', title: 'Remediation Guide', desc: 'Adjustments, colors, directions, and lifestyle recommendations.' },
+    { page: '33', title: 'Personal Affirmation', desc: 'Your customized destiny affirmation.' },
+    { page: '35', title: 'Appendix A: Element Reference', desc: 'Complete guide to the five elements and their correspondences.' },
+    { page: '36-37', title: 'Appendix B: Reading Your Chart', desc: 'How to interpret your Ba Zi Four Pillars chart.' },
+    { page: '39-40', title: 'Glossary', desc: 'Key Ba Zi terms and concepts explained.' },
   ] : [
     { page: '3', title: 'Architectural Chart', desc: 'Your Four Pillars with stem/branch data and elemental scores.' },
-    { page: '4-5', title: 'Pillar Deep Analysis', desc: 'Each pillar analyzed individually with day master insight.' },
-    { page: '6', title: 'Elemental Distribution', desc: 'Five-element percentages with distribution bar chart.' },
-    { page: '7', title: 'Element Balance & Cycle', desc: 'Element cycle assessment with balance insights.' },
-    { page: '8', title: 'Hidden Stems', desc: 'Subconscious energies in each earthly branch.' },
-    { page: '9', title: 'Ten Deities', desc: 'Energetic roles and relationships.' },
-    { page: '10', title: 'Luck Cycles Overview', desc: '10-Year luck cycle summary.' },
-    { page: '11-12', title: 'Annual Energy Forecast', desc: 'Year-by-year analysis (2025-2030).' },
-    { page: '13', title: 'Remediation Guide', desc: 'Favorable directions, colors, and adjustments.' },
-    { page: '14', title: 'Personal Affirmation', desc: 'Your customized destiny affirmation.' },
+    { page: '5-6', title: 'Pillar Deep Analysis', desc: 'Each pillar analyzed individually with day master insight.' },
+    { page: '8', title: 'Elemental Distribution', desc: 'Five-element percentages with distribution bar chart.' },
+    { page: '10', title: 'Element Balance & Cycle', desc: 'Element cycle assessment with balance insights.' },
+    { page: '12', title: 'Hidden Stems', desc: 'Subconscious energies in each earthly branch.' },
+    { page: '14', title: 'Ten Deities', desc: 'Energetic roles and relationships.' },
+    { page: '16', title: 'Luck Cycles Overview', desc: '10-Year luck cycle summary.' },
+    { page: '18-19', title: 'Annual Energy Forecast', desc: 'Year-by-year analysis (2025-2030).' },
+    { page: '21', title: 'Remediation Guide', desc: 'Favorable directions, colors, and adjustments.' },
+    { page: '23', title: 'Personal Affirmation', desc: 'Your customized destiny affirmation.' },
+    { page: '25', title: 'Appendix A: Element Reference', desc: 'Complete guide to the five elements and their correspondences.' },
+    { page: '26-27', title: 'Appendix B: Reading Your Chart', desc: 'How to interpret your Ba Zi Four Pillars chart.' },
+    { page: '29-30', title: 'Glossary', desc: 'Key Ba Zi terms and concepts explained.' },
   ];
 
   let yPos = 115;
@@ -2006,6 +2090,526 @@ function buildMiniPillars(doc, pillars, x, y) {
       .fillColor(COLORS.textTertiary)
       .text(p.animal || p.branchEn || '', px + 3, y + 17, { width: width - 6 });
   });
+}
+
+/**
+ * SECTION DIVIDER — Full-page chapter separator
+ */
+function buildSectionDivider(doc, chapterNum, title, subtitle) {
+  const pageW = doc.page.width;
+  const pageH = doc.page.height;
+  const cx = pageW / 2;
+
+  // Dark background
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+
+  // Gold bar at top (4pt)
+  doc.rect(0, 0, pageW, 4)
+    .fill(COLORS.gold);
+
+  // Gold bar at bottom (4pt)
+  doc.rect(0, pageH - 4, pageW, 4)
+    .fill(COLORS.gold);
+
+  // Chapter number large (font 48, gold, opacity 0.3)
+  doc.fontSize(48)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text(String(chapterNum), 0, 220, { width: pageW, align: 'center', opacity: 0.3 });
+
+  // Decorative line above title
+  doc.moveTo(cx - 120, 300)
+    .lineTo(cx + 120, 300)
+    .strokeColor(COLORS.gold + '50')
+    .lineWidth(0.5)
+    .stroke();
+
+  // Title (font 24, white) centered
+  doc.fontSize(24)
+    .font('Helvetica')
+    .fillColor(COLORS.textPrimary)
+    .text(title, 0, 320, { width: pageW, align: 'center' });
+
+  // Decorative line below title
+  doc.moveTo(cx - 120, 360)
+    .lineTo(cx + 120, 360)
+    .strokeColor(COLORS.gold + '50')
+    .lineWidth(0.5)
+    .stroke();
+
+  // Subtitle (font 9, gold) centered
+  doc.fontSize(9)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text(subtitle || '', 0, 385, { width: pageW, align: 'center' });
+
+  // Small Tai Chi at bottom center
+  drawTaiChi(doc, cx, pageH - 50, 12);
+}
+
+/**
+ * APPENDIX A: ELEMENT REFERENCE GUIDE
+ * Full page with table of 5 elements and their properties
+ */
+function buildAppendixElementReference(doc) {
+  const pageW = doc.page.width;
+  const pageH = doc.page.height;
+  const margin = 55;
+  const tableTop = 120;
+  const rowH = 100;
+  const colW = (pageW - 2 * margin) / 5;
+
+  // Dark background
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+
+  // Gold top bar
+  doc.rect(0, 0, pageW, 2)
+    .fill(COLORS.gold);
+
+  // Title
+  doc.fontSize(14)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text('ELEMENT REFERENCE GUIDE', margin, 58, { letterSpacing: 0.15 });
+
+  doc.fontSize(9)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('The five elements of Chinese metaphysics — their energies, seasons, and correspondences.', margin, 82);
+
+  // Element data
+  const elements = [
+    { name: 'Wood', season: 'Spring', direction: 'East', color: 'Green', emotion: 'Anger / Kindness', taste: 'Sour', organ: 'Liver / Gallbladder' },
+    { name: 'Fire', season: 'Summer', direction: 'South', color: 'Red', emotion: 'Joy / Anxiety', taste: 'Bitter', organ: 'Heart / Small Intestine' },
+    { name: 'Earth', season: 'Late Summer', direction: 'Center', color: 'Yellow', emotion: 'Worry / Empathy', taste: 'Sweet', organ: 'Spleen / Stomach' },
+    { name: 'Metal', season: 'Autumn', direction: 'West', color: 'White', emotion: 'Grief / Courage', taste: 'Spicy', organ: 'Lungs / Large Intestine' },
+    { name: 'Water', season: 'Winter', direction: 'North', color: 'Blue/Black', emotion: 'Fear / Calm', taste: 'Salty', organ: 'Kidneys / Bladder' },
+  ];
+
+  const properties = ['Element', 'Season', 'Direction', 'Color', 'Emotion', 'Taste', 'Organ Pair'];
+
+  // Draw column headers
+  const headerY = tableTop - 25;
+  properties.forEach((prop, i) => {
+    const colX = margin + i * colW;
+    doc.fontSize(6)
+      .font('Helvetica-Bold')
+      .fillColor(COLORS.gold)
+      .text(prop.toUpperCase(), colX + 2, headerY, { width: colW - 4, align: 'center' });
+  });
+
+  // Draw each element row
+  elements.forEach((elem, rowIdx) => {
+    const rowY = tableTop + rowIdx * rowH;
+    const elemColor = ELEMENT_COLORS[elem.name] || COLORS.textPrimary;
+
+    // Element card background
+    doc.roundedRect(margin, rowY, pageW - 2 * margin, rowH - 5, 4)
+      .fillColor(COLORS.bgSurface + '80')
+      .fill()
+      .strokeColor(elemColor + '40')
+      .lineWidth(0.5)
+      .stroke();
+
+    // Element name — first column
+    doc.fontSize(11)
+      .font('Helvetica-Bold')
+      .fillColor(elemColor)
+      .text(elem.name, margin + 5, rowY + 10, { width: colW - 10, align: 'center' });
+
+    // Element name underline
+    doc.moveTo(margin + 10, rowY + 30)
+      .lineTo(margin + colW - 10, rowY + 30)
+      .strokeColor(elemColor + '50')
+      .lineWidth(0.5)
+      .stroke();
+
+    // Season
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(elem.season, margin + colW + 5, rowY + 12, { width: colW - 10, align: 'center' });
+
+    // Direction
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(elem.direction, margin + 2 * colW + 5, rowY + 12, { width: colW - 10, align: 'center' });
+
+    // Color
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textSecondary)
+      .text(elem.color, margin + 3 * colW + 5, rowY + 12, { width: colW - 10, align: 'center' });
+
+    // Emotion (two lines)
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(elem.emotion, margin + 5, rowY + 40, { width: colW - 10, align: 'center' });
+
+    // Taste
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(elem.taste, margin + colW + 5, rowY + 40, { width: colW - 10, align: 'center' });
+
+    // Organ pair
+    doc.fontSize(6.5)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(elem.organ, margin + 2 * colW + 5, rowY + 40, { width: 3 * colW - 10, align: 'center' });
+
+    // Color swatch
+    doc.roundedRect(margin + 3 * colW + colW / 2 - 8, rowY + 55, 16, 16, 3)
+      .fillColor(elemColor)
+      .fill();
+  });
+
+  // Footer note
+  doc.fontSize(6)
+    .font('Helvetica-Oblique')
+    .fillColor(COLORS.textDim)
+    .text('These correspondences reflect traditional Chinese Five Element theory (Wu Xing). Each element nourishes and controls another in a continual cycle of balance.', margin, pageH - 60, { width: pageW - 2 * margin, align: 'center' });
+
+  // Bottom gold bar
+  doc.rect(0, pageH - 2, pageW, 2)
+    .fill(COLORS.gold);
+}
+
+/**
+ * APPENDIX B: READING YOUR CHART GUIDE
+ * 2-page explanation of the Four Pillars structure
+ */
+function buildAppendixReadingGuide(doc) {
+  const pageW = doc.page.width;
+  const pageH = doc.page.height;
+  const margin = 55;
+  const bodyW = pageW - 2 * margin;
+
+  // === PAGE 1 ===
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+  doc.rect(0, 0, pageW, 2)
+    .fill(COLORS.gold);
+
+  doc.fontSize(14)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text('READING YOUR BA ZI CHART', margin, 58, { letterSpacing: 0.15 });
+
+  doc.fontSize(9)
+    .font('Helvetica-Oblique')
+    .fillColor(COLORS.textSecondary)
+    .text('A guide to understanding the Four Pillars of Destiny', margin, 82);
+
+  let y = 115;
+
+  // Section: What is Ba Zi
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('What Is Ba Zi?', margin, y);
+  y += 20;
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('Ba Zi, also known as the Four Pillars of Destiny, is a refined system of Chinese metaphysics that maps the cosmic energies present at the moment of your birth. "Ba Zi" literally means "Eight Characters" — referring to the four Heavenly Stems and four Earthly Branches that together form your birth chart. These eight characters encode the unique energetic blueprint that shapes your personality, strengths, challenges, and life path.', margin, y, { width: bodyW, align: 'left' });
+  y += 55;
+
+  // The Four Pillars
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('The Four Pillars', margin, y);
+  y += 20;
+
+  const pillars = [
+    { name: 'Year Pillar', represents: 'Family, heritage, early childhood, ancestry. Reveals the foundation you were born into and the broader social environment that shaped your early years.' },
+    { name: 'Month Pillar', represents: 'Career, peers, social standing, young adulthood. Reflects your professional path, relationships with colleagues, and your role in society.' },
+    { name: 'Day Pillar', represents: 'The self, spouse, intimate relationships, middle age. The Day Stem is your Day Master — the central energy of your entire chart.' },
+    { name: 'Hour Pillar', represents: 'Children, legacy, later years, inner self. Governs your later life, creative output, and what you pass on to future generations.' },
+  ];
+
+  pillars.forEach(p => {
+    doc.roundedRect(margin, y, bodyW, 38, 3)
+      .fillColor(COLORS.bgSurface + '60')
+      .fill()
+      .strokeColor(COLORS.gold + '20')
+      .lineWidth(0.5)
+      .stroke();
+
+    doc.fontSize(8)
+      .font('Helvetica-Bold')
+      .fillColor(COLORS.gold)
+      .text(p.name, margin + 10, y + 5);
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(p.represents, margin + 10, y + 20, { width: bodyW - 20 });
+    y += 44;
+  });
+
+  // === PAGE 2 ===
+  doc.addPage();
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+  doc.rect(0, 0, pageW, 2)
+    .fill(COLORS.gold);
+
+  doc.fontSize(14)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text('READING YOUR BA ZI CHART (CONTINUED)', margin, 58, { letterSpacing: 0.15 });
+
+  // Section: The Day Master
+  y = 100;
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('The Day Master — Your Core Self', margin, y);
+  y += 20;
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('The Day Master (the Heavenly Stem of your Day Pillar) is the most important element in your chart. It represents you — your core personality, constitution, and innate nature. Every other element in the chart is analyzed in relation to the Day Master: does it support you, drain you, or challenge you? Your Day Master belongs to one of the five elements (Wood, Fire, Earth, Metal, or Water) and has a Yin or Yang polarity. Understanding your Day Master is the first step to unlocking your chart.', margin, y, { width: bodyW });
+  y += 70;
+
+  // Section: Element Interactions
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('How the Elements Interact', margin, y);
+  y += 20;
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('The five elements are connected in two fundamental cycles:', margin, y, { width: bodyW });
+  y += 20;
+
+  doc.fontSize(8)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.woodColor)
+    .text('Generating (Nourishing) Cycle:', margin, y);
+  doc.fontSize(7.5)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('Wood feeds Fire, Fire creates Earth (ash), Earth bears Metal, Metal carries Water, Water nourishes Wood. This cycle shows where you receive support and what you naturally nurture.', margin + 5, y + 14, { width: bodyW - 5 });
+  y += 34;
+
+  doc.fontSize(8)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.error)
+    .text('Controlling (Restraining) Cycle:', margin, y);
+  doc.fontSize(7.5)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('Wood parts Earth, Earth dams Water, Water douses Fire, Fire melts Metal, Metal chops Wood. This cycle shows areas of tension, challenge, or healthy discipline depending on balance.', margin + 5, y + 14, { width: bodyW - 5 });
+  y += 34;
+
+  // Section: Balance
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('Element Balance', margin, y);
+  y += 20;
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('A well-balanced chart has a healthy mix of elements supporting the Day Master. An excess of one element can create challenges: too much Fire may lead to impulsiveness, while too little Water might indicate difficulty with adaptability. Your chart analysis identifies imbalances and suggests ways to harmonize through colors, directions, and lifestyle choices.', margin, y, { width: bodyW });
+  y += 50;
+
+  // Section: Putting It Together
+  doc.fontSize(10)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('Putting It All Together', margin, y);
+  y += 20;
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('Your Ba Zi chart is a snapshot of the universe at your birth. By understanding the interplay of Heavenly Stems, Earthly Branches, and the five elements, you gain insight into your natural strengths, recurring patterns, and optimal timing for major life decisions. This report translates those ancient principles into practical, actionable guidance for your modern life.', margin, y, { width: bodyW });
+
+  // Bottom gold bar
+  doc.rect(0, pageH - 2, pageW, 2)
+    .fill(COLORS.gold);
+}
+
+/**
+ * GLOSSARY — Key Ba Zi terms and concepts
+ * 2 pages: alphabetical terms with explanations
+ */
+function buildGlossary(doc) {
+  const pageW = doc.page.width;
+  const pageH = doc.page.height;
+  const margin = 55;
+  const bodyW = pageW - 2 * margin;
+
+  const terms = [
+    { term: 'Ba Zi', def: 'Literally "Eight Characters" — the four Heavenly Stems and four Earthly Branches that form your birth chart. Also known as the Four Pillars of Destiny, this system maps the cosmic energies at your moment of birth.' },
+    { term: 'Day Master', def: 'The Heavenly Stem of the Day Pillar and the most important element in your chart. Represents your core self, personality, and innate constitution. All other chart elements are analyzed in relation to the Day Master.' },
+    { term: 'Earthly Branches', def: 'The twelve animal signs (Rat, Ox, Tiger, Rabbit, Dragon, Snake, Horse, Goat, Monkey, Rooster, Dog, Pig) that form the lower half of each pillar. Each branch carries its own elemental energy and contains Hidden Stems.' },
+    { term: 'Five Elements (Wu Xing)', def: 'Wood, Fire, Earth, Metal, and Water — the five fundamental energies that interact in generating and controlling cycles. Everything in the chart is classified under one of these elements.' },
+    { term: 'Four Pillars', def: 'The Year, Month, Day, and Hour pillars that together form a Ba Zi chart. Each pillar consists of a Heavenly Stem on top and an Earthly Branch below, representing different dimensions of life.' },
+    { term: 'Heavenly Stems', def: 'The ten celestial stems (Jia, Yi, Bing, Ding, Wu, Ji, Geng, Xin, Ren, Gui) that form the upper half of each pillar. They represent the visible, conscious energies in your chart.' },
+    { term: 'Hidden Stems', def: 'Subconscious elemental energies embedded within each Earthly Branch. These hidden influences reveal deeper personality layers and talents not immediately visible from the main stems alone.' },
+    { term: 'Luck Cycles (Da Yun)', def: 'Ten-year periods of energetic influence that unfold throughout your life. Each cycle activates different elements and life areas, helping you understand the timing of major opportunities and challenges.' },
+    { term: 'Na Yin', def: 'Often translated as "Musical Note Energy" — a deeper layer of elemental influence associated with each pillar. Na Yin reveals your intrinsic nature and the song your soul came to sing in this lifetime.' },
+    { term: 'Shen Sha', def: 'Divine or noble stars — auspicious and inauspicious influences in your chart. Benefic stars indicate talents and protection, while malefic stars highlight areas requiring awareness and effort.' },
+    { term: 'Ten Deities', def: 'Ten relationship archetypes (such as Official, Wealth, Resource, and Peer) that describe how each element in your chart relates to your Day Master. They reveal your relationships, career tendencies, and life patterns.' },
+    { term: 'True Solar Time', def: 'Time adjusted for geographic longitude and seasonal variation, used instead of standard clock time for accurate Ba Zi calculation. Ensures the Hour Pillar reflects the actual solar position at your birthplace.' },
+    { term: 'Yin / Yang', def: 'The dualistic principle of complementary opposites. Yin is receptive, dark, cool, and feminine. Yang is active, bright, warm, and masculine. Every stem and branch has a Yin or Yang polarity that modifies its expression.' },
+  ];
+
+  // === PAGE 1 ===
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+  doc.rect(0, 0, pageW, 2)
+    .fill(COLORS.gold);
+
+  doc.fontSize(14)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text('GLOSSARY', margin, 58, { letterSpacing: 0.15 });
+
+  doc.fontSize(9)
+    .font('Helvetica-Oblique')
+    .fillColor(COLORS.textSecondary)
+    .text('Key terms and concepts in Ba Zi metaphysics', margin, 82);
+
+  let y = 115;
+  const half = Math.ceil(terms.length / 2);
+
+  // Page 1: first half of terms
+  for (let i = 0; i < half; i++) {
+    const t = terms[i];
+    doc.fontSize(8)
+      .font('Helvetica-Bold')
+      .fillColor(COLORS.gold)
+      .text(t.term, margin, y);
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(t.def, margin + 5, y + 14, { width: bodyW - 5 });
+    y += 52;
+  }
+
+  // Bottom gold bar page 1
+  doc.rect(0, pageH - 2, pageW, 2)
+    .fill(COLORS.gold);
+
+  // === PAGE 2 ===
+  doc.addPage();
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+  doc.rect(0, 0, pageW, 2)
+    .fill(COLORS.gold);
+
+  doc.fontSize(14)
+    .font('Helvetica')
+    .fillColor(COLORS.gold)
+    .text('GLOSSARY (CONTINUED)', margin, 58, { letterSpacing: 0.15 });
+
+  y = 100;
+  for (let i = half; i < terms.length; i++) {
+    const t = terms[i];
+    doc.fontSize(8)
+      .font('Helvetica-Bold')
+      .fillColor(COLORS.gold)
+      .text(t.term, margin, y);
+    doc.fontSize(7)
+      .font('Helvetica')
+      .fillColor(COLORS.textTertiary)
+      .text(t.def, margin + 5, y + 14, { width: bodyW - 5 });
+    y += 52;
+  }
+
+  // Bottom gold bar page 2
+  doc.rect(0, pageH - 2, pageW, 2)
+    .fill(COLORS.gold);
+}
+
+/**
+ * CLOSING PAGE — Final blessing and share CTA
+ */
+function buildClosingPage(doc) {
+  const pageW = doc.page.width;
+  const pageH = doc.page.height;
+  const cx = pageW / 2;
+
+  // Dark background
+  doc.rect(0, 0, pageW, pageH)
+    .fill(COLORS.bgDeep);
+
+  // Mystical border
+  drawMysticalBorder(doc, 40, 40, pageW - 80, pageH - 80);
+
+  // Gold top bar
+  doc.rect(0, 0, pageW, 4)
+    .fill(COLORS.gold);
+
+  // Gold bottom bar
+  doc.rect(0, pageH - 4, pageW, 4)
+    .fill(COLORS.gold);
+
+  // Large Tai Chi at center
+  drawTaiChi(doc, cx, pageH / 2 - 60, 40);
+
+  // Blessing / quote
+  doc.fontSize(16)
+    .font('Helvetica')
+    .fillColor(COLORS.textPrimary)
+    .text('"Know the patterns of heaven and earth,', 55, pageH / 2 + 40, { align: 'center', width: pageW - 110 });
+
+  doc.fontSize(16)
+    .font('Helvetica')
+    .fillColor(COLORS.textPrimary)
+    .text('and you shall know yourself."', 55, pageH / 2 + 68, { align: 'center', width: pageW - 110 });
+
+  // Attribution
+  doc.fontSize(8)
+    .font('Helvetica-Oblique')
+    .fillColor(COLORS.textTertiary)
+    .text('— Ancient Ba Zi Proverb', 55, pageH / 2 + 100, { align: 'center', width: pageW - 110 });
+
+  // Decorative divider
+  drawTaiChiDivider(doc, 120, pageH / 2 + 130, pageW - 240);
+
+  // Report attribution
+  doc.fontSize(8)
+    .font('Helvetica')
+    .fillColor(COLORS.textSecondary)
+    .text('This report was generated by Soul Elements', 55, pageH / 2 + 160, { align: 'center', width: pageW - 110 });
+
+  // Website
+  doc.fontSize(9)
+    .font('Helvetica-Bold')
+    .fillColor(COLORS.gold)
+    .text('www.soulelements.com', 55, pageH / 2 + 185, { align: 'center', width: pageW - 110 });
+
+  // Separator
+  doc.moveTo(cx - 60, pageH / 2 + 210)
+    .lineTo(cx + 60, pageH / 2 + 210)
+    .strokeColor(COLORS.gold + '40')
+    .lineWidth(0.5)
+    .stroke();
+
+  // CTA
+  doc.fontSize(9)
+    .font('Helvetica')
+    .fillColor(COLORS.textPrimary)
+    .text('Share Your Experience', 55, pageH / 2 + 225, { align: 'center', width: pageW - 110 });
+
+  doc.fontSize(7)
+    .font('Helvetica')
+    .fillColor(COLORS.textTertiary)
+    .text('Tag us on social media and let the community know what you discovered about your destiny.', 55, pageH / 2 + 245, { align: 'center', width: pageW - 110 });
+
+  // Decorative corner Tai Chi
+  drawTaiChi(doc, 55, 70, 8);
+  drawTaiChi(doc, pageW - 55, 70, 8);
 }
 
 module.exports = {
