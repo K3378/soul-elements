@@ -2144,6 +2144,42 @@ function buildSectionDivider(doc, chapterNum, title, subtitle) {
     .fillColor(COLORS.gold)
     .text(subtitle || '', 0, 385, { width: pageW, align: 'center' });
 
+  // Poetic quote (font 7, italic, textTertiary) — adds spiritual depth
+  const quotes = [
+    'The patterns of heaven and earth reveal themselves to those who know how to look.',
+    'In every moment, the universe writes your destiny in the language of elements.',
+    'To know yourself is to know the dance of yin and yang within your soul.',
+    'The five elements are not things, but phases of energy in eternal conversation.',
+    'Your birth chart is a map, not a destination — the journey is yours to walk.',
+    'Ancient wisdom speaks to those who listen with the heart, not just the mind.',
+    'The stems and branches weave a pattern as old as time, as new as this moment.',
+    'Within you, the elements dance their eternal dance — wood, fire, earth, metal, water.',
+    'Destiny is not a cage but a compass — it shows direction, not limitation.',
+    'The cosmic blueprint encoded in your birth reveals not fate, but potential.',
+    'Understanding your elements is learning the language of your own soul.',
+    'Between heaven and earth, you are the bridge — your Four Pillars tell the story.',
+    'The cycles of change are the only constant — and your chart reveals their rhythm.',
+    'Know your nature, honour your seasons, and you shall find your way.',
+    'The Ba Zi is a mirror — it shows not what you will become, but what you already are.',
+    'Harmony is not the absence of opposing forces, but their elegant balance.',
+    'Time is not a line but a spiral — each luck cycle brings you closer to your centre.',
+    'The elements within you are the same elements that move the stars.',
+    'Your chart is a seed. What grows from it is entirely your own.',
+    'In the silence between thoughts, the ancient wisdom still speaks.',
+  ];
+  const quote = quotes[(chapterNum - 1) % quotes.length];
+  
+  // Decorative small diamond before quote
+  doc.fontSize(6)
+    .font('Helvetica')
+    .fillColor(COLORS.gold + '50')
+    .text('◈', 0, 440, { width: pageW, align: 'center' });
+  
+  doc.fontSize(7)
+    .font('Helvetica-Oblique')
+    .fillColor(COLORS.textTertiary)
+    .text(`"${quote}"`, 80, 460, { width: pageW - 160, align: 'center' });
+
   // Small Tai Chi at bottom center
   drawTaiChi(doc, cx, pageH - 50, 12);
 }
