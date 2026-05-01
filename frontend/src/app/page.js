@@ -884,52 +884,8 @@ export default function HomePage() {
 
   return (
     <>
-      {/* ANIMATED TAI CHI + STAR BACKGROUND */}
+      {/* CLEAN DARK BACKGROUND — no bg image, no gold ornaments, no gold star field (Elon + Nuwa + Kevin consensus) */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'url(/bg-design.jpg)',
-          backgroundSize: 'cover', backgroundPosition: 'center',
-          opacity: 0.22,
-        }} />
-        {/* Tai Chi ornaments using CSS animations */}
-        <div className="tai-chi-ornament tai-chi-ornament-1" style={{ top: '5%', right: '-5%' }}>
-          <svg viewBox="0 0 200 200" width="500" height="500">
-            <defs>
-              <clipPath id="taiChiBg">
-                <path d="M100 10 A90 90 0 0 1 100 190 A45 45 0 0 1 100 100 A45 45 0 0 0 100 10 Z" />
-              </clipPath>
-            </defs>
-            <circle cx="100" cy="100" r="90" fill="#C9A84C" />
-            <circle cx="100" cy="55" r="20" fill="#07070D" />
-            <circle cx="100" cy="145" r="20" fill="#C9A84C" />
-          </svg>
-        </div>
-        <div className="tai-chi-ornament tai-chi-ornament-2" style={{ bottom: '5%', left: '-3%' }}>
-          <svg viewBox="0 0 200 200" width="350" height="350">
-            <circle cx="100" cy="100" r="90" fill="#C9A84C" />
-            <path d="M100 10 A45 45 0 0 0 100 100 A90 90 0 0 0 100 190 A45 45 0 0 1 100 100 A45 45 0 0 1 100 10 Z" fill="#07070D" />
-            <circle cx="100" cy="55" r="18" fill="#C9A84C" />
-            <circle cx="100" cy="145" r="18" fill="#07070D" />
-          </svg>
-        </div>
-        {/* Star dot field rendered via CSS gradients (lighter than individual divs) */}
-        <div className="absolute inset-0" style={{
-          backgroundImage: 'radial-gradient(1px 1px at 15% 20%, rgba(201,168,76,0.35), transparent),' +
-            'radial-gradient(1px 1px at 25% 65%, rgba(201,168,76,0.25), transparent),' +
-            'radial-gradient(1.5px 1.5px at 35% 15%, rgba(255,215,120,0.3), transparent),' +
-            'radial-gradient(1px 1px at 45% 75%, rgba(201,168,76,0.2), transparent),' +
-            'radial-gradient(1px 1px at 55% 25%, rgba(255,215,120,0.25), transparent),' +
-            'radial-gradient(1.5px 1.5px at 65% 55%, rgba(201,168,76,0.2), transparent),' +
-            'radial-gradient(1px 1px at 75% 35%, rgba(255,215,120,0.15), transparent),' +
-            'radial-gradient(1px 1px at 85% 80%, rgba(201,168,76,0.2), transparent),' +
-            'radial-gradient(1.2px 1.2px at 20% 85%, rgba(201,168,76,0.2), transparent),' +
-            'radial-gradient(1px 1px at 50% 45%, rgba(255,255,255,0.12), transparent),' +
-            'radial-gradient(1px 1px at 70% 10%, rgba(201,168,76,0.15), transparent),' +
-            'radial-gradient(1.2px 1.2px at 90% 50%, rgba(201,168,76,0.2), transparent),' +
-            'radial-gradient(1px 1px at 5% 50%, rgba(255,215,120,0.15), transparent),' +
-            'radial-gradient(1px 1px at 40% 90%, rgba(201,168,76,0.15), transparent),' +
-            'radial-gradient(1px 1px at 95% 15%, rgba(255,255,255,0.1), transparent)',
-        }} />
       </div>
 
       <div id="constellation-stars" className="fixed inset-0 z-[1] pointer-events-none" style={{ opacity: 0.35 }} />
