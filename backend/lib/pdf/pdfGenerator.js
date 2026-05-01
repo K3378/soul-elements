@@ -2030,7 +2030,9 @@ function writeFlowingDetail(doc, text, x, width, options = {}) {
     .font(options.font || 'Helvetica')
     .fillColor(options.color || COLORS.textSecondary);
   
-  // Start after any visual elements
+  // Use doc.x, doc.y for relative positioning — lets text overflow naturally
+  // Don't pass explicit y so PDFKit uses doc.y which is auto-updated
+  doc.x = startX;
   const startY = Math.max(doc.y + gap, options.minY || doc.y + gap);
   doc.text(text, startX, startY, { 
     width: textWidth, 
